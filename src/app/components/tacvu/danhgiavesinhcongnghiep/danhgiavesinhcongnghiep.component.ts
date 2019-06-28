@@ -19,7 +19,10 @@ export class DanhgiavesinhcongnghiepComponent implements OnInit, OnDestroy {
   // int
 LaPhongK: number;
 TuanMay: number;
-
+// return import
+returnImport: {
+  error: number;
+};
 T5: boolean;
   date: Date = new Date();
   options = {s: '', p: 1, pz: 2000, totalpage: 0, total: 0, paxpz: 0,
@@ -246,9 +249,9 @@ R2LuuThayDoiVeSinhCongNghiep() {
         this.spinnerService.hide();
         return false;
       }
-      this.spinnerService.hide();
-      this.toastr.success('Cập nhật bảng vệ sinh công nghiệp thành công!', 'Thông báo');
-      this.r1ListVeSinhCongNghiep();
+        this.spinnerService.hide();
+        this.toastr.success('Cập nhật bảng vệ sinh công nghiệp thành công!', 'Thông báo');
+        this.r1ListVeSinhCongNghiep();
     }
   });
 }
@@ -401,13 +404,23 @@ khuVucChanged() {
 
 r2ImportFile() {
   this.subscription = this.danhgiavscongnghiepService_.R2ImportExcel(this._files).subscribe(res => {
-      if (res['error'] === 1) {
+    if (res !== undefined && res['body'] !== undefined) {
+      this.returnImport = res['body'];
+      if (this.returnImport.error === 1) {
         this.toastr.error(res['ms'], 'Thông báo');
         return false;
       }
-      this.r1ListVeSinhCongNghiep();
-      this.r1ListVeSinhCongNghiep();
-      this.toastr.success('Import File Excel bảng đánh giá vệ sinh công nghiệp thành công!', 'Thông báo');
+      if (this.returnImport.error === 2) {
+        this.toastr.error(res['ms'], 'Thông báo');
+        return false;
+      }
+      if (this.returnImport.error === 0) {
+        this.ImportExModal.hide();
+        this.r1ListVeSinhCongNghiep();
+        this.r1ListKhuVucVeSinhCongNghiep();
+        this.toastr.success('Import File Excel bảng đánh giá vệ sinh công nghiệp thành công!', 'Thông báo');
+      }
+    }
   });
 }
 ngOnDestroy(): void {

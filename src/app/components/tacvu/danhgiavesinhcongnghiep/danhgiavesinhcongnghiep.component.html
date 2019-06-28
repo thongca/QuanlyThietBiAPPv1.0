@@ -4,7 +4,9 @@
       <div class="card">
         <div class="card-header">
           <ul class="ul-box-crud">
-            <li appBtnPer="create" *ngIf="!(datacheck_.IsCheckT1 === 2 && datacheck_.IsCheckT2 === 2 && datacheck_.IsCheckT3 === 2 && datacheck_.IsCheckT4 === 2 && datacheck_.IsCheckT5 === 2)" data-toggle="modal" (click)="R2LuuThayDoiVeSinhCongNghiep()" title="Thêm mới">
+            <li appBtnPer="create"
+              *ngIf="!(datacheck_.IsCheckT1 === 2 && datacheck_.IsCheckT2 === 2 && datacheck_.IsCheckT3 === 2 && datacheck_.IsCheckT4 === 2 && datacheck_.IsCheckT5 === 2)"
+              data-toggle="modal" (click)="R2LuuThayDoiVeSinhCongNghiep()" title="Thêm mới">
               <img src="assets/img/brand/save-file-option.png" class="img-plus-header" alt="plus" />
               <a>
                 <strong>Lưu thay đổi</strong>
@@ -34,10 +36,10 @@
                 placeholder="Chọn tháng" (ngModelChange)="changThang()">
             </li>
             <li class="li-select ma-may">
-                <strong *ngIf="MaThietBi !== ''">
-                 Mã máy: {{MaThietBi}}
-                </strong>
-               </li>
+              <strong *ngIf="MaThietBi !== ''">
+                Mã máy: {{MaThietBi}}
+              </strong>
+            </li>
           </ul>
         </div>
         <div class="card-body card-overflow">
@@ -164,67 +166,83 @@
             <thead>
               <tr>
                 <th></th>
-                <th class="text-center">Xác nhận</th>
+                <th class="text-center">Tổng tuần 1</th>
                 <th class="text-center" colspan="3">
                   {{objDiemDanhGia.TongDiemT1}} / {{objDiemDanhGia.totalT1}}
                 </th>
-                <th class="text-center">Xác nhận</th>
+                <th class="text-center">Tổng tuần 2</th>
                 <th class="text-center" colspan="3">
                   {{objDiemDanhGia.TongDiemT2}} / {{objDiemDanhGia.totalT2}}
                 </th>
-                <th class="text-center">Xác nhận</th>
+                <th class="text-center">Tổng tuần 3</th>
                 <th class="text-center" colspan="3">
                   {{objDiemDanhGia.TongDiemT3}} / {{objDiemDanhGia.totalT3}}
                 </th>
-                <th class="text-center">Xác nhận</th>
+                <th class="text-center">Tổng tuần 4</th>
                 <th class="text-center" colspan="3">
                   {{objDiemDanhGia.TongDiemT4}} / {{objDiemDanhGia.totalT4}}
                 </th>
-                <th *ngIf="options.T5 === false" class="text-center">Xác nhận</th>
+                <th *ngIf="options.T5 === false" class="text-center">Tổng tuần 5</th>
                 <th *ngIf="options.T5 === false" class="text-center" colspan="3">
                   {{objDiemDanhGia.TongDiemT5}} / {{objDiemDanhGia.totalT5}}
                 </th>
               </tr>
+            </thead>
+          </table>
+          <table class="tables-xacnhan">
+            <tbody>
               <tr>
-                <td>
+                <td class="text-center font-weigthc" colspan="2">
+                 Xác nhận tuần 1
+                </td>
+                <td class="text-center font-weigthc" colspan="2">
+                    Xác nhận tuần 2
+                </td>
+                <td class="text-center font-weigthc" colspan="2">
+                    Xác nhận tuần 3
+                </td>
+                <td class="text-center font-weigthc" colspan="2">
+                    Xác nhận tuần 4
+                </td>
+                <td class="text-center font-weigthc" *ngIf="options.T5 === false" colspan="2">
+                    Xác nhận tuần 5
+                </td>
+              </tr>
+              <tr>
 
-                </td>
-                <td class="text-center" colspan="1">
+                <td class="text-center">
                   KT-CĐ
                 </td>
-                <td class="text-center" colspan="3">
+                <td class="text-center">
                   Tổ máy
                 </td>
-                <td class="text-center" colspan="1">
+                <td class="text-center">
                   KT-CĐ
                 </td>
-                <td class="text-center" colspan="3">
+                <td class="text-center">
                   Tổ máy
                 </td>
-                <td class="text-center" colspan="1">
+                <td class="text-center">
                   KT-CĐ
                 </td>
-                <td class="text-center" colspan="3">
+                <td class="text-center">
                   Tổ máy
                 </td>
-                <td class="text-center" colspan="1">
+                <td class="text-center">
                   KT-CĐ
                 </td>
-                <td class="text-center" colspan="3">
+                <td class="text-center">
                   Tổ máy
                 </td>
-                <td *ngIf="options.T5 === false" class="text-center" colspan="1">
+                <td *ngIf="options.T5 === false" class="text-center">
                   KT-CĐ
                 </td>
-                <td *ngIf="options.T5 === false" class="text-center" colspan="3">
+                <td *ngIf="options.T5 === false" class="text-center">
                   Tổ máy
                 </td>
               </tr>
               <tr>
-                <td>
-
-                </td>
-                <td colspan="1" class="text-center">
+                <td class="text-center">
                   <button *ngIf="modelPM.NguoiXacNhanT1ID == null" type="button" class="btn btn-primary btn-trash "
                     (click)="XacNhanCD(1,2)" title=" Xác nhận">
 
@@ -240,7 +258,7 @@
                     </span>
                   </button>
                 </td>
-                <td colspan="3" class="text-center">
+                <td class="text-center">
                   <button *ngIf="modelPM.NguoiVanHanhIDT1 == null" type="button" class="btn btn-primary btn-trash "
                     (click)="XacNhanCD(1,1)" title=" Xác nhận">
 
@@ -255,7 +273,7 @@
                     </span>
                   </button>
                 </td>
-                <td colspan="1" class="text-center">
+                <td class="text-center">
                   <button *ngIf="modelPM.NguoiXacNhanT2ID == null" type="button" class="btn btn-primary btn-trash "
                     (click)="XacNhanCD(2,2)" title=" Xác nhận">
 
@@ -271,7 +289,7 @@
                     </span>
                   </button>
                 </td>
-                <td colspan="3" class="text-center">
+                <td class="text-center">
                   <button *ngIf="modelPM.NguoiVanHanhIDT2 == null" type="button" class="btn btn-primary btn-trash "
                     (click)="XacNhanCD(2,1)" title=" Xác nhận">
 
@@ -287,7 +305,7 @@
                     </span>
                   </button>
                 </td>
-                <td colspan="1" class="text-center">
+                <td class="text-center">
                   <button *ngIf="modelPM.NguoiXacNhanT3ID == null" type="button" class="btn btn-primary btn-trash "
                     (click)="XacNhanCD(3,2)" title=" Xác nhận">
 
@@ -302,7 +320,7 @@
                     </span>
                   </button>
                 </td>
-                <td colspan="3" class="text-center">
+                <td class="text-center">
                   <button *ngIf="modelPM.NguoiVanHanhIDT3 == null" type="button" class="btn btn-primary btn-trash "
                     (click)="XacNhanCD(3,1)" title=" Xác nhận">
 
@@ -317,7 +335,7 @@
                     </span>
                   </button>
                 </td>
-                <td colspan="1" class="text-center">
+                <td class="text-center">
                   <button *ngIf="modelPM.NguoiXacNhanT4ID == null" type="button" class="btn btn-primary btn-trash "
                     (click)="XacNhanCD(4,2)" title=" Xác nhận">
 
@@ -332,7 +350,7 @@
                     </span>
                   </button>
                 </td>
-                <td colspan="3" class="text-center">
+                <td class="text-center">
                   <button *ngIf="modelPM.NguoiVanHanhIDT4 == null" type="button" class="btn btn-primary btn-trash "
                     (click)="XacNhanCD(4,1)" title=" Xác nhận">
 
@@ -347,7 +365,7 @@
                     </span>
                   </button>
                 </td>
-                <td *ngIf="options.T5 === false" colspan="1" class="text-center">
+                <td *ngIf="options.T5 === false" class="text-center">
                   <button *ngIf="modelPM.NguoiXacNhanT4ID == null" type="button" class="btn btn-primary btn-trash "
                     (click)="XacNhanCD(5,2)" title=" Xác nhận">
 
@@ -362,7 +380,7 @@
                     </span>
                   </button>
                 </td>
-                <td *ngIf="options.T5 === false" colspan="3" class="text-center">
+                <td *ngIf="options.T5 === false" class="text-center">
                   <button *ngIf="modelPM.NguoiVanHanhIDT5 == null" type="button" class="btn btn-primary btn-trash "
                     (click)="XacNhanCD(5,1)" title=" Xác nhận">
 
@@ -378,7 +396,7 @@
                   </button>
                 </td>
               </tr>
-            </thead>
+            </tbody>
           </table>
           <nav *ngIf="options.totalpage > 1">
             <ul class="pagination">
