@@ -1,0 +1,78 @@
+<div class="app-body body-login">
+  <main class="main d-flex align-items-center">
+    <div class="container">
+      <div class="row" [ngStyle]="{'margin-top': '-100px'}">
+        <div class="col-md-6 mx-auto">
+          <div class="card-group">
+            <div class="card p-4">
+              <div class="card-body">
+                <form>
+                  <h3><span class="App-Text-A">A</span>pp<span>P</span>rint<span>Co</span></h3>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="icon-user"></i></span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Username" autocomplete="username"
+                      [(ngModel)]="User.Username" (keyup.enter)="LoginClick()" [ngModelOptions]="{standalone: true}"
+                      required>
+                  </div>
+                  <div class="input-group mb-4">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="icon-lock"></i></span>
+                    </div>
+                    <input type="password" class="form-control" placeholder="Password" autocomplete="current-password"
+                      (keyup.enter)="LoginClick()" [(ngModel)]="User.Password" [ngModelOptions]="{standalone: true}"
+                      required>
+                  </div>
+                  <!-- <div class="input-group mb-4">
+                    <botdetect-captcha captchaStyleName="yourFirstCaptchaStyle"></botdetect-captcha>  
+                    <input id="yourFirstCaptchaUserInput" 
+                           name="yourFirstCaptchaUserInput" 
+                           ngModel 
+                           #yourFirstCaptchaUserInput="ngModel"  
+                           type="text" > 
+                  </div> -->
+                  <div class="row">
+                    <div class="col-6">
+                      <button type="button" class="btn btn-primary px-4" (click)="LoginClick()">Đăng nhập</button>
+                    </div>
+                    <div class="col-6 text-right">
+                      <button type="button" class="btn btn-link px-0" (click)="QuenMatKhau()">Quên mật khẩu?</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row row-bot">
+        <div class="col-md-8">
+          <div class="card-group">
+            <div class="card">
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="box-logo">
+                      <img src="assets/img/brand/appprin.png" alt="logo">
+                  </div>
+                </div>
+                <div class="col-md-9">
+                  <div class="box-info">
+                      <strong>CÔNG TY CỔ PHẦN BAO BÌ & IN NÔNG NGHIỆP</strong><br>
+                      <small>AGRICULTURE PRINTING AND PACKAGING JOINT STOCK COMPANY</small>
+                       <hr>
+                      <small>Trụ sở: 72 Trường Chinh, Đống Đa, Hà Nội</small><br>
+                      <small>Nhà máy: Lô 3 CN3-KCN Ngọc Hồi, Thanh Trì, Hà Nội</small><br>
+                      <small>Điện thoại:  (84.4) 36840095  Fax: (84.4) 36840095</small><br>
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

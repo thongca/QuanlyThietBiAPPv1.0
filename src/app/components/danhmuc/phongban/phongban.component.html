@@ -1,0 +1,196 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <ul class="ul-box-crud">
+            <li data-toggle="modal" appBtnPer="create" *ngxPermissionsOnly="['Administrator']"  (click)="Showmodal('add')" title="Thêm mới">
+                <img src="assets/img/brand/plus.png" class="img-plus-header" alt="plus"/>
+                <a>
+                <strong>Thêm mới</strong>
+              </a>
+            </li>
+            <li data-toggle="modal" (click)="refreshData()" title="Làm mới">
+              <img src="assets/img/brand/refresh-page-option.png" class="img-plus-header" alt="plus"/>
+              <a>
+              <strong>Làm mới</strong>
+            </a>
+          </li>
+          <li data-toggle="modal" appBtnPer="delete" (click)="warningModal.show()" title="Xóa" *ngIf="CheckLength > 0">
+            <img src="assets/img/brand/trash.png" class="img-plus-header" alt="plus"/>
+            <a>
+            <strong>Xóa</strong>
+          </a>
+        </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-striped table-sm table-app">
+            <thead>
+              <tr>
+                <th *ngxPermissionsOnly="['Administrator']" class="th-checkbox" width=40><input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="checkall" id="inline-checkbox3" (click)="toggleAll(phongban_,checkall)"  value="option3"> </th>
+                
+                <th class="text-center" width="50">STT</th>
+                <th >Tên phòng ban</th>
+                <th width=120  class="text-center">Tên viết tắt</th>
+                <th class="text-center" width=100>Trạng thái</th>
+                <th appBtnPer="update" class="text-center" width=100>Chức năng</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of phongban_; let i = index">
+                <td *ngxPermissionsOnly="['Administrator']" class="td-checkbox"><input class="table-checkbox" type="checkbox" id="inline-checkbox3" value="option3" [checked]="item.checked" [(ngModel)]="item.checked" (click)="CheckedList(item.checked)"></td>
+                <td  class="text-center">{{i + 1}}</td>
+                <td>{{item.TenPhongBan}}</td>
+                <td  class="text-center">{{item.TenKhongDau}}</td>
+                <td class="text-center" >
+                  <span class="badge badge-success" [ngStyle]="{'background-color': item.IsActive === true ? '' : 'red'}">{{item.IsActive === true ? 'Kích hoạt' : 'Không'}}</span>
+                </td>
+                <td appBtnPer="update" class="text-center" (click)="SelectIDEditModel(item.PhongbanID)" title="Sửa">
+                  <img class="img-icon-edit" src="assets/img/brand/edit.png" alt="Sửa">
+                </td>
+            </tbody>
+          </table>
+          <nav *ngIf="options.totalpage > 1">
+              <ul class="pagination">
+                  <li class="page-item"><a class="page-link" (click)="PrevPage()">Trang trước</a></li>
+                  <li class="page-item">
+                      <a class="page-link"> {{(options.p-1)*options.pz+1}}</a>
+                  </li>
+                  <li class="page-item">
+                      <a class="page-link"> - </a>
+                  </li>
+                  <li class="page-item">
+                      <a class="page-link" *ngIf="options.pz*options.p > options.total"> {{options.total}}</a>
+                      <a class="page-link" *ngIf="options.pz*options.p <= options.total"> {{options.pz*options.p}}</a>
+                  </li>
+                  <li class="page-item">
+                      <a class="page-link">trong số</a>
+                    </li>
+                  <li class="page-item">
+                    <a class="page-link">{{options.total}}</a>
+                  </li>
+                  <li class="page-item" (click)="NextPage()"><a class="page-link">Trang sau</a></li>
+                </ul>
+          </nav>
+        </div>   
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+</div>
+
+<div bsModal #largeModal="bs-modal" class="modal fade" id="modalUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" [config]="{'backdrop':'static', 'keyboard': false}" data-keyboard="false"> 
+    <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">{{modeltitle}}</h4>
+          <button type="button" class="close" (click)="HideModal()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+              <div class="animated fadeIn">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div class="card box-card-md">
+                        <div class="card-body box-cardbody-md">
+                          <div class="row">
+                            <div class="col-sm-12">
+                              <div class="form-group row">
+                                <label class="title-text col-form-label" for="name">Phòng ban
+                                  <span>*</span>
+                                </label>
+                                <div class="input-text">
+                                    <input type="text" class="form-control" id="name" placeholder="Tên phòng ban" [(ngModel)]="modelphongban_.TenPhongBan" [ngModelOptions]="{standalone: true}">
+                                </div>
+                              </div>
+
+                            </div>
+                            <div class="col-sm-12">
+                              <div class="form-group row">
+                                <label class="title-text col-form-label" for="name">Tên viết tắt
+                                </label>
+                                <div class="input-text">
+                                    <input type="text" class="form-control" id="name" placeholder="Tên viết tắt" [(ngModel)]="modelphongban_.TenKhongDau" [ngModelOptions]="{standalone: true}">
+                                </div>
+                              </div>
+
+                            </div>
+                          </div><!--/.row-->
+    
+                                <div class="row">
+                                  <div class="col-sm-12">
+                                      <div class="form-group row">
+                                          <label class="title-text col-form-label" for="inline-radios">Kích hoạt</label>
+                                          <div class="input-text col-form-label">
+                                            <div class="form-check form-check-inline mr-1" id="inline-radios">
+                                              <input class="form-check-input" type="radio" [(ngModel)]="modelphongban_.IsActive" [ngModelOptions]="{standalone: true}" name="IsActive" id="IsActive" [value]="true">
+                                              <label class="form-check-label" for="inlineRadio1">Có</label>
+                                            </div>
+                                            <div class="form-check form-check-inline mr-1">
+                                              <input class="form-check-input" type="radio" [(ngModel)]="modelphongban_.IsActive" [ngModelOptions]="{standalone: true}" name="IsActive" id="IsActive" [value]="false">
+                                              <label class="form-check-label" for="inlineRadio2">Không</label>
+                                            </div>
+                                          </div>
+                                        </div>
+                                  </div>
+                                </div>
+                                
+                        </div>
+                      </div>
+                    </div><!--/.col-->
+                  </div><!--/.row-->
+                </div>
+            </form>
+  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="largeModal.hide()">Đóng</button>
+          <button type="button" class="btn btn-primary" (click)="R2AddDataPhongBan()">Lưu lại</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+
+<div bsModal #dangerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-danger" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Thông báo</h4>
+          <button type="button" class="close" (click)="dangerModal.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="notifyerr">{{errormodal}}&hellip;</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="dangerModal.hide()">Thoát</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+  <div bsModal #warningModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-warning" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Xác nhận</h4>
+            <button type="button" class="close" (click)="warningModal.hide()" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Bạn có chắc chắn muốn xóa các trường đã chọn không ?&hellip;</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="warningModal.hide()">Thoát</button>
+            <button type="button" class="btn btn-warning" (click)="xacnhanXoa()">Xác nhận</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    

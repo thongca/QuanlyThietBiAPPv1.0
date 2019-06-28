@@ -1,0 +1,23 @@
+input[type=checkbox] {
+    transform: scale(1.5);
+}
+.table-bor tr td{
+border: 1px solid;
+}
+.table-bor tr th{
+    border: 1px solid;
+}
+.card-overflow{
+    overflow: auto;
+    max-height: calc(100vh - 120px);
+}
+.btn-hoanthanh{
+    background-color: #24b24b;
+    border-color:#24b24b;
+}
+.ma-may:hover{
+background-color: transparent;
+}
+.ma-may{
+background-color: transparent;
+}

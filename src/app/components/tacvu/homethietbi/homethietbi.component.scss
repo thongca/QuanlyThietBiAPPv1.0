@@ -1,0 +1,160 @@
+.box-Buttom-tacvu {
+    width: 250px;
+    display: inline-block;
+    padding: 20px;
+    background-color: #203f69;
+    height: 80px;
+    position: static;
+}
+.padbot{
+    margin-bottom: 30px;
+    margin-top: 30px;
+}
+.box-lable-icon-thietbi p{
+    margin-bottom: 0;
+    font-size: 16px;
+    color: #fff;
+    font-weight: bold;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+.box-img-icon-thietbi{
+    width: 120px;
+    display: inline-block;
+    background-image:url('../../../../assets/img/brand/sketch.png');
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: 70px;
+    height: 120px;
+    position: absolute;
+    background-color: #20a8d8;
+    border-radius: 60px;
+    margin-left: -40px;
+    border: 3px solid white;
+    margin-top: -20px;
+}
+.box-Buttom-tacvu:hover{
+    cursor: pointer;
+    background-color: #f86c6b;
+}
+
+.box-row-bottom-thietbi{
+    margin-top: 10px;
+    height: calc(100vh - 65px);
+}
+.box-full-he{
+    height: 100%;
+}
+.box-full-he .row{
+    height: 100%;
+}
+.overcard{
+    height: 250px;
+    overflow: auto;
+    padding: 10px 10px 40px;
+    
+}   
+.overcard::-webkit-scrollbar {
+    width: 10px;
+}
+.box-mucluc-thietbi{
+    height: 60px;
+    border-bottom: 1px solid #ddd;
+}
+.h2-danhmuc{
+    text-align: center;
+    font-weight: bold;
+    margin-top: 3px;
+    font-size: 40px;
+}
+.text-midle{
+    vertical-align: middle;
+}
+.body-tb-thongso table tbody tr td{
+    padding: 5px;
+}
+.input-text {
+    padding-top: 7px;
+    border-bottom: 1px solid;
+}
+.title-text {
+    font-weight: 600;
+}
+.bgl-true{
+    background-color: #f9e976 !important;
+}
+.btn-trash{
+    padding: 3px;
+}
+.box-Buttom-tacvu{
+    margin-left: 60px
+}
+.box-img-icon-thietbi:hover{
+    cursor: pointer;
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,0.97) both; 
+}
+
+ul.ul-danhsachthietbi li {
+    display: inline-block;
+    margin-right: 10px;
+    padding: 3px 15px 3px 0;
+}
+ul.ul-danhsachthietbi {
+    list-style: none;
+    margin-bottom: 0;
+    padding-left: 0;
+}
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(0px, 0px) rotate(0deg); }
+  }
+@media (max-width: 991px){
+ .hide-911{
+    display: none;
+ }
+ .width911{
+     width: 300px;
+ }
+}
+@media (max-width: 1024px){
+
+    .width911{
+        width: 300px;
+    }
+    .box-Buttom-tacvu{
+        width: 200px;
+    }
+}
+@media (max-width: 1025px) and (max-width: 1366px){
+
+    .width911{
+        width: 300px;
+    }
+    .box-Buttom-tacvu{
+        width: 200px;
+    }
+}
+
+@media (max-width: 768px){
+
+    .width911{
+        width: 300px;
+    }
+    .box-Buttom-tacvu{
+        width: 150px;
+    }
+}
+
+.ul-box-crud{
+    position: absolute;
+    margin-top: 12px;
+}

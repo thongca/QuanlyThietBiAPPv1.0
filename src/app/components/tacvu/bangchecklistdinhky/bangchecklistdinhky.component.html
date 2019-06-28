@@ -1,0 +1,78 @@
+<div class="card">
+  <div class="card-header">
+    <ul class="ul-box-crud">
+      <li appBtnPer="create" data-toggle="modal" (click)="R2AddCheckList()" title="Lưu thay đổi">
+        <img src="assets/img/brand/save-file-option.png" class="img-plus-header" alt="plus" />
+        <a>
+          <strong>Lưu thay đổi</strong>
+        </a>
+      </li>
+      <li appBtnPer="export" [routerLink]="['/baocao/baocaochecklist']" data-toggle="modal" title="Xem báo cáo">
+        <img src="assets/img/brand/statistics.png" class="img-plus-header" alt="plus" />
+        <a>
+          <strong>Báo cáo</strong>
+        </a>
+      </li>
+      <li class="li-select">
+        <select id="select2" name="select2" class="form-control" [(ngModel)]="options.KhuVucID"
+          (ngModelChange)="KhuVucMayhanged()">
+          <option value="">----- Chọn khu vực máy -----</option>
+          <option *ngFor="let c of litsKhuVucMay_" [ngValue]="c.KhuVucID">{{c.TenKhuVuc}}</option>
+        </select>
+      </li>
+      <li class="li-select" >
+        <input class="form-control" id="date-input" type="month" name="date-input" [(ngModel)]="options.IsTime"
+          placeholder="Chọn tháng" (ngModelChange)="changThang()">
+      </li>
+      <li class="li-select ma-may">
+       <strong *ngIf="objThietBi.MaThietBi !== ''">
+        Mã máy: {{objThietBi.MaThietBi}}
+       </strong>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body">
+    <form name="fromcontrol">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th rowspan="2" width=50 class="text-midle">STT</th>
+            <th rowspan="2" class="text-midle">Danh mục chi tiết</th>
+            <th class="text-center" [ngStyle]="{'padding': '5px'}" width=200 colspan="2">Tình trạng chi tiết</th>
+            <th class="text-center text-midle" width=200 rowspan="2">Ghi chú</th>
+          </tr>
+          <tr>
+            <th class="text-center text-midle" [ngStyle]="{'padding': '5px'}" width=100>Tốt</th>
+            <th class="text-center text-midle" [ngStyle]="{'padding': '5px'}" width=100>Cần sửa chữa</th>
+
+          </tr>
+        </thead>
+        <tbody *ngFor="let item of listchitietCheckList_">
+          <tr class="khuvuc-box">
+            <td colspan="1" class="text-center text-midle">
+              {{item.ThuTu}}
+            </td>
+            <td colspan="4">
+              {{item.TenKhuVuc}}
+            </td>
+          </tr>
+          <tr *ngFor="let c of item.children; let i = index" class="chitiet-box">
+            <td class="text-center text-midle">{{i + 1}}</td>
+            <td class="tenchitiet-box">{{c.TenChiTiet}}</td>
+            <td class="text-center text-midle"><input (click)="ChangeListChiTiet(c.ChiTietID, c.KhuVucID, c.Good)"
+                class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="c.Good" id="inline-checkbox1"
+                value="option1" [ngModelOptions]="{standalone: true}" ngDefaultControl></td>
+            <td class="text-center text-midle"><input (click)="ChangeListChiTiet(c.ChiTietID, item.KhuVucID, c.NeedRepair)"
+                bangchecklistdinhky class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="c.NeedRepair"
+                id="inline-checkbox2" value="option2" [ngModelOptions]="{standalone: true}" ngDefaultControl></td>
+            <td class="padding0">
+              <input (ngModelChange)="ChangeListChiTiet(c.ChiTietID, item.KhuVucID,'')" type="text" class="form-control"
+                [(ngModel)]="c.Note" [ngModelOptions]="{standalone: true}" ngDefaultControl>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+
+  </div>
+</div>

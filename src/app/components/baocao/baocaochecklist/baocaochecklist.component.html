@@ -1,0 +1,222 @@
+<div class="card" (click)="Event($event)">
+  <div class="card-header">
+
+    <div class="select-tieuchi">
+      <button (click)="Active = !Active" type="button" class="buttom-dropdown" title="Chọn tiêu chí">
+        <img src="assets/img/brand/settings.png" class="img-plus-header" alt="plus" />
+        <a>
+          <strong>Chọn tiêu chí</strong>
+        </a>
+      </button>
+      <ul *ngIf="Active === true" class="ul-dropdown">
+        <li class="li-select">
+          <a>
+            Chọn thiết bị:
+          </a>
+          <select id="select2" name="select2" class="form-control" [(ngModel)]="options._ThietbiID">
+            <option value="">----- Chọn thiết bị -----</option>
+            <option *ngFor="let c of listThietBi_" [ngValue]="c.ThietBiID">{{c.TenThietBi}}</option>
+          </select>
+        </li>
+        <!-- <li class="li-select" [ngStyle]="{'padding-top': '0'}">
+          <a>
+            Từ ngày:
+          </a>
+          <input class="form-control" id="date-input" type="date" name="date-input" [(ngModel)]="options.DateStart">
+        </li>
+        <li class="li-select" [ngStyle]="{'padding-top': '0'}">
+          <a>
+            Đến ngày:
+          </a>
+          <input class="form-control" id="date-input" type="date" name="date-input" [(ngModel)]="options.DateEnd">
+        </li> -->
+      </ul>
+    </div>
+    <ul class="ul-box-crud">
+      <li *ngIf="isReport ===  false" data-toggle="modal" title="Xem báo cáo" (click)="XemBaoCao()">
+        <img src="assets/img/brand/statistics.png" class="img-plus-header" alt="plus" />
+        <a>
+          <strong>Báo cáo</strong>
+        </a>
+      </li>
+      <li *ngIf="isReport ===  true" data-toggle="modal" title="Xem biểu đồ" (click)="XemBieuDo()">
+        <img src="assets/img/brand/statistics.png" class="img-plus-header" alt="plus" />
+        <a>
+          <strong>Biểu đồ</strong>
+        </a>
+      </li>
+      <li data-toggle="modal" title="Thực hiện lọc theo tiêu chí" (click)="ThucHien()">
+        <img src="assets/img/brand/filter-filled-tool-symbol.png" class="img-plus-header" alt="ThucHien" />
+        <a>
+          <strong>Thực hiện</strong>
+        </a>
+      </li>
+      <li *ngIf="isReport ===  true" data-toggle="modal" title="Thực hiện lọc theo tiêu chí" (click)="InBaoCao()">
+          <img src="assets/img/brand/printer-.png" class="img-plus-header" alt="ThucHien" />
+          <a>
+            <strong>Xuất báo cáo</strong>
+          </a>
+        </li>
+    </ul>
+  </div>
+  <div class="card-body" *ngIf="isReport === false">
+    <div class="animated fadeIn">
+      <div class="card-columns cols-2" *ngIf="isLoad === true">
+        <div class="card">
+          <div class="card-header">
+            Biểu đồ kiểm tra tình trạng máy định kỳ trong một năm
+          </div>
+          <div class="card-body">
+            <div class="chart-wrapper">
+              <canvas baseChart class="chart" [datasets]="barChartData" [labels]="barChartLabels"
+                [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType"
+                [colors]="barChartColors"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            Biểu đồ tròn kiểm tra tình trạng máy tháng hiện tại
+            <div class="card-header-actions">
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="chart-wrapper">
+              <canvas baseChart class="chart" [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
+                [colors]="pieChartColors">
+              </canvas>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="card-columns cols-1">
+        <div class="card" *ngIf="isLoad === true">
+          <div class="card-header">
+            Biểu đồ 15 máy có mức độ sửa nhiều nhất trong tháng
+          </div>
+          <div class="card-body">
+            <div class="chart-wrapper">
+              <canvas baseChart class="chart" [datasets]="barChartData1st" [labels]="barChartLabels1st"
+                [options]="barChartOptions1st" [legend]="barChartLegend1st" [chartType]="barChartType1st"
+                [colors]="barChartColors1st"></canvas>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="card-body" *ngIf="isReport === true">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th width=50 class="text-midle">STT</th>
+          <th class="text-midle">Danh mục chi tiết</th>
+          <th width=150 class="text-midle">Người kiểm tra</th>
+          <th width=120 class="text-midle text-center">TG kiểm tra</th>
+          <th width=150 class="text-midle text-center">Tình trạng</th>
+          <th width=200 class="text-midle">Ghi chú</th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let item of listBaoCao_">
+        <tr class="khuvuc-box">
+          <td colspan="1" class="text-center text-midle">
+            {{item.ThuTu}}
+          </td>
+          <td colspan="5">
+            {{item.TenKhuVuc}}
+          </td>
+        </tr>
+        <tr *ngFor="let c of item.children; let i = index" class="chitiet-box">
+          <td class="text-center text-midle">{{i + 1}}</td>
+          <td class="tenchitiet-box">{{c.TenChiTiet}}</td>
+          <td class="tenchitiet-box">{{c.FullName}}</td>
+          <td class="tenchitiet-box text-center">{{c.DateUpdateEndD| date :'dd-MM-yyyy'}}</td>
+          <td class="tenchitiet-box text-center">
+            <span class="badge badge-success"
+              [ngStyle]="{'background-color': c.TinhTrang === 1 ? 'red' : (c.TinhTrang === 2 ? '#ff8100' : '')}">{{c.TinhTrang === 0 ? 'Tốt' : (c.TinhTrang === 1 ? 'Cần sửa chữa' : 'Chưa kiểm tra')}}</span>
+          </td>
+          <td class="tenchitiet-box">{{c.Note}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <button [ngStyle]="{'display': 'none'}" [useExistingCss]="true" printSectionId="inbaocao" ngxPrint id="btnprint"> In </button>
+  </div>
+</div>
+
+<!-- xuất báo cáo bảng kiểm tra máy định kỳ -->
+<div class="card-body display-none" *ngIf="isReport === true" id="inbaocao" >
+    <table class="table-baocao">
+      <tbody>
+        <tr>
+          <td colspan="6" class="text-center td-contains-img">
+            <img src="assets/img/brand/anhbannerappprintco.jpg" alt="banner">
+          </td>
+        </tr>
+        <tr>
+          <td colspan="6" class="text-center ten-baocao">
+            <strong>
+              BÁO CÁO KIỂM TRA TÌNH TRẠNG MÁY ĐỊNH KỲ
+            </strong>
+          </td>
+        </tr>
+        <tr>
+          <td width="50">
+
+          </td>
+          <td width="200" class="TenDanhMuc">
+            <strong>
+              Tên máy:
+            </strong>
+          </td>
+          <td class="font-family">
+            {{objThietBi.TenThietBi}}
+          </td>
+          <td width="200" class="TenDanhMuc">
+            <strong>
+              Mã Máy:
+            </strong>
+          </td>
+          <td width="150" class="font-family">
+              {{objThietBi.MaThietBi}}
+          </td>
+          <td width="50">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="table table-baocao-border-black">
+      <thead>
+        <tr>
+          <th width=50 class="text-midle">STT</th>
+          <th class="text-midle">Danh mục chi tiết</th>
+          <th width=180 class="text-midle">Người kiểm tra</th>
+          <th width=140 class="text-midle text-center">TG kiểm tra</th>
+          <th width=150 class="text-midle text-center">Tình trạng</th>
+          <th width=200 class="text-midle">Ghi chú</th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let item of listBaoCao_">
+        <tr class="khuvuc-box">
+          <td colspan="1" class="text-center text-midle">
+            {{item.ThuTu}}
+          </td>
+          <td colspan="5">
+            {{item.TenKhuVuc}}
+          </td>
+        </tr>
+        <tr *ngFor="let c of item.children; let i = index" class="chitiet-box">
+          <td class="text-center text-midle">{{i + 1}}</td>
+          <td class="tenchitiet-box">{{c.TenChiTiet}}</td>
+          <td class="tenchitiet-box">{{c.FullName}}</td>
+          <td class="tenchitiet-box text-center">{{c.DateUpdateEndD| date :'dd-MM-yyyy'}}</td>
+          <td class="tenchitiet-box text-center">
+             {{c.TinhTrang === 0 ? 'Tốt' : (c.TinhTrang === 1 ? 'Cần sửa chữa' : 'Chưa kiểm tra')}}
+          </td>
+          <td class="tenchitiet-box">{{c.Note}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <button [ngStyle]="{'display': 'none'}" [useExistingCss]="true" printSectionId="inbaocao" ngxPrint id="btnprint"> In </button>
+  </div>

@@ -1,0 +1,177 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <ul class="ul-box-crud">
+          
+            <li data-toggle="modal" (click)="refreshData()" title="Làm mới">
+              <img src="assets/img/brand/refresh-page-option.png" class="img-plus-header" alt="plus" />
+              <a>
+                <strong>Làm mới</strong>
+              </a>
+            </li>
+            <li  class="li-select">
+                <select id="select2" name="select2" class="form-control" [(ngModel)]="options.NhomThietBiID" (ngModelChange)="NhomTBChanged()">
+                    <option value="">----- Chọn nhóm thiết bị -----</option>
+                  <option *ngFor="let c of listNhomThietBi_" [ngValue]="c.NhomThietBiID">{{c.TenNhom}}</option>
+                </select>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-striped table-sm table-app">
+            <thead>
+              <tr>
+                <th class="text-center" width="50">STT</th>
+                <th width=120 class="text-center">Mã số</th>
+                <th class="witd-end">Tên thiết bị</th>
+                <th width=100 class="text-center">Xuất Xứ</th>
+                <th width=120 class="text-center">Năm sản xuất</th>
+                <th width=100 class="text-center">Chuyển</th>
+                <th appBtnPer="export" class="text-center" width=100>Chức năng</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of listthietbi_; let i = index">
+                <td class="text-center">{{i + 1}}</td>
+                <td class="text-center">{{item.MaThietBi}}</td>
+                <td>{{item.TenThietBi}}</td>
+                <td class="text-center">{{item.XuatXu}}</td>
+                <td class="text-center">{{item.NamSanXuat | date: 'MM-yyyy'}}</td>
+               <td class="text-center text-midle">
+                  <button type="button" class="btn btn-block btn-primary btn-trash"
+                  (click)="ChuyensangTrangHomeThietBi(item.ThietBiID,item.MaThietBi)" title="Chọn thiết bị">
+                  <img src="assets/img/brand/move-option.png" class="img-plus-header" alt="plus" />
+                  <span>
+                    Chọn
+                  </span>
+                </button>
+               </td>
+                <td appBtnPer="export" class="text-center">
+                    <img title="In thông số" class="img-icon-edit img-left" (click)="PrintReport(item.ThietBiID)"
+                    src="assets/img/brand/printer.png" alt="In">
+                </td>
+            </tbody>
+          </table>
+          <nav *ngIf="options.totalpage > 1">
+            <ul class="pagination">
+              <li class="page-item"><a class="page-link" (click)="PrevPage()">Prev</a></li>
+              <li class="page-item">
+                <a class="page-link"> {{(options.p-1)*options.pz+1}}</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link"> - </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" *ngIf="options.pz*options.p > options.total"> {{options.total}}</a>
+                <a class="page-link" *ngIf="options.pz*options.p <= options.total"> {{options.pz*options.p}}</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link">trong số</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link">{{options.total}}</a>
+              </li>
+              <li class="page-item" (click)="NextPage()"><a class="page-link">Next</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+</div>
+<div class="row display-none">
+  <div class="col-lg-12">
+    <div class="card" id="demo">
+      <div class="card-body body-card-user-box">
+        <table class="table table-bordered table-export">
+          <thead>
+            <tr>
+              <th width=150 rowspan="2" class="text-center font-cty">APP</th>
+              <th rowspan="2" class="font-tenbang">THÔNG SỐ THIẾT BỊ</th>
+
+              <th width=250 class="text-center th-titlel-hosothiebi">Ngày lập hồ sơ <br>
+                {{modelthietbi_.NgayLapHSo | date : 'dd-MM-yyyy'}}
+              </th>
+            </tr>
+            <tr>
+
+              <th width=250 class="text-center th-titlel-hosothiebi">Mã số quản lý thiết bị <br>
+                {{modelthietbi_.MaThietBi}}
+              </th>
+            </tr>
+            <tr class="hd-thongtincoban">
+              <th colspan="3"> Thông tin của thiết bị
+              </th>
+            </tr>
+          </thead>
+        </table>
+        <table class="table table-bordered table-export table2">
+          <tbody>
+            <tr class="ts-tr-box">
+              <td colspan="3">{{modelthietbi_.TenThietBi}} ({{modelthietbi_.GhiChu}})</td>
+            </tr>
+            <tr class="ts-tr-box">
+              <td class="width-td-report">Xuất xứ: {{modelthietbi_.XuatXu}}</td>
+              <td class="width-td-report">Năm sản xuất: {{modelthietbi_.NamSanXuat | date :'MM-yyyy'}}</td>
+              <td class="width-td-report">Nhóm thiết bị: {{modelthietbi_.TenNhom}}</td>
+          </tbody>
+        </table>
+        <table class="table table-bordered table-ts-cb">
+            <tbody >
+              <tr class="ts-tr-box row"  >
+               
+                 
+                        <td class="col-md-4" *ngFor="let c of litsthongsocoban_; let i = index">
+                            {{c.TenThongSo}}:  {{c.SoLieu}}
+                          </td>
+                     
+              
+                </tr>
+              
+                 
+            </tbody>
+          </table>
+        <table class="table table-bordered table-export table4">
+          <thead>
+              <tr class="ts-tr-box">
+               
+                  <th colspan="3">
+                 Thông số kỹ thuật của thiết bị
+                  </th>
+                  
+                </tr>
+            <tr class="ts-tr-box">
+              <th width=50 class="text-center">
+                STT
+              </th>
+              <th>
+                Tên thông số
+              </th>
+              <th width=250 class="text-center">
+                Số liệu
+              </th>
+
+            </tr>
+           
+          </thead>
+          <tbody>
+            <tr class="ts-tr-box" *ngFor="let item of litsthongsochitiet_; let i = index">
+              <td class="text-center">
+                {{i + 1}}
+              </td>
+              <td>{{item.TenThongSo}}</td>
+              <td class="text-center">{{item.SoLieu}}</td>
+
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <button [useExistingCss]="true" printSectionId="demo" ngxPrint id="btnprint"> In </button>
+  </div>
+</div>

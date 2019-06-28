@@ -1,0 +1,169 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <ul class="ul-box-crud">
+            <li data-toggle="modal" (click)="refreshData()" title="Làm mới">
+              <img src="assets/img/brand/refresh-page-option.png" class="img-plus-header" alt="plus" />
+              <a>
+                <strong>Làm mới</strong>
+              </a>
+            </li>
+           
+            <li data-toggle="modal" title="Thực hiện lọc theo tiêu chí" (click)="InBaoCao()">
+                <img src="assets/img/brand/printer-.png" class="img-plus-header" alt="ThucHien" />
+                <a>
+                  <strong>Xuất báo cáo</strong>
+                </a>
+              </li>
+              <li class="li-select">
+                  <input class="form-control" placeholder="MM/YYYY" bsDatepicker [(ngModel)]="options.IsTime" placement="bottom" (ngModelChange)="ChangeThang(options.IsTime)" [bsConfig]="{dateInputFormat: 'MM/YYYY'}" (onShown)="onOpenCalendar($event)"
+                   >
+              </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-striped table-sm table-app">
+            <thead>
+              <tr>
+                <th class="text-center" width="50">STT</th>
+                <th width=80 class="text-center text-midle">Mã thiết bị</th>
+                <th class="text-midle">Tên thiết bị</th>
+                <th width=80 class="text-center text-midle">Đ/giá tuần 1 (%)</th>
+                <th width=80 class="text-center text-midle">Đ/giá tuần 2 (%)</th>
+                <th width=80 class="text-center text-midle">Đ/giá tuần 3 (%)</th>
+                <th width=80 class="text-center text-midle">Đ/giá tuần 4 (%)</th>
+                <th width=80 class="text-center text-midle" *ngIf="CoTuan5 === true">Đ/giá tuần 5 (%)</th>
+                <th width=80 class="text-center text-midle">Điểm b/quân T{{Month_}} (%)</th>
+                <th width=80 class="text-center text-midle">Điểm quy định VSCN</th>
+                <th width=80 class="text-center text-midle">Đánh giá VSCN T{{Month_}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of litsVsCN_;let i = index">
+                <td class="text-center">
+                  {{i + 1}}
+                </td>
+                <td class="text-center">
+                  {{item.MaThietBi}}
+                </td>
+                <td>
+                  {{item.TenThietBi}}
+                </td>
+                <td class="text-center">
+                  {{item.TongDiemT1}}
+                </td>
+                <td class="text-center">
+                  {{item.TongDiemT2}}
+                </td>
+                <td class="text-center">
+                  {{item.TongDiemT3}}
+                </td>
+                <td class="text-center">
+                  {{item.TongDiemT4}}
+                </td>
+                <td *ngIf="CoTuan5 === true" class="text-center">
+                  {{item.TongDiemT5}}
+                </td>
+                <td class="text-center">
+                    {{item.DiemBinhQuan | number:'1.2-2'}}
+                  </td>
+                <td class="text-center">
+                  {{item.DiemQuyDinh}}
+                </td>
+                  <td class="text-center">
+                      <span class="badge badge-success" [ngStyle]="{'background-color': item.KetQuaDanhGia === true ? '' : 'red'}">{{item.KetQuaDanhGia === true ? 'ĐẠT' : 'K/ĐẠT'}}</span>
+                    
+                  </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-body display-none" id="inbaocao">
+            <table>
+              <tbody>
+                <tr>
+                  <td class="text-center">
+                      <img src="assets/img/brand/anhbannerappprintco.jpg" class="img-banner" alt="banner">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="title-report">
+                <h2 class="text-center">
+                    BÁO CÁO ĐÁNH GIÁ CHẤT LƯỢNG VỆ SINH VÀ QUẢN LÝ THIẾT BỊ <BR>
+                      THÁNG {{Month_}}
+                  </h2>
+                  <a>
+                    Kính gửi: Ông <strong>Nguyễn Thành Nam - Tổng giám đốc</strong> công ty <br>
+                  </a>   
+                  <small>
+                    Phòng KT-CĐ đã tổng hợp lại kết quả đánh giá vệ sinh và quản lý thiết bị của các máy. Vì vậy <br>
+                    Phòng KT-CĐ trình bản "Báo cáo đánh giá chất lượng vệ sinh  và quản lý thiết bị tháng {{Month_}}" để <br>
+                    Ban lãnh đạo xem xét
+                  </small>   
+            </div>
+           
+            <table class="table table-bordered table-striped table-sm table-app table-in">
+              <thead>
+                <tr>
+                  <th class="text-center" width="50">STT</th>
+                  <th width=80 class="text-center text-midle">Mã thiết bị</th>
+                  <th class="text-midle">Tên thiết bị</th>
+                  <th width=80 class="text-center text-midle">Đ/giá tuần 1 (%)</th>
+                  <th width=80 class="text-center text-midle">Đ/giá tuần 2 (%)</th>
+                  <th width=80 class="text-center text-midle">Đ/giá tuần 3 (%)</th>
+                  <th width=80 class="text-center text-midle">Đ/giá tuần 4 (%)</th>
+                  <th width=80 class="text-center text-midle" *ngIf="CoTuan5 === true">Đ/giá tuần 5 (%)</th>
+                  <th width=80 class="text-center text-midle">Điểm b/quân T{{Month_}} (%)</th>
+                  <th width=80 class="text-center text-midle">Điểm quy định VSCN</th>
+                  <th width=80 class="text-center text-midle">Đánh giá VSCN T{{Month_}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of litsVsCN_;let i = index">
+                  <td class="text-center text-midle">
+                    {{i + 1}}
+                  </td>
+                  <td class="text-center text-midle">
+                    {{item.MaThietBi}}
+                  </td>
+                  <td>
+                    {{item.TenThietBi}}
+                  </td>
+                  <td class="text-center text-midle">
+                    {{item.TongDiemT1}}
+                  </td>
+                  <td class="text-center text-midle">
+                    {{item.TongDiemT2}}
+                  </td>
+                  <td class="text-center text-midle">
+                    {{item.TongDiemT3}}
+                  </td>
+                  <td class="text-center text-midle">
+                    {{item.TongDiemT4}}
+                  </td>
+                  <td class="text-center text-midle" *ngIf="CoTuan5 === true">
+                    {{item.TongDiemT5}}
+                  </td>
+                  <td class="text-center text-midle">
+                      {{item.DiemBinhQuan | number:'1.2-2'}}
+                    </td>
+                  <td class="text-center text-midle text-weight">
+                    {{item.DiemQuyDinh}}
+                  </td>
+                    <td class="text-center text-midle">
+                      {{item.KetQuaDanhGia === true ? 'ĐẠT' : 'K/ĐẠT'}}
+                    </td>
+                </tr>
+              </tbody>
+            </table>
+            <button [ngStyle]="{'display': 'none'}" [useExistingCss]="true" printSectionId="inbaocao" ngxPrint id="btnprint"> In </button>
+          </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+</div>

@@ -1,0 +1,38 @@
+<div class="animated fadeIn">
+  <div class="row box-row-bottom-thietbi">
+    <div class="col-lg-12">
+      <div class="card box-full-he">
+        <div class="row" [ngStyle]="{'margin-left': '0'}">
+          <div class="col-md-12 box-mucluc-thietbi">
+            <ul class="ul-box-crud">
+              <li data-toggle="modal" [routerLink]="['/tacvu/danhsachthietbi']" title="Quay lại danh sách thiết bị">
+                <img src="assets/img/brand/left-arrow.png" class="img-plus-header" alt="plus" />
+                <a>
+                  <strong>Thiết bị</strong>
+                </a>
+              </li>
+            </ul>
+            <h2 class="h2-danhmuc">
+              DANH MỤC
+            </h2>
+          </div>
+          <div class="col-md-6 col-lg-6 col-xl-4 text-center padbot" *ngFor="let item of listmenu_">
+            <div class="box-chinh" (click)="GoPage(item.routerLink)">
+              <div class="box-img-icon-thietbi" [ngStyle]="{'background-image': 'url(' + item.IconMenu + ')'}">
+
+              </div>
+              <div class="box-Buttom-tacvu">
+                <div class="box-lable-icon-thietbi">
+                  <p
+                    [ngStyle]="{'margin-top': (item.MenuName.length > 11 && item.MenuName.length < 22) ? '-5px' : (item.MenuName.length > 22 ? '-15px' : '5px')}">
+                    {{item.MenuName}}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

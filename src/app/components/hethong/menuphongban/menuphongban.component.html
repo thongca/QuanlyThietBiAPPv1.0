@@ -1,0 +1,101 @@
+<div class="animated fadeIn">
+  <div class="card-header">
+      <ul class="ul-box-crud">
+        <li appBtnPer="create" *ngxPermissionsOnly="['Administrator']" data-toggle="modal" (click)="LuuPhanmenuchophong()" title="Lưu lại">
+            <img src="assets/img/brand/save-file-option.png" class="img-plus-header" alt="plus"/>
+            <a>
+            <strong>Lưu lại</strong>
+          </a>
+        </li>
+       
+      </ul>
+    </div>
+  <div class="row" [ngStyle]="{'margin': 0}">
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-header">
+          <strong>Danh sách nhóm quyền</strong>
+       
+        </div>
+        <div class="card-body" [ngStyle]="{'padding': 0}">
+          <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                          <th class="text-center" width= "50">STT</th>
+                        <th width="120">Tên viết tắt</th>
+                        <th >Tên phòng ban</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of listphongban_; let i = index" class="item-row-nhomnguoidung isSelect-{{item.IsSelect}}" (click)="SelectRow(item)">
+                        <td class="text-center">{{i + 1}}</td>
+                        <td >
+                           {{item.TenKhongDau}}
+                        </td>
+                        <td >
+                            {{item.TenPhongBan}}
+                         </td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+          </div><!--/.row-->
+        </div>
+      </div>
+    </div><!--/.col-->
+    <div class="col-sm-8" [ngStyle]="{'padding-left': 0}">
+      <div class="card">
+        <div class="card-header">
+          <strong>Danh sách menu</strong>
+          
+        </div>
+        <div class="card-body" [ngStyle]="{'padding': 0}">
+            <div class="col-lg-12" [ngStyle]="{'padding': 0}">
+                <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                          <th class="text-center" width= "50">STT</th>
+                        <th >Menu</th>
+                        <th class="text-center" width= "100">Gán</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of listmenu_; let i = index">
+                          <td class="text-center">
+                              {{i + 1}}
+                          </td>
+                        <td class="pad-{{item.MenuRank}}">{{item.MenuName}}</td>
+                        <td class="text-center">
+                            <input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.Active" id="inline-checkbox3" (click)="subChange(item)"  value="option3">
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+              </div>
+        </div>
+      </div>
+    </div><!--/.col-->
+  </div><!--/.row-->
+
+</div>
+
+<div bsModal #dangerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-danger" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Thông báo</h4>
+          <button type="button" class="close" (click)="dangerModal.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="notifyerr">{{errormodal}}&hellip;</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="dangerModal.hide()">Thoát</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->

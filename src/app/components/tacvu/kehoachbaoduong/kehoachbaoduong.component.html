@@ -1,0 +1,198 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <ul class="ul-box-crud">
+            <li appBtnPer="create" data-toggle="modal" (click)="LuuThayDoi()" title="Thêm mới">
+              <img src="assets/img/brand/save-file-option.png" class="img-plus-header" alt="plus" />
+              <a>
+                <strong>Lưu thay đổi</strong>
+              </a>
+            </li>
+            <li appBtnPer="export" data-toggle="modal" title="In báo cáo hồ sơ thiết bị" (click)="InBaoCao()">
+              <img src="assets/img/brand/printer-.png" class="img-plus-header" alt="ThucHien" />
+              <a>
+                <strong>Xuất báo cáo</strong>
+              </a>
+            </li>
+            <li class="li-select" *ngxPermissionsOnly="['true']">
+              <select id="select5" name="select5" class="form-control" [(ngModel)]="options.Nam"
+                (ngModelChange)="NamChanged()">
+                <option value="">----- Chọn năm-----</option>
+                <option *ngFor="let c of listNam_" [ngValue]="c.Nam">{{c.NamString}}</option>
+              </select>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-striped table-sm table-khbd">
+            <thead>
+              <tr>
+                <th class="text-center text-midle" rowspan="2" width=50>STT</th>
+                <th class="text-center text-midle" rowspan="2">Tên thiết bị</th>
+                <th rowspan="2" class="text-midle text-center" width=80>Mã số</th>
+                <th colspan="2" width=200 class="text-center">Thời gian dự kiến
+                  thực hiện</th>
+                <th colspan="2" width=200 class="text-center">Thời gian thực hiện</th>
+                <th rowspan="2" class="text-center text-midle" width=100>Bảo dưỡng định kỳ</th>
+                <th rowspan="2" class="text-center text-midle" width=100>Đơn vị bảo dưỡng</th>
+                <th rowspan="2" class="text-center text-midle" width=100>Ghi chú</th>
+              </tr>
+              <tr>
+                <th width=100 class="text-center">T/gian bắt đầu</th>
+                <th width=100 class="text-center">T/gian kết thúc</th>
+                <th width=100 class="text-center">T/gian bắt đầu</th>
+                <th width=100 class="text-center">T/gian kết thúc</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of listBaoDuongThietBi_;let i = index" class="bgr-{{item.IsBgVuotDK}} bgrcb-{{item.IsBgCanhBao}}">
+                <td class="text-center">{{i +  1}}</td>
+                <td>{{item.TenThietBi}}</td>
+                <td class="text-center">{{item.MaThietBi}}</td>
+                <td class="text-center padding0">
+                  <input class="form-control" bsDatepicker placement="bottom" [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'YYYY/MM/DD' }"
+                  [(ngModel)]="item.TGDuKienBatDau"  [ngModelOptions]="{standalone: true}"  >
+                </td>
+                <td class="text-center padding0">
+                  <input class="form-control"  bsDatepicker placement="bottom" [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'YYYY/MM/DD' }"
+                  [(ngModel)]="item.TGDuKienKetThuc" [ngModelOptions]="{standalone: true}" >
+                </td>
+                <td class="text-center padding0">
+                  <input class="form-control" bsDatepicker placement="bottom" [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'YYYY/MM/DD' }"
+                  [(ngModel)]="item.TGThucTeBatDau" [ngModelOptions]="{standalone: true}" >
+                </td>
+                <td class="text-center padding0">
+                  <input class="form-control" bsDatepicker placement="bottom" [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'YYYY/MM/DD' }"
+                  [(ngModel)]="item.TGThucTeKeThuc" [ngModelOptions]="{standalone: true}" >
+                </td>
+                <td class="text-center padding0" title="{{item.DinhKyBaoDuong}}">
+                  <input type="text" class="form-control" 
+                  [ngModel]="item.DinhKyBaoDuong" [ngModelOptions]="{standalone: true}"  (ngModelChange)="item.DinhKyBaoDuong = $event" ngDefaultControl>
+                </td>
+                <td class="text-center padding0">
+                    <input type="text" class="form-control" 
+                    [ngModel]="item.DonViBaoDuong" [ngModelOptions]="{standalone: true}"  (ngModelChange)="item.DonViBaoDuong = $event" ngDefaultControl>
+                  </td>
+                <td class="text-center padding0">
+                    <input type="text" class="form-control" 
+                    [ngModel]="item.GhiChu" [ngModelOptions]="{standalone: true}"  (ngModelChange)="item.GhiChu = $event" ngDefaultControl>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <nav *ngIf="options.totalpage > 1">
+            <ul class="pagination">
+              <li class="page-item"><a class="page-link" (click)="PrevPage()">Prev</a></li>
+              <li class="page-item">
+                <a class="page-link"> {{(options.p-1)*options.pz+1}}</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link"> - </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" *ngIf="options.pz*options.p > options.total"> {{options.total}}</a>
+                <a class="page-link" *ngIf="options.pz*options.p <= options.total"> {{options.pz*options.p}}</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link">trong số</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link">{{options.total}}</a>
+              </li>
+              <li class="page-item" (click)="NextPage()"><a class="page-link">Next</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+</div>
+<!-- in xuất báo cáo kế hoạch kiểm định -->
+  <div id="inbaocaokehoachbaoduong" *ngIf="isInShow === true" class="div-outline" [ngStyle]="{'width': '100vw'}">
+      <table class="table-banner">
+          <tbody>
+            <tr>
+              <td rowspan="3" >
+                  <img src="assets/img/brand/anhbannerappprintco.jpg" class="img-logo-banner" alt="xuatbaocao" />
+              </td>
+              <td class="width-in" width=300>
+                Mã số: BM03-QT-KTCD 01
+              </td>
+            </tr>
+            <tr>
+                <td class="width-in" width=300>
+                    Ngày ban hành: 01/01/2015
+                </td>
+              </tr>
+              <tr>
+                  <td class="width-in" width=300>
+                      Lần sửa đổi: 01
+                  </td>
+                </tr>
+                <tr  >
+                  <td class="width-in" colspan="2" class="text-center">
+                      KẾ HOẠCH BẢO DƯỠNG - KIỂM ĐỊNH - HIỆU CHUẨN THIẾT BỊ <BR>
+                        (NĂM : {{options.Nam}})
+                  </td>
+                  
+                </tr>
+          </tbody>
+        </table>
+        <table class="table-khbd-in">
+          <thead>
+            <tr>
+              <th class="text-center text-midle" rowspan="2" width=50>STT</th>
+              <th class="text-center text-midle" rowspan="2">Tên thiết bị</th>
+              <th rowspan="2" class="text-midle text-center" width=80>Mã số</th>
+              <th colspan="2" width=200 class="text-center">Thời gian dự kiến
+                thực hiện</th>
+              <th colspan="2" width=200 class="text-center">Thời gian thực hiện</th>
+              <th rowspan="2" class="text-center text-midle" width=100>Bảo dưỡng định kỳ</th>
+              <th rowspan="2" class="text-center text-midle" width=100>Đơn vị bảo dưỡng</th>
+              <th rowspan="2" class="text-center text-midle" width=100>Ghi chú</th>
+            </tr>
+            <tr>
+              <th width=100 class="text-center">T/gian bắt đầu</th>
+              <th width=100 class="text-center">T/gian kết thúc</th>
+              <th width=100 class="text-center">T/gian bắt đầu</th>
+              <th width=100 class="text-center">T/gian kết thúc</th>
+    
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of listBaoDuongThietBi_;trackBy:index ;let i = index">
+              <td class="text-center">{{i +  1}}</td>
+              <td>{{item.TenThietBi}}</td>
+              <td class="text-center">{{item.MaThietBi}}</td>
+              <td class="text-center">
+                {{item.TGDuKienBatDau | date: 'dd/MM/yyyy'}}
+              </td>
+              <td class="text-center">
+                {{item.TGDuKienKetThuc | date: 'dd/MM/yyyy'}}
+              </td>
+              <td class="text-center">
+                {{item.TGThucTeBatDau | date: 'dd/MM/yyyy'}}
+              </td>
+              <td class="text-center">
+                {{item.TGThucTeKeThuc | date: 'dd/MM/yyyy'}}
+              </td>
+              <td class="text-center" title="{{item.DinhKyBaoDuong}}">
+                {{item.DinhKyBaoDuong}}
+              
+              </td>
+              <td class="text-center">
+                {{item.DonViBaoDuong}}
+                </td>
+              <td class="text-center">
+                {{item.GhiChu}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+       
+  </div>
+  <button [ngStyle]="{'display': 'none'}" [useExistingCss]="true" printSectionId="inbaocaokehoachbaoduong" ngxPrint id="btnprinthosokythuat"> In </button>

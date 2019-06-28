@@ -1,0 +1,87 @@
+.row-margintop{
+    margin-top: 15px;
+    padding-right: 15px;
+}
+.title-thongso{
+    position: absolute;
+    margin-top: -30px;
+    margin-left: 14px;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 2px;
+    background-color: #fff;
+}
+.row-end{
+    border-bottom: 1px dashed #d0d0d0;
+}
+.tscb-box{
+    margin-top: 5px;
+    position: absolute;
+    margin-left: 10px;
+}
+.lable-rieng{
+    width: 70px;
+}
+.rdo-1{
+    width: 40px;    
+}
+.rdo-2{
+    width: 60px;    
+}
+.div-rieng{
+    width: calc(100% - 80px);
+}
+.pad-right{
+    padding-right: 0;
+}
+.btn-trash{
+    margin-top: 0;
+    border: none;
+    width: 50px;
+    padding: 0;
+    margin-right: 0;
+    display: inline-block;
+}
+.btn-trash img{
+    margin-right: 0;
+    width:15px;
+    height: 15px;
+}
+.btn-trash span{
+    font-size: 12px;
+}
+.btn-trash:hover{
+    background-color: #f86c6b;
+}
+.table-thongso{
+    border: none;
+}
+.body-tb-thongso{
+    padding: 15px 0;
+}
+.checkbox-tscb{
+    position: absolute;
+    margin-top: 6px;
+    margin-left: 2px;
+}
+.tr-listthongso td{
+    padding: 5px;
+}
+.td-input{
+    padding: 0 0 !important;
+}
+.box-td-input-thongso{
+    box-shadow: none;
+}
+.bgsl-true{
+    background-color: #fbf285;
+}
+.box-td-input-thongso{
+    padding: 0 10px;
+    height: 33px;
+    border: 0;
+    border-radius: 0;
+}
+.bgsl-true{
+    background-color: #fbf285;
+}

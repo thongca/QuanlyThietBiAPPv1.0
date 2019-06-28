@@ -1,0 +1,63 @@
+<app-header
+  [navbarBrandRouterLink]="['/trangchu']"
+  [fixed]="true"
+  [navbarBrandFull]="{src: 'assets/img/brand/logo-new-upweb.png', width: 89, height: 25, alt: 'App Logo'}"
+  [navbarBrandMinimized]="{src: 'assets/img/brand/logo-new-upweb.png', width: 30, height: 30, alt: 'App Logo'}"
+  [sidebarToggler]="'lg'"
+  [asideMenuToggler]="'lg'">
+  <ul class="nav navbar-nav d-md-down-none">
+    <li class="nav-item px-3">
+      <!-- <a class="nav-link" href="#">Dashboard</a> -->
+      <div class="form-group row form-search">
+        <div class="col-md-12">
+          <div class="input-group">
+            <input type="text" id="input1-group2" name="input1-group2" class="form-control input-searh" [(ngModel)]="s" placeholder="Tìm kiếm..." (keyup.enter)="Search()" >
+            <span class="input-group-prepend">
+              <button type="button" class="btn btn-primary btn-search" (click)="Search()"> Tìm kiếm <i class="fa fa-search"></i></button>
+            </span>
+          </div>
+        </div>
+      </div>
+    </li>
+  
+  </ul>
+  <ul class="nav navbar-nav ml-auto">
+    <li class="nav-item d-md-down-none">
+      <a class="nav-link" href="#"><i class="icon-bell"></i><span class="badge badge-pill badge-danger">5</span></a>
+    </li>
+    <!-- <li class="nav-item d-md-down-none">
+      <a class="nav-link" href="#"><i class="icon-list"></i></a>
+    </li>
+    <li class="nav-item d-md-down-none">
+      <a class="nav-link" href="#"><i class="icon-location-pin"></i></a>
+    </li> -->
+    <li class="nav-item dropdown" dropdown placement="bottom right">
+      <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" dropdownToggle >
+        <img src="{{avatarUser}}" class="img-avatar" alt="avataruser"/>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+        <div class="dropdown-header text-center"><strong>Account</strong></div>
+        <a class="dropdown-item" href="#"><i class="fa fa-bell-o"></i> Updates<span class="badge badge-info">42</span></a>
+        <a class="dropdown-item" href="#"><i class="fa fa-envelope-o"></i> Messages<span class="badge badge-success">42</span></a>
+        <a class="dropdown-item" href="#"><i class="fa fa-tasks"></i> Tasks<span class="badge badge-danger">42</span></a>
+        <a class="dropdown-item" (click)="LogOut()"  ><i class="fa fa-lock"></i> Đăng xuất</a>
+      </div>
+    </li>
+  </ul>
+</app-header>
+<div class="app-body">
+  <app-sidebar [fixed]="true" [display]="'lg'">
+    <app-sidebar-nav [navItems]="navItems" [perfectScrollbar] [disabled]="sidebarMinimized"></app-sidebar-nav>
+  </app-sidebar>
+  <!-- Main content -->
+  <main class="main">
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div><!-- /.container-fluid -->
+  </main>
+</div>
+
+<ng4-loading-spinner> </ng4-loading-spinner>
+
+
+

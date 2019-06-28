@@ -1,0 +1,213 @@
+<div class="animated fadeIn" (click)="Event($event)">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+            <div class="select-tieuchi">
+                <button (click)="Active = !Active" type="button" class="buttom-dropdown" title="Chọn tiêu chí">
+                  <img src="assets/img/brand/settings.png" class="img-plus-header" alt="plus" />
+                  <a>
+                    <strong>Chọn tiêu chí</strong>
+                  </a>
+                </button>
+                <ul *ngIf="Active === true" class="ul-dropdown">
+                    <li class="li-select">
+                        <select id="select2" name="select2" class="form-control" [(ngModel)]="options._ThietbiID"
+                          (ngModelChange)="thietBiChanged()">
+                          <option value="">----- Chọn thiết bị -----</option>
+                          <option *ngFor="let c of listThietBi_" [ngValue]="c.ThietBiID">{{c.TenThietBi}}</option>
+                        </select>
+                      </li>
+                    <li class="li-select">
+                        <select id="select2" name="select2" class="form-control" [(ngModel)]="options.KhuVucVSCNID" (ngModelChange)="khuVucChanged(options.KhuVucVSCNID)">
+                            <option value="">----- Chọn khu vực -----</option>
+                          <option *ngFor="let c of litsKhuVucVs_" [ngValue]="c.KhuVucVSCNID">{{c.TenKhuVucVSCN}}</option>
+                        </select>
+                    </li>
+                    <li class="li-select" >
+                      <input class="form-control" id="date-input" type="month" name="date-input" [(ngModel)]="options.IsTime"
+                        placeholder="Chọn tháng" (ngModelChange)="changThang()">
+                    </li>
+                </ul>
+              </div>
+          <ul class="ul-box-crud">
+            <li appBtnPer="create" data-toggle="modal" (click)="R2AddChiTietVsNC()" title="Thêm mới">
+              <img src="assets/img/brand/save-file-option.png" class="img-plus-header" alt="plus" />
+              <a>
+                <strong>Lưu thay đổi</strong>
+              </a>
+            </li>
+          
+            <li data-toggle="modal" (click)="ImportFile()" title="Import File Excel">
+              <img src="assets/img/brand/upload.png" class="img-plus-header" alt="plus" />
+              <a>
+                <strong>Excel File</strong>
+              </a>
+            </li>
+            <li data-toggle="modal" (click)="AddRow()" title="Thêm hàng">
+                <img src="assets/img/brand/insert.png" class="img-plus-header" alt="plus" />
+                <a>
+                  <strong>Thêm hàng</strong>
+                </a>
+              </li>
+          </ul>
+        </div>
+        <div class="card-body card-overflow">
+          <table class="table table-striped table-sm table-app table-bor">
+            <thead>
+              <tr>
+                <th class="text-center text-midle" width="50" rowspan="3">STT</th>
+                <th colspan="2" class="text-center">Tuần 1</th>
+                <th colspan="2" class="text-center">Tuần 2</th>
+                <th colspan="2" class="text-center">Tuần 3</th>
+                <th colspan="2" class="text-center">Tuần 4</th>
+                <th *ngIf="options.T5 === false" colspan="4" class="text-center">Tuần 5</th>
+                <th class="text-center text-midle" rowspan="3">Chức năng</th>
+              </tr>
+              <tr>
+                <th rowspan="2" class="text-midle">Nội dung công việc</th>
+                <th rowspan="2" class="text-center text-midle" width="40">Ưu tiên</th>              
+                <th rowspan="2" class="text-midle">Nội dung công việc</th>
+                <th rowspan="2" class="text-center text-midle" width="40">Ưu tiên</th>             
+                <th rowspan="2" class="text-midle">Nội dung công việc</th>
+                <th rowspan="2" class="text-center text-midle" width="40">Ưu tiên</th>
+                <th rowspan="2" class="text-midle">Nội dung công việc</th>
+                <th rowspan="2" class="text-center text-midle" width="40">Ưu tiên</th>
+                <th *ngIf="options.T5 === false" rowspan="2" class="text-midle">Nội dung công việc</th>
+                <th *ngIf="options.T5 === false" rowspan="2" class="text-center text-midle" width="40">Ưu tiên</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let item of listVeSinhCongNghiep_; let tt = index">
+              <tr>
+                <td class="font-weight text-center">
+                  {{item.ThuTu}}
+                </td>
+                <td colspan="9" *ngIf="T5 === false" class="font-weight text-center">
+                  {{item.TenKhuVucVSCN}}
+                </td>
+                <td colspan="11" *ngIf="T5 === true" class="font-weight text-center">
+                  {{item.TenKhuVucVSCN}}
+                </td>
+              </tr>
+              <tr *ngFor="let c of item.children; let i = index" (click)="ChangeRow(c)" [ngStyle]="{'property': expression}">
+                <td class="text-center text-midle"> {{i + 1}}</td>
+                <td>
+                    <input class="form-control" [(ngModel)]="c.ChiTietT1"  [ngModelOptions]="{standalone: true}"  >
+                </td>
+                <td class="text-center text-midle">
+                    <input *ngIf="c.ChiTietT1 !== ''" class="table-checkbox" type="checkbox" id="inline-UuTienT1" value="UuTienT1" [checked]="c.UuTienT1" [(ngModel)]="c.UuTienT1">
+                </td>           
+                <td>
+                    <input class="form-control" [(ngModel)]="c.ChiTietT2"  [ngModelOptions]="{standalone: true}"  >
+                </td>
+                <td class="text-center text-midle"> 
+                    <input *ngIf="c.ChiTietT2 !== ''" class="table-checkbox" type="checkbox" id="inline-UuTienT2" value="UuTienT2" [checked]="c.UuTienT2" [(ngModel)]="c.UuTienT2">
+                </td>             
+                <td>
+                    <input class="form-control" [(ngModel)]="c.ChiTietT3"  [ngModelOptions]="{standalone: true}"  >
+                </td>
+                <td class="text-center text-midle">
+                    <input *ngIf="c.ChiTietT3 !== ''" class="table-checkbox" type="checkbox" id="inline-UuTienT3" value="UuTienT3" [checked]="c.UuTienT3" [(ngModel)]="c.UuTienT3">
+
+                </td>              
+                <td>
+                    <input class="form-control" [(ngModel)]="c.ChiTietT4"  [ngModelOptions]="{standalone: true}"  >
+                </td>
+                <td class="text-center text-midle"> 
+                    <input *ngIf="c.ChiTietT4 !== ''" class="table-checkbox" type="checkbox" id="inline-UuTienT4" value="UuTienT4" [checked]="c.UuTienT4" [(ngModel)]="c.UuTienT4">
+                </td>
+                <td *ngIf="c.ChiTietT5 !== null">
+                    <input class="form-control" [(ngModel)]="c.ChiTietT5"  [ngModelOptions]="{standalone: true}"  >
+                </td>
+                <td *ngIf="c.ChiTietT5 !== null" class="text-center"> {{c.UuTienT5 === true ? 'X' : ''}}</td>
+                <td class="text-center text-midle">
+                    <img class="img-canhbao" (click)="NotifyCanhBao()" title="Không nên sửa những trường này, vì nó đã tồn tại dữ liệu đánh giá" src="assets/img/brand/problem.png" *ngIf="c.VeSinhCongNghiepDID !== null && (c.DanhGiaT1 !== null || c.DanhGiaT2 !== null || c.DanhGiaT3 !== null || c.DanhGiaT4 !== null || c.DanhGiaT5 !== null)" alt="canhbao">
+                  <button *ngIf="c.DanhGiaT1 === null && c.DanhGiaT2 === null && c.DanhGiaT3 === null && c.DanhGiaT4 === null && c.DanhGiaT5 === null" type="button" class="btn btn-primary btn-trash "
+                    (click) = "XoaRow(i,c)"
+                    title="Xóa chi tiết vệ sinh công nghiệp">
+                    <img src="assets/img/brand/trash.png" class="img-plus-header" alt="plus" />
+                    <span>
+                      Xóa
+                    </span>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <nav *ngIf="options.totalpage > 1">
+            <ul class="pagination">
+              <li class="page-item"><a class="page-link" (click)="PrevPage()">Prev</a></li>
+              <li class="page-item">
+                <a class="page-link"> {{(options.p-1)*options.pz+1}}</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link"> - </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" *ngIf="options.pz*options.p > options.total"> {{options.total}}</a>
+                <a class="page-link" *ngIf="options.pz*options.p <= options.total"> {{options.pz*options.p}}</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link">trong số</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link">{{options.total}}</a>
+              </li>
+              <li class="page-item" (click)="NextPage()"><a class="page-link">Next</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+</div>
+<div bsModal #ImportExModal="bs-modal" class="modal fade" id="modalUser" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true" [config]="{'backdrop':'static', 'keyboard': false}"
+  data-keyboard="false">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Tải lên tệp excel</h4>
+        <button type="button" class="close" (click)="HideModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+          <div class="animated fadeIn">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="card box-card-md">
+                  <div class="card-body box-cardbody-md">
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="name">Chọn tệp excel
+                          </label>
+                          <div class="input-text">
+                            <input #file type="file" class="form-control" id="name" placeholder="Mã nhóm"
+                              (change)="ChonFile(file.files)">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--/.row-->
+                  </div>
+                </div>
+              </div>
+              <!--/.col-->
+            </div>
+            <!--/.row-->
+          </div>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="ImportExModal.hide()">Đóng</button>
+        <button type="button" class="btn btn-primary" (click)="r2ImportFile()">Lưu lại</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

@@ -1,0 +1,164 @@
+.witd-end{
+    max-width: calc(100%  - 620px);
+}
+.row-end{
+    border-bottom: 1px dashed #d0d0d0;
+}
+.padright{
+    padding-right: 0;
+}
+.row-margintop{
+margin-top: 15px;
+}
+.btn-thongso{
+    width: calc(100% - 20px);
+}
+.title-thongso{
+    position: absolute;
+    margin-top: -30px;
+    margin-left: 14px;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 2px;
+    background-color: #fff;
+}
+.table-thongso{
+border: none;
+}
+.body-tb-thongso{
+    padding: 15px 0;
+}
+.btn-trash{
+    margin-top: 0;
+    border: none;
+    width: 80%;
+    padding: 0;
+    margin-right: 0;
+    display: inline-block;
+}
+.btn-trash img{
+    margin-right: 0;
+    width:15px;
+    height: 15px;
+}
+.btn-trash span{
+    font-size: 12px;
+}
+.btn-trash:hover{
+    background-color: #f86c6b;
+}
+.box-lable-thongso{
+    width: 70px;
+}
+.box-input-thongso{
+    width: calc(100% - 85px) !important;
+}
+.tscb-box{
+    margin-top: 5px;
+    position: absolute;
+    margin-left: 10px;
+}
+.box-td-input-thongso{
+    padding: 0 10px;
+    height: 33px;
+    border: 0;
+    border-radius: 0;
+}
+.tr-listthongso td{
+    padding: 5px;
+}
+.td-input{
+    padding: 0 0 !important;
+}
+.box-td-input-thongso{
+    box-shadow: none;
+}
+.bgsl-true{
+    background-color: #fbf285;
+}
+.checkbox-tscb{
+    position: absolute;
+    margin-top: 6px;
+    margin-left: 2px;
+}
+.table-export{
+    border-left: 1px solid;
+    border-right: 1px solid;
+    width: 100%;
+    margin-bottom: 0;
+
+}
+.table-export thead tr th{
+    vertical-align: middle;
+    border: 1px solid;
+}
+.table-export tbody tr{
+    font-size: 24px;
+    line-height: 30px;
+}
+.table-export tbody tr td{
+    border: none;
+}
+
+.font-tenbang{
+    font-size: 40px;
+    font-weight: bold;
+}
+.font-cty{
+    font-size: 40px;
+    font-weight: bold;
+}
+.hd-thongtincoban th{
+    padding: 2px;
+    text-decoration: underline;
+    font-size: 24px;
+}
+tr.ts-tr-box td {
+    padding: 2px 10px;
+    
+}
+tr.ts-tr-box th {
+    padding: 3px 10px;
+    font-size: 24px;
+}
+.priter-none{
+    display: none;
+}
+.th-titlel-hosothiebi{
+    font-size: 24px;
+}
+.body-card-user-box{
+    font-family: 'Times New Roman', Times, serif;
+}
+.width-td-report{
+    width: 33.3333333333333333%
+}
+tr.ts-tr-box{
+    margin: 0;
+    font-size: 22px;
+}
+.table-ts-cb{
+    border: 1px solid;
+    border-top: none; 
+}
+.table-ts-cb tbody tr{
+    border: none;
+}
+.table-ts-cb tbody tr td{
+    border: none;
+}
+.table2{
+    border-bottom: none;
+}
+.table4 tbody tr td{
+    border: 1px solid;
+}
+.display-none{
+    display: none;
+}
+.btn-trash{
+    padding: 3px;
+}
+.bgl-true{
+    background-color: #f9e976 !important;
+}

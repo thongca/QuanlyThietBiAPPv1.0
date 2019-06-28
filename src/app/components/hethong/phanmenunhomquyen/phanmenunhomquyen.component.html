@@ -1,0 +1,123 @@
+<div class="animated fadeIn">
+    <div class="card-header">
+        <ul class="ul-box-crud">
+          <li appBtnPer="create" data-toggle="modal" (click)="LuuPhanQuyen()" title="Lưu lại">
+              <img src="assets/img/brand/save-file-option.png" class="img-plus-header" alt="plus"/>
+              <a>
+              <strong>Lưu lại</strong>
+            </a>
+          </li>
+          <li class="li-select" *ngxPermissionsOnly="['Administrator']">
+              <select id="select2" name="select2" class="form-control" [(ngModel)]="options.PhongbanID" (ngModelChange)="phongBanChanged(options.PhongbanID)">
+                  <option value="">----- Chọn phòng -----</option>
+                <option *ngFor="let c of phongban_" [ngValue]="c.PhongbanID">{{c.TenPhongBan}}</option>
+              </select>
+          </li>
+        </ul>
+      </div>
+    <div class="row" [ngStyle]="{'margin': 0}">
+      <div class="col-sm-4">
+        <div class="card">
+          <div class="card-header">
+            <strong>Danh sách nhóm quyền</strong>
+         
+          </div>
+          <div class="card-body" [ngStyle]="{'padding': 0}">
+            <div class="row">
+              <div class="col-sm-12">
+                  <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                            <th class="text-center" width= "50">STT</th>
+                          <th >Tên nhóm quyền</th>
+                          <th width="200">Phòng ban</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of nhomuser; let i = index" class="item-row-nhomnguoidung isSelect-{{item.IsSelect}}" (click)="SelectRow(item)">
+                          <td class="text-center">{{i + 1}}</td>
+                          <td >
+                             {{item.GroupRoleName}}
+                          </td>
+                          <td >
+                              {{item.TenPhongBan}}
+                           </td>
+                        </tr>
+                      </tbody>
+                    </table>
+              </div>
+            </div><!--/.row-->
+          </div>
+        </div>
+      </div><!--/.col-->
+      <div class="col-sm-8" [ngStyle]="{'padding-left': 0}">
+        <div class="card">
+          <div class="card-header">
+            <strong>Danh sách menu</strong>
+            
+          </div>
+          <div class="card-body" [ngStyle]="{'padding': 0}">
+              <div class="col-lg-12" [ngStyle]="{'padding': 0}">
+                  <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                            <th class="text-center" width= "50">STT</th>
+                          <th >Menu</th>
+                          <th class="text-center" width= "100">Hiện thị</th>
+                          <th class="text-center" width= "100">Thêm</th>
+                          <th class="text-center" width= "100">Sửa</th>
+                          <th class="text-center" width= "100">Xóa</th>
+                          <th class="text-center" width= "150">Xuất báo cáo</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of _menu.data; let i = index">
+                            <td class="text-center" class="bgf-{{item.MenuRank}}">
+                                {{i + 1}}
+                            </td>
+                          <td class="pad-{{item.MenuRank}}">{{item.MenuName}}</td>
+                          <td class="text-center">
+                              <input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightView" id="inline-checkbox3" (click)="subChangeView(item,item.RightView)"  value="option3">
+                          </td>
+                          <td class="text-center">
+                              <input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightAdd" id="inline-checkbox3" (click)="subChange(item,item.RightAdd)"  value="option3">
+                          </td>
+                          <td class="text-center">
+                              <input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightUpdate" id="inline-checkbox3" (click)="subChange(item,item.RightUpdate)" value="option3">
+                          </td>
+                          <td class="text-center">
+                              <input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightDel" id="inline-checkbox3" (click)="subChange(item,item.RightDel)" value="option3">
+                          </td>
+                          <td class="text-center">
+                              <input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightExport" id="inline-checkbox3" (click)="subChange(item,item.RightExport)" value="option3">
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                </div>
+          </div>
+        </div>
+      </div><!--/.col-->
+    </div><!--/.row-->
+  
+  </div>
+  
+  <div bsModal #dangerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-danger" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Thông báo</h4>
+            <button type="button" class="close" (click)="dangerModal.hide()" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p class="notifyerr">{{errormodal}}&hellip;</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="dangerModal.hide()">Thoát</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+  

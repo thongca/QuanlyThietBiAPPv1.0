@@ -1,0 +1,132 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <ul class="ul-box-crud">
+            <li data-toggle="modal" (click)="refreshData()" title="Làm mới">
+              <img src="assets/img/brand/refresh-page-option.png" class="img-plus-header" alt="plus"/>
+              <a>
+              <strong>Làm mới</strong>
+            </a>
+          </li>
+          <li appBtnPer="delete" data-toggle="modal" (click)="warningModal.show()" title="Xóa" *ngIf="CheckLength > 0">
+            <img src="assets/img/brand/trash.png" class="img-plus-header" alt="plus"/>
+            <a>
+            <strong>Xóa</strong>
+          </a>
+        </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-striped table-sm table-app">
+            <thead>
+              <tr>
+                <th class="th-checkbox" width=40> </th>
+                
+                <th class="text-center" width="50">STT</th>
+                <th width= 100 >Mã thiết bị</th>
+                <th >Tên thiết bị</th>
+                <th width=150 class="text-center">Điểm quy định</th>
+                <th appBtnPer="update" class="text-center" width=100>Chức năng</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of listQuyDinh_; let i = index">
+                <td class="td-checkbox"></td>
+                <td  class="text-center">{{i + 1}}</td>
+                <td>{{item.MaThietBi}}</td>
+                <td>{{item.TenThietBi}}</td>
+                <td class="text-center">{{item.DiemQuyDinh}}</td>
+                <td appBtnPer="update" class="text-center"  >
+                  <img title="Sửa" class="img-icon-edit img-left" (click)="SelectIDEditModel(item.QuyDinhDiemID)" src="assets/img/brand/edit.png" alt="Sửa">
+                </td>
+            </tbody>
+          </table>
+          <nav *ngIf="options.totalpage > 1">
+              <ul class="pagination">
+                  <li class="page-item"><a class="page-link" (click)="PrevPage()">Prev</a></li>
+                  <li class="page-item">
+                      <a class="page-link"> {{(options.p-1)*options.pz+1}}</a>
+                  </li>
+                  <li class="page-item">
+                      <a class="page-link"> - </a>
+                  </li>
+                  <li class="page-item">
+                      <a class="page-link" *ngIf="options.pz*options.p > options.total"> {{options.total}}</a>
+                      <a class="page-link" *ngIf="options.pz*options.p <= options.total"> {{options.pz*options.p}}</a>
+                  </li>
+                  <li class="page-item">
+                      <a class="page-link">trong số</a>
+                    </li>
+                  <li class="page-item">
+                    <a class="page-link">{{options.total}}</a>
+                  </li>
+                  <li class="page-item" (click)="NextPage()"><a class="page-link">Next</a></li>
+                </ul>
+          </nav>
+        </div>   
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+</div>
+  <!-- Thêm sửa-->
+  <div bsModal #largeModal="bs-modal" class="modal fade" id="modalUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" [config]="{'backdrop':'static', 'keyboard': false}" data-keyboard="false"> 
+      <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">{{modeltitle}}</h4>
+            <button type="button" class="close" (click)="HideModal()" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                <div class="animated fadeIn">
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <div class="card box-card-md">
+                          <div class="card-body box-cardbody-md">
+                            <div class="row">
+                              <div class="col-sm-12">
+                                <div class="form-group row">
+                                  <label class="title-text col-form-label" for="name">Tên thiết bị
+                                    <span>*</span>
+                                  </label>
+                                  <div class="input-text">
+                                      <input type="text" class="form-control" id="name" placeholder="Mã nhóm" [(ngModel)]="modelQuyDinh_.TenThietBi" [ngModelOptions]="{standalone: true}">
+                                  </div>
+                                </div>
+
+                              </div>
+                              <div class="col-sm-12">
+                                <div class="form-group row">
+                                  <label class="title-text col-form-label" for="name">Quy định điểm
+                                    <span>*</span>
+                                  </label>
+                                  <div class="input-text">
+                                      <input type="text" class="form-control" id="name" placeholder="Tên nhóm" [(ngModel)]="modelQuyDinh_.DiemQuyDinh" [ngModelOptions]="{standalone: true}">
+                                  </div>
+                                </div>
+                              </div>
+                            </div><!--/.row-->
+                          </div>
+                        </div>
+                      </div><!--/.col-->
+                    </div><!--/.row-->
+                  </div>
+              </form>
+    
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="largeModal.hide()">Đóng</button>
+            <button type="button" class="btn btn-primary" (click)="UpdateDiemQuyDinh()">Lưu lại</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+ 
+    
