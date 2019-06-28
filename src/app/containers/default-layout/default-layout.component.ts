@@ -21,6 +21,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './default-layout.component.html'
 })
 export class DefaultLayoutComponent implements OnDestroy, OnInit {
+  todos$ = this.search.$search;
   private sub: Subscription;
   _listMenu: [
     {
@@ -41,7 +42,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     error: number,
     data: []
   };
-  s: searchRoot;
+  s: string;
   m: any;
   public navItems: [];
   public sidebarMinimized = true;
@@ -68,6 +69,16 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     this.avatarUser = this.sbaseUrl_.sbaseURL +  this.suserInfo_.R1_GetDataUser();
   }
   ngOnInit() {
+    // tìm kiếm
+    this.todos$.subscribe(res => {
+      let ss = '';
+      if (res === undefined || res === '') {
+        ss = '';
+      } else {
+        ss = res;
+      }
+      this.s = ss;
+    });
     this.menu.getDataMenu().subscribe(
       (res: any) => {
         if (res['body'].error === 1) {
