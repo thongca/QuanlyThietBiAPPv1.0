@@ -10,6 +10,9 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { Subscription } from 'rxjs';
 import { Danhgiavesinhcongnghiep, Children } from './danhgiavesinhcongnghiep.model';
 import * as cloneDeep from 'lodash/cloneDeep';
+import { Thietbi } from './../../danhmuc/thietbi/thietbi';
+import { KhuvucmayService } from '../../danhmuc/khuvucmay/khuvucmay.service';
+import { ThietbirootService } from '../../../shared/thietbiroot.service';
 @Component({
   selector: 'app-danhgiavesinhcongnghiep',
   templateUrl: './danhgiavesinhcongnghiep.component.html',
@@ -24,12 +27,14 @@ returnImport: {
   error: number;
 };
 T5: boolean;
+Active: boolean;
   date: Date = new Date();
   options = {s: '', p: 1, pz: 2000, totalpage: 0, total: 0, paxpz: 0,
   mathP: 0, _ThietbiID: '', KhuVucVSCNID: '', IsTime: '', T5: true, VeSinhCongNghiepMID: '' };
   @ViewChild('ImportExModal') public ImportExModal: ModalDirective;
   @ViewChild('xacnhanExModal') public xacnhanExModal: ModalDirective;
   private subscription: Subscription;
+  private sub: Subscription;
 // file
   _files: File;
   // string
@@ -81,6 +86,9 @@ litsKhuVucVs_: {
   KhuVucVSCNID: string;
 }[];
 listVeSinhCongNghiep_: Danhgiavesinhcongnghiep[];
+// list
+listThietBi_: Thietbi[] = [];
+
 
   constructor(
     private s: SearchService,
@@ -88,7 +96,9 @@ listVeSinhCongNghiep_: Danhgiavesinhcongnghiep[];
     private toastr: ToastrService,
     private  permissionsService: NgxPermissionsService,
     private spinnerService: Ng4LoadingSpinnerService ,
-    private danhgiavscongnghiepService_: DanhgiavesinhcongnghiepService
+    private danhgiavscongnghiepService_: DanhgiavesinhcongnghiepService,
+    private khuvucmayservice_: KhuvucmayService,
+    private thietbirootService_: ThietbirootService
   ) {
     this.datacheck_ = {
       IsCheckT1: 0,
@@ -128,9 +138,15 @@ listVeSinhCongNghiep_: Danhgiavesinhcongnghiep[];
       NguoiVanHanhIDT5: null,
     };
     this.MaThietBi = sessionStorage.getItem('MaThietBi');
+    this.Active = false;
   }
 
   ngOnInit() {
+    let Permission = this._userInfo.r1GetobjPermission();
+      if (Permission === undefined) {
+        Permission = 'NoAdmin';
+      }
+      this.permissionsService.loadPermissions([`${Permission}`]);
     if (this.date.getMonth() < 10) {
       this.options.IsTime = `${this.date.getFullYear()}-0${this.date.getMonth() + 1}`;
     } else {
@@ -139,8 +155,24 @@ listVeSinhCongNghiep_: Danhgiavesinhcongnghiep[];
     if ( this.options.IsTime !== '') {
       this.r1ListKhuVucVeSinhCongNghiep();
       this.r1ListVeSinhCongNghiep();
+      this.R1GetListThietBi();
     }
   }
+    // danh sách thiet bi
+    R1GetListThietBi() {
+      this.spinnerService.show();
+      this.sub = this.khuvucmayservice_.r1Listthietbi().subscribe(res => {
+        this.spinnerService.hide();
+        if (res['error'] === 1) {
+          this.toastr.error(res['ms'], 'Thông báo lỗi');
+          return false;
+        }
+        this.listThietBi_ = res['data'];
+        if (sessionStorage.getItem('ThietBiID') === null) {
+          this.options._ThietbiID = this.listThietBi_[0].ThietBiID;
+        }
+      });
+    }
   r1ListKhuVucVeSinhCongNghiep() {
     this.options._ThietbiID = this.ThietBiID;
     this.danhgiavscongnghiepService_.r1ListKhucVucVeSinhCongNghiep(this.options).subscribe(res => {
@@ -174,6 +206,7 @@ listVeSinhCongNghiep_: Danhgiavesinhcongnghiep[];
           return false;
         }
         if (res['error'] === 2) {
+          this.listVeSinhCongNghiep_ = [];
           this.toastr.error(res['ms'], 'Thông báo');
           return false;
         }
@@ -257,6 +290,28 @@ R2LuuThayDoiVeSinhCongNghiep() {
 }
 HideModal() {
   this.ImportExModal.hide();
+}
+ChangeThietBi() {
+  sessionStorage.setItem('ThietBiID', this.options._ThietbiID);
+  this.ThietBiID = this.options._ThietbiID;
+  this.r1ListVeSinhCongNghiep();
+  this.r1ListKhuVucVeSinhCongNghiep();
+  this.thietbirootService_.r1getThietBiByID(this.options._ThietbiID).subscribe(res => {
+    if (res !== undefined) {
+      if (res['error'] === 1) {
+        this.toastr.error(res['ms'], 'Thông báo');
+        return false;
+      }
+      const objThietBi = res['data'];
+      sessionStorage.setItem('MaThietBi', objThietBi.MaThietBi);
+      this.MaThietBi = objThietBi.MaThietBi;
+    }
+  },
+  err => {
+    if (err.status === 404) {
+      this.toastr.error('Không có phàn hồi từ máy chủt', 'Thông báo');
+    }
+  });
 }
 changThang() {
   this.r1ListVeSinhCongNghiep();
@@ -436,5 +491,9 @@ refreshData() {
   this.toastr.success('Tải lại trang thành công', 'Thông báo');
   this.ngOnInit();
 }
-
+Event(e) {
+  if (e.target.closest('.select-tieuchi') === null) {
+    this.Active = false;
+  }
+}
 }

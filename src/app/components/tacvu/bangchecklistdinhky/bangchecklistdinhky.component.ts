@@ -42,6 +42,11 @@ selectedDate: any;
   // string
  ThietBiID: string;
 KhuVucID: string;
+// list
+listThietBi_: Thietbi[] = [];
+// bool
+public Active: boolean;
+
   constructor(
     private router: Router,
     private s: SearchService,
@@ -59,6 +64,8 @@ KhuVucID: string;
       this.router.navigateByUrl('/tacvu/danhsachthietbi');
       this.toastr.warning('Bạn chưa chọn thiết bị, vui lòng chọn thiết bị để tiếp tục!', 'Cảnh báo');
     }
+    const thietbiID = sessionStorage.getItem('ThietBiID');
+    this.options._ThietbiID = thietbiID;
     this.listchitietCheckList_ = [{
       KhuVucID: '',
       ThietBiID: '',
@@ -79,15 +86,10 @@ KhuVucID: string;
       TenThietBi: '',
       MaThietBi: ''
     };
+    this.Active = false;
   }
 
   ngOnInit() {
-        // check permission admin
-        let Permission = this._userInfo.r1GetobjPermission();
-        if (Permission === undefined) {
-          Permission = 'NoAdmin';
-        }
-        this.permissionsService.loadPermissions([`${Permission}`]);
     if (this.date.getMonth() < 10) {
       this.options.IsTime = `${this.date.getFullYear()}-0${this.date.getMonth() + 1}`;
     } else {
@@ -95,6 +97,7 @@ KhuVucID: string;
     }
     this.R1GetListChiTietMay();
     this.R1GetKhuVucMay();
+    this.R1GetListThietBi();
   }
 
   Monthchanged() {
@@ -106,8 +109,6 @@ KhuVucID: string;
   }
   // danh sách khu vuc máy
   R1GetListChiTietMay() {
-    const thietbiID = sessionStorage.getItem('ThietBiID');
-    this.options._ThietbiID = thietbiID;
     this.spinnerService.show();
     this.sub = this.bangcheckListdinhKyService_.r1ListChiTietMay(this.options).subscribe(res => {
       this.spinnerService.hide();
@@ -115,24 +116,39 @@ KhuVucID: string;
         this.toastr.error(res['ms'], 'Thông báo lỗi');
         return false;
       }
+      let Permission = this._userInfo.r1GetobjPermission();
       if (res['IsOld'] === true) {
-        // check permission admin
-        if (this._userInfo.user.IsAdmin === undefined) {
-          this._userInfo.user.IsAdmin = false;
+        if (Permission === undefined) {
+          Permission = 'NoAdmin';
         }
-        this.permissionsService.loadPermissions([`${this._userInfo.user.IsAdmin}`]);
+        this.permissionsService.loadPermissions([`${Permission}`]);
       } else {
-        this.permissionsService.loadPermissions([`true`]);
+        this.permissionsService.loadPermissions([`${Permission}`]);
       }
       const ThietBi_ = res['ThietBi'];
       this.objThietBi = ThietBi_[0];
+      sessionStorage.setItem('MaThietBi', this.objThietBi.MaThietBi);
       this.listchitietCheckList_ = res['data'];
+    });
+  }
+  // danh sách thiet bi
+  R1GetListThietBi() {
+    this.spinnerService.show();
+    this.sub = this.khuvucmayservice_.r1Listthietbi().subscribe(res => {
+      this.spinnerService.hide();
+      if (res['error'] === 1) {
+        this.toastr.error(res['ms'], 'Thông báo lỗi');
+        return false;
+      }
+      this.listThietBi_ = res['data'];
+      if (sessionStorage.getItem('ThietBiID') === null) {
+        this.options._ThietbiID = this.listThietBi_[0].ThietBiID;
+      }
+      this.R1GetListChiTietMay();
     });
   }
 
   R1GetKhuVucMay() {
-    const thietbiID = sessionStorage.getItem('ThietBiID');
-    this.options._ThietbiID = thietbiID;
     this.options.pz = 20000;
     this.spinnerService.show();
     this.sub = this.khuvucmayservice_.r1ListKhuVuc(this.options).subscribe(res => {
@@ -152,6 +168,11 @@ KhuVucID: string;
     if (this.options.IsTime !== '') {
       this.R1GetListChiTietMay();
     }
+  }
+  ChangeThietBi() {
+    sessionStorage.setItem('ThietBiID', this.options._ThietbiID);
+    this.R1GetListChiTietMay();
+    this.R1GetKhuVucMay();
   }
   //  bắt sự kiện thay đổi tình trạng chi tiết
   ChangeListChiTiet(ChiTietID: string, KhuVucID: string, checked) {
@@ -210,5 +231,10 @@ refreshData() {
   this.options.p = 1;
   this.toastr.success('Tải lại trang thành công', 'Thông báo');
   this.ngOnInit();
+}
+Event(e) {
+  if (e.target.closest('.select-tieuchi') === null) {
+    this.Active = false;
+  }
 }
 }

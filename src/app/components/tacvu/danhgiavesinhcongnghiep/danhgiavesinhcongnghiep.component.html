@@ -1,8 +1,44 @@
-<div class="animated fadeIn">
+<div class="animated fadeIn" (click)="Event($event)">
   <div class="row">
     <div class="col-lg-12">
       <div class="card">
         <div class="card-header">
+            <div class="select-tieuchi">
+                <button (click)="Active = !Active" type="button" class="buttom-dropdown" title="Chọn tiêu chí">
+                  <img src="assets/img/brand/settings.png" class="img-plus-header" alt="plus" />
+                  <a>
+                    <strong>Chọn tiêu chí</strong>
+                  </a>
+                </button>
+                <ul *ngIf="Active === true" class="ul-dropdown">
+                  <li class="li-select">
+                    <a>
+                      Chọn thiết bị:
+                    </a>
+                    <select id="select2" name="select2" class="form-control" [(ngModel)]="options._ThietbiID" (ngModelChange)="ChangeThietBi()">
+                      <option value="">----- Chọn thiết bị -----</option>
+                      <option *ngFor="let c of listThietBi_" [ngValue]="c.ThietBiID">{{c.TenThietBi}}</option>
+                    </select>
+                  </li>
+                  <li class="li-select">
+                      <a>
+                          Chọn khu vực:
+                        </a>
+                      <select id="select2" name="select2" class="form-control" [(ngModel)]="options.KhuVucVSCNID"
+                        (ngModelChange)="khuVucChanged()">
+                        <option value="">----- Chọn khu vực -----</option>
+                        <option *ngFor="let c of litsKhuVucVs_" [ngValue]="c.KhuVucVSCNID">{{c.TenKhuVucVSCN}}</option>
+                      </select>
+                    </li>
+                    <li class="li-select">
+                        <a>
+                            Chọn tháng:
+                          </a>
+                      <input class="form-control" id="date-input" type="month" name="date-input" [(ngModel)]="options.IsTime"
+                        placeholder="Chọn tháng" (ngModelChange)="changThang()">
+                    </li>
+                </ul>
+              </div>
           <ul class="ul-box-crud">
             <li appBtnPer="create"
               *ngIf="!(datacheck_.IsCheckT1 === 2 && datacheck_.IsCheckT2 === 2 && datacheck_.IsCheckT3 === 2 && datacheck_.IsCheckT4 === 2 && datacheck_.IsCheckT5 === 2)"
@@ -18,23 +54,13 @@
                 <strong>Làm mới</strong>
               </a>
             </li>
-            <li data-toggle="modal" (click)="ImportFile()" title="Làm mới">
+            <li *ngxPermissionsOnly="['Administrator']" data-toggle="modal" (click)="ImportFile()" title="Làm mới">
               <img src="assets/img/brand/upload.png" class="img-plus-header" alt="plus" />
               <a>
                 <strong>Excel File</strong>
               </a>
             </li>
-            <li class="li-select">
-              <select id="select2" name="select2" class="form-control" [(ngModel)]="options.KhuVucVSCNID"
-                (ngModelChange)="khuVucChanged()">
-                <option value="">----- Chọn khu vực -----</option>
-                <option *ngFor="let c of litsKhuVucVs_" [ngValue]="c.KhuVucVSCNID">{{c.TenKhuVucVSCN}}</option>
-              </select>
-            </li>
-            <li class="li-select">
-              <input class="form-control" id="date-input" type="month" name="date-input" [(ngModel)]="options.IsTime"
-                placeholder="Chọn tháng" (ngModelChange)="changThang()">
-            </li>
+            
             <li class="li-select ma-may">
               <strong *ngIf="MaThietBi !== ''">
                 Mã máy: {{MaThietBi}}
