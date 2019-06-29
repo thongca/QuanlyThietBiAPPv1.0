@@ -158,6 +158,7 @@ listThietBi_: Thietbi[] = [];
       this.R1GetListThietBi();
     }
   }
+  //ll
     // danh sách thiet bi
     R1GetListThietBi() {
       this.spinnerService.show();
