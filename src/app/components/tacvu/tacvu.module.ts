@@ -1,6 +1,6 @@
 import { ThietbiService } from './../danhmuc/thietbi/thietbi.service';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 import { TacvuRoutingModule } from './tacvu-routing.module';
 import { SharedModule } from '../../shared/shared.module';
@@ -16,12 +16,13 @@ import { KehoachbaoduongComponent } from './kehoachbaoduong/kehoachbaoduong.comp
 import { BsDatepickerModule } from 'ngx-bootstrap';
 import { User } from '../hethong/user.model';
 import { DanhgiavesinhcongnghiepComponent } from './danhgiavesinhcongnghiep/danhgiavesinhcongnghiep.component';
+import { BaoduongdinhkyComponent } from './baoduongdinhky/baoduongdinhky.component';
 
 
 @NgModule({
   declarations: [DanhsachthietbiComponent,
     HomethietbiComponent, BangchecklistdinhkyComponent,
-     CapnhathosothietbiComponent, KehoachbaoduongComponent, DanhgiavesinhcongnghiepComponent],
+     CapnhathosothietbiComponent, KehoachbaoduongComponent, DanhgiavesinhcongnghiepComponent, BaoduongdinhkyComponent],
   imports: [
     TacvuRoutingModule,
     ModalModule,
@@ -31,7 +32,6 @@ import { DanhgiavesinhcongnghiepComponent } from './danhgiavesinhcongnghiep/danh
     NgxPrintModule,
     BsDatepickerModule,
   ],
-  providers: [
-  ]
+  providers: [DatePipe]
 })
 export class TacvuModule { }

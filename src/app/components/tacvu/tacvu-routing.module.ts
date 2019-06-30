@@ -7,6 +7,7 @@ import { AuthGuard } from '../../auth/auth.guard';
 import { BangchecklistdinhkyComponent } from './bangchecklistdinhky/bangchecklistdinhky.component';
 import { KehoachbaoduongComponent } from './kehoachbaoduong/kehoachbaoduong.component';
 import { DanhgiavesinhcongnghiepComponent } from './danhgiavesinhcongnghiep/danhgiavesinhcongnghiep.component';
+import { BaoduongdinhkyComponent } from './baoduongdinhky/baoduongdinhky.component';
 
 const routes: Routes = [
   {
@@ -44,6 +45,12 @@ const routes: Routes = [
     path: 'danhgiavesinhcongnghiep',
     component: DanhgiavesinhcongnghiepComponent,
     data: {routeLink: '/tacvu/danhgiavesinhcongnghiep'}
+  },
+  {
+    canActivateChild: [AuthGuard],
+    path: 'baoduongdinhky',
+    component: BaoduongdinhkyComponent,
+    data: {routeLink: '/tacvu/baoduongdinhky'}
   },
 ];
 

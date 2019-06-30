@@ -1,0 +1,193 @@
+<div class="animated fadeIn" (click)="Event($event)">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+            <div class="select-tieuchi">
+                <button (click)="Active = !Active" type="button" class="buttom-dropdown" title="Chọn tiêu chí">
+                  <img src="assets/img/brand/settings.png" class="img-plus-header" alt="plus" />
+                  <a>
+                    <strong>Chọn tiêu chí</strong>
+                  </a>
+                </button>
+                <ul *ngIf="Active === true" class="ul-dropdown">
+                  <li class="li-select">
+                    <a>
+                      Chọn thiết bị:
+                    </a>
+                    <select id="select2" name="select2" class="form-control" [(ngModel)]="options._ThietbiID" (ngModelChange)="ChangeThietBi()">
+                      <option value="">----- Chọn thiết bị -----</option>
+                      <option *ngFor="let c of listThietBi_" [ngValue]="c.ThietBiID">{{c.TenThietBi}}</option>
+                    </select>
+                  </li>
+                  <li class="li-select">
+                      <input *ngxPermissionsOnly="['Administrator']" class="form-control" placeholder="MM/YYYY" bsDatepicker [(ngModel)]="options.IsTime" placement="bottom" (ngModelChange)="ChangeThang(options.IsTime)" [bsConfig]="{dateInputFormat: 'MM/YYYY'}" (onShown)="onOpenCalendar($event)"
+                       >
+                  </li>
+                </ul>
+              </div>
+          <ul class="ul-box-crud">
+            <li appBtnPer="create" data-toggle="modal" (click)="r2LuuThayDoiBaoDuongDinhKy()" title="Thêm mới">
+                <img src="assets/img/brand/save-file-option.png" class="img-plus-header" alt="plus"/>
+                <a>
+                <strong>Lưu thay đổi</strong>
+              </a>
+            </li>
+            <li data-toggle="modal" (click)="refreshData()" title="Làm mới">
+              <img src="assets/img/brand/refresh-page-option.png" class="img-plus-header" alt="plus"/>
+              <a>
+              <strong>Làm mới</strong>
+            </a>
+          </li>
+          <li class="li-select ma-may">
+              <strong *ngIf="MaThietBi !== ''">
+               Mã máy: {{MaThietBi}}
+              </strong>
+             </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-striped table-sm table-app table-padd">
+            <thead>
+              <tr>
+                <th class="text-center" width="50">STT</th>
+                <th>Nội dung công việc</th>
+                <th width=30 class="text-center text-midle">1</th>
+                <th width=30 class="text-center text-midle">2</th>
+                <th width=30 class="text-center text-midle">3</th>
+                <th width=30 class="text-center text-midle">4</th>
+                <th width=30 class="text-center text-midle">5</th>
+                <th width=30 class="text-center text-midle">6</th>
+                <th width=30 class="text-center text-midle">7</th>
+                <th width=30 class="text-center text-midle">8</th>
+                <th width=30 class="text-center text-midle">9</th>
+                <th width=30 class="text-center text-midle">10</th>
+                <th width=30 class="text-center text-midle">11</th>
+                <th width=30 class="text-center text-midle">12</th>
+                <th width=30 class="text-center text-midle">13</th>
+                <th width=30 class="text-center text-midle">14</th>
+                <th width=30 class="text-center text-midle">15</th>
+                <th width=30 class="text-center text-midle">16</th>
+                <th width=30 class="text-center text-midle">17</th>
+                <th width=30 class="text-center text-midle">18</th>
+                <th width=30 class="text-center text-midle">19</th>
+                <th width=30 class="text-center text-midle">20</th>
+                <th width=30 class="text-center text-midle">21</th>
+                <th width=30 class="text-center text-midle">22</th>
+                <th width=30 class="text-center text-midle">23</th>
+                <th width=30 class="text-center text-midle">24</th>
+                <th width=30 class="text-center text-midle">25</th>
+                <th width=30 class="text-center text-midle">26</th>
+                <th width=30 class="text-center text-midle">27</th>
+                <th width=30 class="text-center text-midle" *ngIf="DayInsMonth >= 28">28</th>
+                <th width=30 class="text-center text-midle" *ngIf="DayInsMonth >= 29">29</th>
+                <th width=30 class="text-center text-midle" *ngIf="DayInsMonth >= 30">30</th>
+                <th width=30 class="text-center text-midle" *ngIf="DayInsMonth >= 31">31</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of listbaoduongdinhky_; let i = index">
+                <td  class="text-center text-midle">{{i + 1}}</td>
+                <td class="text-midle">{{item.TenCongViec}}</td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name" autocomplete="none" [(ngModel)]="item.D1" (ngModelChange)="ChangeD(item, item.D1, 'D1',$event)"  [ngModelOptions]="{standalone: true}" appTouppercase>
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name1" [(ngModel)]="item.D2" (ngModelChange)="ChangeD(item, item.D2, 'D2')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name2" [(ngModel)]="item.D3" (ngModelChange)="ChangeD(item, item.D3, 'D3')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name3" [(ngModel)]="item.D4" (ngModelChange)="ChangeD(item, item.D4, 'D4')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name4" [(ngModel)]="item.D5" (ngModelChange)="ChangeD(item, item.D5, 'D5')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name5" [(ngModel)]="item.D6" (ngModelChange)="ChangeD(item, item.D6, 'D6')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name6" [(ngModel)]="item.D7" (ngModelChange)="ChangeD(item, item.D7, 'D7')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name7" [(ngModel)]="item.D8" (ngModelChange)="ChangeD(item, item.D8, 'D8')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name8" [(ngModel)]="item.D9" (ngModelChange)="ChangeD(item, item.D9, 'D9')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name9" [(ngModel)]="item.D10" (ngModelChange)="ChangeD(item, item.D10, 'D10')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name10" [(ngModel)]="item.D11" (ngModelChange)="ChangeD(item, item.D11, 'D11')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name11" [(ngModel)]="item.D12" (ngModelChange)="ChangeD(item, item.D12, 'D12')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name12" [(ngModel)]="item.D13" (ngModelChange)="ChangeD(item, item.D13, 'D13')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name13" [(ngModel)]="item.D14"  (ngModelChange)="ChangeD(item, item.D14, 'D14')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name14" [(ngModel)]="item.D15"  (ngModelChange)="ChangeD(item, item.D15, 'D15')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name15" [(ngModel)]="item.D16" (ngModelChange)="ChangeD(item, item.D16, 'D16')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name16" [(ngModel)]="item.D17" (ngModelChange)="ChangeD(item, item.D17, 'D17')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name17" [(ngModel)]="item.D18" (ngModelChange)="ChangeD(item, item.D18, 'D18')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name18" [(ngModel)]="item.D19" (ngModelChange)="ChangeD(item, item.D19, 'D19')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name19" [(ngModel)]="item.D20" (ngModelChange)="ChangeD(item, item.D20, 'D20')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name20" [(ngModel)]="item.D21" (ngModelChange)="ChangeD(item, item.D21, 'D21')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name21" [(ngModel)]="item.D22" (ngModelChange)="ChangeD(item, item.D22, 'D22')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name22" [(ngModel)]="item.D23" (ngModelChange)="ChangeD(item, item.D23, 'D23')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name23" [(ngModel)]="item.D24" (ngModelChange)="ChangeD(item, item.D24, 'D24')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name24" [(ngModel)]="item.D25" (ngModelChange)="ChangeD(item, item.D25, 'D25')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name25" [(ngModel)]="item.D26" (ngModelChange)="ChangeD(item, item.D26, 'D26')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td>
+                  <input type="text" class="form-control text-center" id="name26" [(ngModel)]="item.D27" (ngModelChange)="ChangeD(item, item.D27, 'D27')" [ngModelOptions]="{standalone: true}">
+                </td>
+                <td *ngIf="DayInsMonth >= 28">
+                  <input type="text" class="form-control text-center" id="name27" [(ngModel)]="item.D28" (ngModelChange)="ChangeD(item, item.D28, 'D28')" [ngModelOptions]="{standalone: true}" *ngIf="DayInsMonth >= 28">
+                </td>
+                <td *ngIf="DayInsMonth >= 29">
+                  <input type="text" class="form-control text-center" id="name28" [(ngModel)]="item.D29" (ngModelChange)="ChangeD(item, item.D29, 'D29')" [ngModelOptions]="{standalone: true}" *ngIf="DayInsMonth >= 29">
+                </td>
+                <td *ngIf="DayInsMonth >= 30">
+                  <input type="text" class="form-control text-center" id="name29" [(ngModel)]="item.D30" (ngModelChange)="ChangeD(item, item.D30, 'D30')" [ngModelOptions]="{standalone: true}" *ngIf="DayInsMonth >= 30">
+                </td>
+                <td *ngIf="DayInsMonth >= 31">
+                  <input type="text" class="form-control text-center" id="name30" [(ngModel)]="item.D31" (ngModelChange)="ChangeD(item, item.D31, 'D31')" [ngModelOptions]="{standalone: true}" *ngIf="DayInsMonth >= 31">
+                </td>
+            </tbody>
+          </table>
+        </div>   
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+</div>

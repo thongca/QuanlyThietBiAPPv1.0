@@ -11,6 +11,8 @@ import { NgxPermissionsService } from 'ngx-permissions';
 import { CapnhathosothietbiService } from './capnhathosothietbi.service';
 import { Thietbi, Thongsokythuat } from '../../danhmuc/thietbi/thietbi';
 import * as $ from 'jquery';
+import { KhuvucmayService } from '../../danhmuc/khuvucmay/khuvucmay.service';
+import { ThietbirootService } from '../../../shared/thietbiroot.service';
 @Component({
   selector: 'app-capnhathosothietbi',
   templateUrl: './capnhathosothietbi.component.html',
@@ -35,7 +37,9 @@ modeltitle: string;
 HoSoThietBiID: string;
 TenThietBi: string;
 ThietBiID: string;
+Active: boolean;
 CheckLength: number;
+MaThietBi: string;
 // list
 listHoSoThietBi_: Capnhathosothietbi[];
 listThietBi_: [
@@ -65,9 +69,50 @@ modelHoSoThietBi_: Capnhathosothietbi;
     private toastr: ToastrService,
     private  permissionsService: NgxPermissionsService,
     private hosoThietBiService_: CapnhathosothietbiService,
-    private router: Router
+    private router: Router,
+    private khuvucmayservice_: KhuvucmayService,
+    private thietbirootService_: ThietbirootService
   ) {
+    this.Active = false;
     this.ThietBiID = sessionStorage.getItem('ThietBiID');
+    this.modelHoSoThietBi_ = {
+      HoSoThietBiID: '',
+      NgayLapHoSo: this.date,
+      ThietBiID: '',
+      TinhTrangThietBi: '',
+      BoPhanSuDung: '',
+      NoiDungSuaChua: '',
+      BaoDuong: false,
+      KetQuaNghiemThu: '',
+      NguoiThucHien: '',
+      ThoiGianBatDau: null,
+      ThoiGianKetThuc: null,
+      CaVanHanh: 1,
+      NguoiVanHanh: '',
+      KetLuan: false,
+      VatTuCanDung: ''
+      };
+      this.listThietBi_ = [{
+        ThietBiID: '',
+        TenThietBi: ''
+      }];
+      this.modelthietbi_ = {
+        ThietBiID: '',
+        MaThietBi: '',
+        TenThietBi: '',
+        XuatXu: '',
+        NamSanXuat: new Date,
+        NhomThietBiID: '',
+        DonViTinhID: '',
+        GhiChu: '',
+        ThuTu: 0,
+        IsActive: true,
+        checked: false,
+        TenDonVi: '',
+        TenNhom: '',
+        NgayLapHSo: new Date,
+      };
+      this.MaThietBi = sessionStorage.getItem('MaThietBi');
    }
 
   ngOnInit() {
@@ -88,43 +133,6 @@ modelHoSoThietBi_: Capnhathosothietbi;
         this.r1GetListHoSoThietBi();
       }
     });
-    this.modelHoSoThietBi_ = {
-    HoSoThietBiID: '',
-    NgayLapHoSo: this.date,
-    ThietBiID: '',
-    TinhTrangThietBi: '',
-    BoPhanSuDung: '',
-    NoiDungSuaChua: '',
-    BaoDuong: false,
-    KetQuaNghiemThu: '',
-    NguoiThucHien: '',
-    ThoiGianBatDau: null,
-    ThoiGianKetThuc: null,
-    CaVanHanh: 1,
-    NguoiVanHanh: '',
-    KetLuan: false,
-    VatTuCanDung: ''
-    };
-    this.listThietBi_ = [{
-      ThietBiID: '',
-      TenThietBi: ''
-    }];
-    this.modelthietbi_ = {
-      ThietBiID: '',
-      MaThietBi: '',
-      TenThietBi: '',
-      XuatXu: '',
-      NamSanXuat: new Date,
-      NhomThietBiID: '',
-      DonViTinhID: '',
-      GhiChu: '',
-      ThuTu: 0,
-      IsActive: true,
-      checked: false,
-      TenDonVi: '',
-      TenNhom: '',
-      NgayLapHSo: new Date,
-    };
     this.r1GetListThietBi();
   }
 
@@ -132,7 +140,6 @@ modelHoSoThietBi_: Capnhathosothietbi;
     this.options.totalpage = Math.ceil(this.options.total / this.options.pz);
     this.options.mathP = this.options.pz * this.options.p;
   }
-
 r1GetListThietBi() {
 this.hosoThietBiService_.r1GetListThietBiservice().subscribe(res => {
   if (res !== undefined) {
@@ -141,17 +148,22 @@ this.hosoThietBiService_.r1GetListThietBiservice().subscribe(res => {
       return false;
     }
     const listThietBi = res['data'];
-    if (this.listThietBi_.length > 0) {
-      this.TenThietBi = listThietBi.filter(x => x.ThietBiID === this.ThietBiID)[0].TenThietBi;
+    if (this.options._ThietbiID === '') {
+      this.options._ThietbiID = listThietBi[0].ThietBiID;
     }
-    this.options._ThietbiID = this.ThietBiID;
-    if (this._userInfo.user.IsAdmin === false) {
-      this.listThietBi_ = listThietBi.filter(x => x.ThietBiID === this.ThietBiID);
-    } else {
-      this.listThietBi_ = listThietBi;
+    this.ThietBiID = this.options._ThietbiID;
+    if ( this.ThietBiID !== '') {
+      if (this.listThietBi_.length > 0) {
+        this.TenThietBi = listThietBi.filter(x => x.ThietBiID === this.ThietBiID)[0].TenThietBi;
+      }
+      if (this._userInfo.user.IsAdmin === false) {
+        this.listThietBi_ = listThietBi.filter(x => x.ThietBiID === this.ThietBiID);
+      } else {
+        this.listThietBi_ = listThietBi;
+      }
+      this.r1GetListHoSoThietBi();
+      this.r1GetListThongSoKyThuat();
     }
-    this.r1GetListHoSoThietBi();
-    this.r1GetListThongSoKyThuat();
   }
 });
 }
@@ -273,7 +285,25 @@ HideModal() {
   }
 // change
 ThietBiChanged() {
+  sessionStorage.setItem('ThietBiID', this.options._ThietbiID);
+  this.ThietBiID = this.options._ThietbiID;
   this.r1GetListHoSoThietBi();
+  this.thietbirootService_.r1getThietBiByID(this.options._ThietbiID).subscribe(res => {
+    if (res !== undefined) {
+      if (res['error'] === 1) {
+        this.toastr.error(res['ms'], 'Thông báo');
+        return false;
+      }
+      const objThietBi = res['data'];
+      sessionStorage.setItem('MaThietBi', objThietBi.MaThietBi);
+      this.MaThietBi = objThietBi.MaThietBi;
+    }
+  },
+  err => {
+    if (err.status === 404) {
+      this.toastr.error('Không có phản hồi từ máy chủt', 'Thông báo');
+    }
+  });
 }
 InBaoCao() {
   setTimeout(() => {
@@ -304,7 +334,11 @@ refreshData() {
   this.options.p = 1;
   this.toastr.success('Tải lại trang thành công', 'Thông báo');
 }
-
+Event(e) {
+  if (e.target.closest('.select-tieuchi') === null) {
+    this.Active = false;
+  }
+}
   ngOnDestroy () {
     if (this.sub) {
       this.sub.unsubscribe();

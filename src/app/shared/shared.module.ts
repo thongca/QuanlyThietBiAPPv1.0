@@ -9,7 +9,7 @@ import { BtnPerDirective } from '../directive/btn-per.directive';
   exports: [
     CommonModule,
     NgxPermissionsModule,
-    BtnPerDirective
+    BtnPerDirective,
   ]
 })
 export class SharedModule { }
