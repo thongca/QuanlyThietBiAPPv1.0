@@ -13,6 +13,10 @@ import { Thietbi, Thongsokythuat } from '../../danhmuc/thietbi/thietbi';
 import * as $ from 'jquery';
 import { KhuvucmayService } from '../../danhmuc/khuvucmay/khuvucmay.service';
 import { ThietbirootService } from '../../../shared/thietbiroot.service';
+import { defineLocale } from 'ngx-bootstrap/chronos';
+import { viLocale } from 'ngx-bootstrap/locale';
+import { DatePipe } from '@angular/common';
+import { BsLocaleService } from 'ngx-bootstrap';
 @Component({
   selector: 'app-capnhathosothietbi',
   templateUrl: './capnhathosothietbi.component.html',
@@ -61,8 +65,13 @@ litsthongsocoban_: Thongsokythuat[] = [];
 // obj
 modelHoSoThietBi_: Capnhathosothietbi;
 
+objThoiGian: {
+  ThoiGianKetThuc: Date;
+  ThoiGianBatDau: Date;
+};
 
   constructor(
+    private datepipe: DatePipe,
     private spinnerService: Ng4LoadingSpinnerService ,
     private s: SearchService,
     private _userInfo: UserInfoService,
@@ -71,8 +80,10 @@ modelHoSoThietBi_: Capnhathosothietbi;
     private hosoThietBiService_: CapnhathosothietbiService,
     private router: Router,
     private khuvucmayservice_: KhuvucmayService,
-    private thietbirootService_: ThietbirootService
+    private thietbirootService_: ThietbirootService,
+    private datelageService: BsLocaleService
   ) {
+    this.datelageService.use('vi');
     this.Active = false;
     this.ThietBiID = sessionStorage.getItem('ThietBiID');
     this.modelHoSoThietBi_ = {
@@ -90,7 +101,9 @@ modelHoSoThietBi_: Capnhathosothietbi;
       CaVanHanh: 1,
       NguoiVanHanh: '',
       KetLuan: false,
-      VatTuCanDung: ''
+      VatTuCanDung: '',
+      DienDaiNguyenNhan: '',
+      NguyenNhanTomTat: ''
       };
       this.listThietBi_ = [{
         ThietBiID: '',
@@ -111,6 +124,10 @@ modelHoSoThietBi_: Capnhathosothietbi;
         TenDonVi: '',
         TenNhom: '',
         NgayLapHSo: new Date,
+      };
+      this.objThoiGian = {
+        ThoiGianKetThuc: this.date,
+        ThoiGianBatDau: null,
       };
       this.MaThietBi = sessionStorage.getItem('MaThietBi');
    }
@@ -200,6 +217,7 @@ r1GetListHoSoThietBi() {
   });
   }
 R2AdDataHoSo() {
+  this.spinnerService.show();
   this.modelHoSoThietBi_.ThietBiID = this.ThietBiID;
   if (this.modelHoSoThietBi_.ThietBiID === ''
   || this.modelHoSoThietBi_.TinhTrangThietBi === ''
@@ -207,25 +225,37 @@ R2AdDataHoSo() {
   || this.modelHoSoThietBi_.ThoiGianBatDau === null
   || this.modelHoSoThietBi_.NguoiThucHien === null
   || this.modelHoSoThietBi_.NguoiVanHanh === null
+  || this.modelHoSoThietBi_.NguyenNhanTomTat === ''
   ) {
     this.toastr.error('Vui lòng nhập thông tin vào cái trường có dấu *, Vui lòng thử lại!', 'Thông báo lỗi');
     return false;
   }
+  const dateopt = this.datepipe.transform(this.objThoiGian.ThoiGianBatDau, 'MM-dd-yyyy HH:mm:ss');
+  this.modelHoSoThietBi_.ThoiGianBatDau = this.date;
+  const dateopkt = this.datepipe.transform(this.objThoiGian.ThoiGianKetThuc, 'MM-dd-yyyy HH:mm:ss');
+  this.modelHoSoThietBi_.ThoiGianKetThuc = this.date;
+  const model_ = {ThoiGianBatDau:  dateopt, ThoiGianKetThuc: dateopkt};
   if (this.modelHoSoThietBi_.HoSoThietBiID === '') {
-  this.hosoThietBiService_.R2AddHoSoThietBi(this.modelHoSoThietBi_).subscribe(res => {
+  this.hosoThietBiService_.R2AddHoSoThietBi(this.modelHoSoThietBi_, model_).subscribe(res => {
     if (res !== undefined) {
       if (res['error'] === 1) {
         this.toastr.error(res['ms'], 'Thông báo lỗi');
         return false;
+      } else if (res['error'] === 0) {
+        this.largeModal.hide();
+        this.toastr.success('Thêm hồ sơ thiết bị thành công!', 'Thông báo');
+        this.r1GetListHoSoThietBi();
       }
-      this.toastr.success('Thêm hồ sơ thiết bị thành công!', 'Thông báo');
-      this.largeModal.hide();
-      this.r1GetListHoSoThietBi();
+    }
+  },
+  err => {
+    if (err.status === 500) {
+      this.toastr.error('Mất kết nối đến máy chủ, Vui lòng kiểm tra lại đường dẫn!', 'Thông báo');
     }
   });
 } else {
   this.spinnerService.show();
-    this.hosoThietBiService_.r3updateHoSoThietBi(this.HoSoThietBiID, this.modelHoSoThietBi_).subscribe(res => {
+    this.hosoThietBiService_.r3updateHoSoThietBi(this.HoSoThietBiID, this.modelHoSoThietBi_, model_).subscribe(res => {
       this.spinnerService.hide();
         if (res !== undefined) {
           if (res['error'] === 1) {
@@ -238,7 +268,7 @@ R2AdDataHoSo() {
         }
     });
 }
-
+this.spinnerService.hide();
 }
 // modal
 SelectIDEditModel(HoSoThietBiID: string) {
@@ -248,10 +278,18 @@ SelectIDEditModel(HoSoThietBiID: string) {
     if (res !== undefined) {
       if (res['error']  === 1) {
         this.toastr.error(res['ms'], 'Thông báo lỗi');
+        return false;
       }
      this.modelHoSoThietBi_ = res['data'];
+     this.objThoiGian.ThoiGianBatDau = new Date(this.modelHoSoThietBi_.ThoiGianBatDau);
+     this.objThoiGian.ThoiGianKetThuc = new Date(this.modelHoSoThietBi_.ThoiGianKetThuc);
     }
     this.largeModal.show();
+  },
+   err => {
+    if (err.status === 500) {
+    this.toastr.error('Mất kết nối tới máy chủ, Vui lòng kiểm tra lại đường dẫn!', 'Thông báo');
+    }
   });
 }
 
@@ -265,7 +303,7 @@ HideModal() {
       this.modelHoSoThietBi_ = {
         HoSoThietBiID: '',
         NgayLapHoSo: this.date,
-        ThietBiID: this.modelHoSoThietBi_.ThietBiID,
+        ThietBiID: '',
         TinhTrangThietBi: '',
         BoPhanSuDung: 'Xưởng sản xuất',
         NoiDungSuaChua: '',
@@ -277,7 +315,13 @@ HideModal() {
         CaVanHanh: 1,
         NguoiVanHanh: '',
         KetLuan: false,
-        VatTuCanDung: ''
+        VatTuCanDung: '',
+        DienDaiNguyenNhan: '',
+        NguyenNhanTomTat: ''
+        };
+        this.objThoiGian = {
+          ThoiGianKetThuc: null,
+          ThoiGianBatDau: this.date,
         };
       this.largeModal.show();
     } else {
@@ -310,7 +354,6 @@ InBaoCao() {
     $('#btnprinthosokythuat').click();
    }, 50);
 }
-
 // Tìm kiếm
 // Phân trang
 NextPage() {

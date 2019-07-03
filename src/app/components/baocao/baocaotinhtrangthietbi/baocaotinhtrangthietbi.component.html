@@ -1,0 +1,89 @@
+<div class="animated fadeIn" (click)="Event($event)">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="select-tieuchi">
+            <button (click)="Active = !Active" type="button" class="buttom-dropdown" title="Chọn tiêu chí">
+              <img src="assets/img/brand/settings.png" class="img-plus-header" alt="plus" />
+              <a>
+                <strong>Chọn tiêu chí</strong>
+              </a>
+            </button>
+            <ul *ngIf="Active === true" class="ul-dropdown">
+              <li class="li-select" *ngxPermissionsOnly="['Administrator']">
+                <select id="select5" name="select5" class="form-control" [(ngModel)]="options._ThietbiID"
+                  (ngModelChange)="ThietBiChanged(modelHoSoThietBi_.ThietBiID)">
+                  <option value="">----- Chọn thiết bị -----</option>
+                  <option *ngFor="let c of listThietBi_" [ngValue]="c.ThietBiID">{{c.TenThietBi}}</option>
+                </select>
+              </li>
+            </ul>
+          </div>
+          <ul class="ul-box-crud">
+            <li data-toggle="modal" (click)="refreshData()" title="Làm mới">
+              <img src="assets/img/brand/refresh-page-option.png" class="img-plus-header" alt="plus" />
+              <a>
+                <strong>Làm mới</strong>
+              </a>
+            </li>
+            <li appBtnPer="export" data-toggle="modal" title="In báo cáo hồ sơ thiết bị" (click)="InBaoCao()">
+              <img src="assets/img/brand/printer-.png" class="img-plus-header" alt="ThucHien" />
+              <a>
+                <strong>Xuất báo cáo</strong>
+              </a>
+            </li>
+            <li class="li-select ma-may">
+              <strong *ngIf="MaThietBi !== ''">
+                Mã máy: {{MaThietBi}}
+              </strong>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body card-overler">
+          <div class="animated fadeIn">
+            <div class="card-columns cols-2">
+              <div class="card">
+                <div class="card-header">
+                  <strong>
+                      Biểu đồ thời gian dừng máy do lỗi tháng hiện tại
+                  </strong>
+                  <div class="card-header-actions">
+                  </div>
+                </div>
+                <div class="card-body">
+                  <canvas id="myChart" width="400" height="200"></canvas>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">
+                  <strong>
+                    Biểu đồ phân tích nguyên nhân dừng máy Pareto
+                  </strong>
+                  <div class="card-header-actions">
+                  </div>
+                </div>
+                <div class="card-body">
+                  <canvas id="paretoChartbar" width="400" height="200"></canvas>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">
+                  <strong>
+                      Biểu đồ thời gian trung bình giữa hai lần dừng máy
+                  </strong>
+                  <div class="card-header-actions">
+                  </div>
+                </div>
+                <div class="card-body">
+                  <canvas id="myChartbarTB" width="400" height="200"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+</div>

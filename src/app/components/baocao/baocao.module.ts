@@ -11,10 +11,11 @@ import { BaocaochecklistComponent } from './baocaochecklist/baocaochecklist.comp
 import { ChartsModule } from 'ng2-charts';
 import { BaocaovesinhcongnghiepComponent } from './baocaovesinhcongnghiep/baocaovesinhcongnghiep.component';
 import { BsDatepickerModule } from 'ngx-bootstrap';
+import { BaocaotinhtrangthietbiComponent } from './baocaotinhtrangthietbi/baocaotinhtrangthietbi.component';
 
 
 @NgModule({
-  declarations: [BaocaochecklistComponent, BaocaovesinhcongnghiepComponent],
+  declarations: [BaocaochecklistComponent, BaocaovesinhcongnghiepComponent, BaocaotinhtrangthietbiComponent],
   imports: [
     CommonModule,
     BaocaoRoutingModule,

@@ -59,6 +59,7 @@
                 <th class="text-center" width=50>STT</th>
                 <th class="text-center">Ngày tháng</th>
                 <th>Công việc sửa chữa, bảo dưỡng kiểm định đã thực hiện</th>
+                <th width=120 class="text-center">TG/dừng (h)</th>
                 <th appBtnPer="update" class="text-center" width=100>Chức năng</th>
               </tr>
             </thead>
@@ -66,7 +67,8 @@
               <tr *ngFor="let item of listHoSoThietBi_;let i = index">
                 <td class="text-center">{{i +  1}}</td>
                 <td class="text-center">{{item.NgayLapHoSo|date:'dd/MM/yyyy'}}</td>
-                <td>{{item.TinhTrangThietBi}}</td>
+                <td >{{item.TinhTrangThietBi}}</td>
+                <td class="text-center">{{item.ThoiGianDung}}</td>
                 <td class="text-center" appBtnPer="update" (click)="SelectIDEditModel(item.HoSoThietBiID)" title="Sửa">
                   <img class="img-icon-edit" src="assets/img/brand/edit.png" alt="Sửa">
                 </td>
@@ -113,7 +115,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+        <form action="" method="post" autocomplete="off" enctype="multipart/form-data" class="form-horizontal">
           <div class="animated fadeIn">
             <div class="row">
               <div class="col-sm-6">
@@ -137,6 +139,30 @@
                       [(ngModel)]="modelHoSoThietBi_.BoPhanSuDung">
                       <option *ngFor="let c of listBoPhan_" [ngValue]="c.BoPhanSuDung">{{c.BoPhanSuDung}}</option>
                     </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="form-group row">
+                  <label class="title-text col-form-label" for="name">Nguyên nhân VT
+                    <span>*</span>
+                  </label>
+                  <div class="input-text">
+                    <input type="text" class="form-control" id="name" [(ngModel)]="modelHoSoThietBi_.NguyenNhanTomTat"
+                      [ngModelOptions]="{standalone: true}" placeholder="20 ký tự">
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-8">
+                <div class="form-group row">
+                  <label class="title-text col-form-label" for="name">Giải thích
+                  </label>
+                  <div class="input-text">
+                    <textarea type="text" class="form-control" id="name" [(ngModel)]="modelHoSoThietBi_.DienDaiNguyenNhan"
+                      [ngModelOptions]="{standalone: true}" placeholder="Diễn giải nguyên nhân (nếu có)">
+                    </textarea>
                   </div>
                 </div>
               </div>
@@ -219,9 +245,8 @@
                     <span>*</span>
                   </label>
                   <div class="input-text">
-                    <input type="date" datetime="yyyy-MM-dd HH:mm:ss" class="form-control" id="name"
-                      [ngModel]="modelHoSoThietBi_.ThoiGianBatDau| date:'yyyy-MM-dd'"
-                      [ngModelOptions]="{standalone: true}">
+                      <input class="form-control" placeholder="DD/MM/YYYY" bsDatepicker [(ngModel)]="objThoiGian.ThoiGianBatDau" placement="bottom"  [bsConfig]="{dateInputFormat: 'DD/MM/YYYY HH:mm'}"  [ngModelOptions]="{standalone: true}"
+                   >
                   </div>
                 </div>
               </div>
@@ -231,10 +256,7 @@
 
                   </label>
                   <div class="input-text">
-                    <input type="date" class="form-control" id="name"
-                      [ngModel]="modelHoSoThietBi_.ThoiGianKetThuc | date:'yyyy-MM-dd'"
-                      (ngModelChange)="modelHoSoThietBi_.ThoiGianKetThuc = $event"
-                      [ngModelOptions]="{standalone: true}">
+                      <input class="form-control" placeholder="DD/MM/YYYY" bsDatepicker [(ngModel)]="objThoiGian.ThoiGianKetThuc" placement="bottom"  [bsConfig]="{dateInputFormat: 'DD/MM/YYYY HH:mm'}"  [ngModelOptions]="{standalone: true}" >
                   </div>
                 </div>
               </div>

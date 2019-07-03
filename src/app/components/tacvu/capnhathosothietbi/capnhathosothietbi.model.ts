@@ -14,4 +14,6 @@ export class Capnhathosothietbi {
     NguoiVanHanh: string;
     KetLuan: boolean;
     VatTuCanDung: string;
+    NguyenNhanTomTat: string;
+    DienDaiNguyenNhan: string;
 }

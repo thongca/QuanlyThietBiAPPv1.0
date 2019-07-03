@@ -7,7 +7,7 @@ import { UserInfoService } from '../../../shared/user-info.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { ThietbiService } from './thietbi.service';
-import { Thongsokythuat, Thietbi } from './thietbi';
+import { Thongsokythuat, Thietbi, ThietbiDM } from './thietbi';
 import * as $ from 'jquery';
 @Component({
   selector: 'app-thietbi',
@@ -15,7 +15,7 @@ import * as $ from 'jquery';
   styleUrls: ['./thietbi.component.scss']
 })
 export class ThietbiComponent implements OnInit, OnDestroy {
- options = {s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0};
+ options = {s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0, NhaMayID: null};
 
   // subscript
   private subscription: Subscription;
@@ -29,8 +29,8 @@ litsthongsocoban_: Thongsokythuat[] = [];
 litsthongsochitiet_: Thongsokythuat[] = [];
 modelthongsokythuat_: Thongsokythuat;
 checkall: boolean;
-modelthietbi_: Thietbi;
-listthietbi_: Thietbi[];
+modelthietbi_: ThietbiDM;
+listthietbi_: ThietbiDM[];
 errormodal: string;
   // modal
   @ViewChild('largeModal') public largeModal: ModalDirective;
@@ -47,6 +47,11 @@ errormodal: string;
   // list
   listNhomThietBi_: {}[];
   listDonViTinh_: {}[];
+  listNhaMay_: {
+    NhaMayID: number;
+    TenNhaMay: string;
+  }[];
+
   constructor(
      private spinnerService: Ng4LoadingSpinnerService ,
      private s: SearchService,
@@ -72,6 +77,7 @@ errormodal: string;
       TenNhom: '',
       TenDonVi: '',
       NgayLapHSo: new Date,
+      NhaMayID: null,
     };
     this.modelthongsokythuat_ = {
       ThongSoKTID: '',
@@ -102,10 +108,36 @@ errormodal: string;
     });
     this.r1GetListNhomTB();
     this.r1GetListNDonViTinh();
+    this.R1DanhSachNhaMay();
   }
   SetTotalPage() {
     this.options.totalpage = Math.ceil(this.options.total / this.options.pz);
     this.options.mathP = this.options.pz * this.options.p;
+}
+
+// danh sách nhà máy
+R1DanhSachNhaMay() {
+  this.thietbiservice_.r1GetNhaMay().subscribe(res => {
+    if (res !== undefined) {
+      if (res['error'] === 1) {
+        return false;
+      }
+      const data = res['data'];
+      if (data !== undefined) {
+        this.listNhaMay_ = data;
+        this.options.NhaMayID = this.listNhaMay_[0].NhaMayID;
+      }
+    }
+  }, err => {
+    if (err.status === 500) {
+      this.toastr.error('Mất kết nối đến máy chủ, Vui lòng kiểm tra lại đường dẫn!', 'Thông báo');
+      return false;
+    }
+    if (err.status === 404) {
+      this.toastr.error('Lỗi xác thực máy chủ, Vui lòng kiểm tra lại!', 'Thông báo');
+      return false;
+    }
+  });
 }
 // danh sách nhóm thiết bị
 r1GetListNhomTB() {
@@ -161,6 +193,7 @@ Showmodal(check) {
       TenDonVi: '',
       TenNhom: '',
       NgayLapHSo: new Date,
+      NhaMayID: 1,
     };
     this.litsthongsokythuat_ = [];
 this.modelthongsokythuat_ = {
@@ -215,6 +248,7 @@ R2AdDataThietBi(): boolean {
   this.toastr.warning('Vui lòng nhập thông tin vào các trường có dấu (*)', 'Cảnh báo');
     return false;
   }
+  this.modelthietbi_.NhaMayID = this.options.NhaMayID;
   if (this.modelthietbi_.ThietBiID === '' || this.modelthietbi_.DonViTinhID === null) {
     this.spinnerService.show();
     this.thietbiservice_.R2AddThietBiThongSo(this.modelthietbi_, this.litsthongsokythuat_).subscribe(res => {
@@ -307,7 +341,9 @@ UpdateThongSo(ThongSoID) {
     }
   });
 }
-
+ChangeNhaMay() {
+this.R1GetListThietBi();
+}
 HideModal() {
   this.largeModal.hide();
   this.R1GetListThietBi();

@@ -62,7 +62,8 @@ headers: new HttpHeaders({
 return this.http.post(url_ , options, options_);
 }
   // update
-  r3updateHoSoThietBi(ID: string, model_: object) {
+  r3updateHoSoThietBi(ID: string, model_: object, objThoiGian) {
+    const model = {hoSoThietBiDTO: model_, objThoiGian: objThoiGian};
     let url_ = this.BaseURL + '/api/CD_TV_HoSoThietBi/' + ID;
       url_ = url_.replace(/[?&]$/, '');
     const options_: any = {
@@ -71,10 +72,11 @@ return this.http.post(url_ , options, options_);
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       })
     };
-  return this.http.put(url_, model_, options_);
+  return this.http.put(url_, model, options_);
   }
     // add
-    R2AddHoSoThietBi(model: Capnhathosothietbi) {
+    R2AddHoSoThietBi(modelpara: Capnhathosothietbi, objThoiGian) {
+      const model = {hoSoThietBiDTO: modelpara, objThoiGian: objThoiGian};
       let url_ = this.BaseURL + '/api/CD_TV_HoSoThietBi/r2AddHoSoThietBi';
       url_ = url_.replace(/[?&]$/, '');
       const options_: any = {

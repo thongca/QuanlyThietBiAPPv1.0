@@ -23,6 +23,12 @@
                 <strong>Xóa</strong>
               </a>
             </li>
+            <li class="li-select">
+                <select id="select2" name="select2" class="form-control" [(ngModel)]="options.NhaMayID" (ngModelChange)="ChangeNhaMay()">
+                  <option value="">----- Chọn nhà máy -----</option>
+                  <option *ngFor="let c of listNhaMay_" [ngValue]="c.NhaMayID">{{c.TenNhaMay}}</option>
+                </select>
+              </li>
           </ul>
         </div>
         <div class="card-body">

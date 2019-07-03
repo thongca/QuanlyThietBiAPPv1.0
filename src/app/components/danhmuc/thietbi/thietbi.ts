@@ -26,4 +26,22 @@ export class Thongsokythuat {
     IsSelect: boolean;
     IsChange: boolean;
 }
+export class ThietbiDM {
+    ThietBiID: string;
+    MaThietBi: string;
+    TenThietBi: string;
+    XuatXu: string;
+    NamSanXuat: Date;
+    NhomThietBiID: string;
+    DonViTinhID: string;
+    GhiChu: string;
+    ThuTu: number;
+    IsActive: boolean;
+    checked: boolean;
+    TenDonVi: string;
+    TenNhom: string;
+    NgayLapHSo: Date;
+    NhaMayID: number;
+}
+
 

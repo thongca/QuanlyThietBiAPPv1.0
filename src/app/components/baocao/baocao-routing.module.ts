@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../../auth/auth.guard';
 import { BaocaochecklistComponent } from './baocaochecklist/baocaochecklist.component';
 import { BaocaovesinhcongnghiepComponent } from './baocaovesinhcongnghiep/baocaovesinhcongnghiep.component';
+import { BaocaotinhtrangthietbiComponent } from './baocaotinhtrangthietbi/baocaotinhtrangthietbi.component';
 const routes: Routes = [
   {
     canActivateChild: [AuthGuard],
@@ -15,6 +16,12 @@ const routes: Routes = [
     path: 'baocaovesinhcongnghiep',
     component: BaocaovesinhcongnghiepComponent,
     data: {routeLink: '/baocao/baocaovesinhcongnghiep'}
+  },
+  {
+    canActivateChild: [AuthGuard],
+    path: 'baocaotinhtrangthietbi',
+    component: BaocaotinhtrangthietbiComponent,
+    data: {routeLink: '/baocao/baocaotinhtrangthietbi'}
   },
 ];
 

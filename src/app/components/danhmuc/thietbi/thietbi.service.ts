@@ -15,7 +15,17 @@ export class ThietbiService {
   ) {
     this.BaseURL = this.baseUrl_.sbaseURL;
   }
-
+  r1GetNhaMay() {
+    let url_ = this.BaseURL + '/api/CD_DM_ThietBi/r1Cd_DM_NhaMay';
+    url_ = url_.replace(/[?&]$/, '');
+    const options_: any = {
+  ContentType: 'application/json; charset=utf-8',
+  headers: new HttpHeaders({
+    'Authorization': 'Bearer ' + localStorage.getItem('token')
+  })
+  };
+  return this.http.get(url_ , options_);
+}
   r1GetThietbibyID(ThietBiID: string) {
     let url_ = this.BaseURL + '/api/CD_DM_ThietBi/' + ThietBiID;
     url_ = url_.replace(/[?&]$/, '');
