@@ -23,7 +23,7 @@ export class BaoduongdinhkyComponent implements OnInit, OnDestroy {
   listbaoduongdinhky_: Baoduongdinhky[];
   options = {
     s: '', p: 1, pz: 2000, totalpage: 0, total: 0, paxpz: 0,
-    mathP: 0, _ThietbiID: '', IsTime: this.date
+    mathP: 0, _ThietbiID: '', IsTime: this.date, NhaMayID: null
   };
 // list
 listThietBi_: Thietbi[] = [];
@@ -54,6 +54,7 @@ MaThietBi: string;
    }
    this.Active = false;
    this.MaThietBi = sessionStorage.getItem('MaThietBi');
+   this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
   }
 
   ngOnInit() {
@@ -67,8 +68,9 @@ MaThietBi: string;
   }
       // danh sách thiet bi
       R1GetListThietBi() {
+        const model_ = {NhaMayID: this._userInfo.R1_GetNhaMayID()};
         this.spinnerService.show();
-        this.sub = this.khuvucmayservice_.r1Listthietbi().subscribe(res => {
+        this.sub = this.khuvucmayservice_.r1Listthietbi(model_).subscribe(res => {
           this.spinnerService.hide();
           if (res['error'] === 1) {
             this.toastr.error(res['ms'], 'Thông báo lỗi');

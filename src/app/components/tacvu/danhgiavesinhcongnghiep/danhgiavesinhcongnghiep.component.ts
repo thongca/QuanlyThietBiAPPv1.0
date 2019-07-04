@@ -30,7 +30,9 @@ T5: boolean;
 Active: boolean;
   date: Date = new Date();
   options = {s: '', p: 1, pz: 2000, totalpage: 0, total: 0, paxpz: 0,
-  mathP: 0, _ThietbiID: '', KhuVucVSCNID: '', IsTime: '', T5: true, VeSinhCongNghiepMID: '' };
+  mathP: 0, _ThietbiID: '', KhuVucVSCNID: '', IsTime: '', T5: true, VeSinhCongNghiepMID: '',
+  NhaMayID: null
+ };
   @ViewChild('ImportExModal') public ImportExModal: ModalDirective;
   @ViewChild('xacnhanExModal') public xacnhanExModal: ModalDirective;
   private subscription: Subscription;
@@ -100,6 +102,7 @@ listThietBi_: Thietbi[] = [];
     private khuvucmayservice_: KhuvucmayService,
     private thietbirootService_: ThietbirootService
   ) {
+    this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
     this.datacheck_ = {
       IsCheckT1: 0,
     IsCheckT2: 0,
@@ -161,8 +164,9 @@ listThietBi_: Thietbi[] = [];
   // ll
     // danh sách thiet bi
     R1GetListThietBi() {
+      const model_ = {NhaMayID: this._userInfo.R1_GetNhaMayID()};
       this.spinnerService.show();
-      this.sub = this.khuvucmayservice_.r1Listthietbi().subscribe(res => {
+      this.sub = this.khuvucmayservice_.r1Listthietbi(model_).subscribe(res => {
         this.spinnerService.hide();
         if (res['error'] === 1) {
           this.toastr.error(res['ms'], 'Thông báo lỗi');

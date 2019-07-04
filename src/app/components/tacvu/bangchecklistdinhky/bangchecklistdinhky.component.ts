@@ -23,7 +23,7 @@ export class BangchecklistdinhkyComponent implements OnInit, OnDestroy {
   valueDate: string;
 options = {
     s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0, KhuVucID: '',
-    _ThietbiID: '', IsTime: ''
+    _ThietbiID: '', IsTime: '', NhaMayID: null
   };
   // sub
 sub: Subscription;
@@ -57,6 +57,7 @@ public Active: boolean;
     private khuvucmayservice_: KhuvucmayService,
     private bangcheckListdinhKyService_: BangchecklistdinhkyService
   ) {
+    this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
     this.KhuVucID = '';
     this.date = new Date();
     this.ThietBiID = sessionStorage.getItem('ThietBiID');
@@ -134,7 +135,8 @@ public Active: boolean;
   // danh sách thiet bi
   R1GetListThietBi() {
     this.spinnerService.show();
-    this.sub = this.khuvucmayservice_.r1Listthietbi().subscribe(res => {
+    const model_ = {NhaMayID: this._userInfo.R1_GetNhaMayID()};
+    this.sub = this.khuvucmayservice_.r1Listthietbi(model_).subscribe(res => {
       this.spinnerService.hide();
       if (res['error'] === 1) {
         this.toastr.error(res['ms'], 'Thông báo lỗi');

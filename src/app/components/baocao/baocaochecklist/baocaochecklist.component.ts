@@ -7,6 +7,7 @@ import { Thietbi } from '../../danhmuc/thietbi/thietbi';
 import { KhuvucmayService } from '../../danhmuc/khuvucmay/khuvucmay.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { ToastrService } from 'ngx-toastr';
+import { UserInfoService } from '../../../shared/user-info.service';
 @Component({
   selector: 'app-baocaochecklist',
   templateUrl: './baocaochecklist.component.html',
@@ -15,7 +16,7 @@ import { ToastrService } from 'ngx-toastr';
 export class BaocaochecklistComponent implements OnInit, OnDestroy {
   options = {
     s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0, KhuVucID: '',
-    _ThietbiID: '', DateStart: Date, DateEnd: Date, Typewhere: 0
+    _ThietbiID: '', DateStart: Date, DateEnd: Date, Typewhere: 0, NhaMayID: null
   };
   ListType:
     {
@@ -62,7 +63,9 @@ objThietBi: {};
     private khuvucmayservice_: KhuvucmayService,
     private spinnerService: Ng4LoadingSpinnerService,
     private toastr: ToastrService,
+    private _userInfo: UserInfoService,
   ) {
+    this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
     this.Active = false;
     this.isLoad = false;
     this.isReport = false;
@@ -248,7 +251,7 @@ public barChartData1st: any[] = [
   // danh sách thiet bi
   R1GetListThietBi() {
     this.spinnerService.show();
-    this.sub = this.khuvucmayservice_.r1Listthietbi().subscribe(res => {
+    this.sub = this.khuvucmayservice_.r1Listthietbi(this.options).subscribe(res => {
       this.spinnerService.hide();
       if (res['error'] === 1) {
         this.toastr.error(res['ms'], 'Thông báo lỗi');

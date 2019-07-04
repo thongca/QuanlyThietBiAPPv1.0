@@ -51,7 +51,7 @@ export class KhuvucmayService {
   }
 
   // list thiết bị select2
-  r1Listthietbi() {
+  r1Listthietbi(options) {
     let url_ = this.BaseURL + '/api/CD_DM_KhuVucMay/r1GetListThietBi';
     url_ = url_.replace(/[?&]$/, '');
     const options_: any = {
@@ -60,7 +60,7 @@ export class KhuvucmayService {
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       })
     };
-    return this.http.get(url_, options_);
+    return this.http.post(url_, options, options_);
   }
   // list nhóm thiết bị
   r1Listdonvitinh() {

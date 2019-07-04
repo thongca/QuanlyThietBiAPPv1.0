@@ -17,5 +17,6 @@ export class User {
     GroupRoleName: string;
     LaTruongPhong: boolean;
     BanGiamDoc: boolean;
+    NhaMayID: number;
 }
 

@@ -15,7 +15,7 @@ export class ThietbiService {
   ) {
     this.BaseURL = this.baseUrl_.sbaseURL;
   }
-  r1GetNhaMay() {
+  r1GetNhaMay(options) {
     let url_ = this.BaseURL + '/api/CD_DM_ThietBi/r1Cd_DM_NhaMay';
     url_ = url_.replace(/[?&]$/, '');
     const options_: any = {
@@ -24,7 +24,7 @@ export class ThietbiService {
     'Authorization': 'Bearer ' + localStorage.getItem('token')
   })
   };
-  return this.http.get(url_ , options_);
+  return this.http.post(url_ , options, options_);
 }
   r1GetThietbibyID(ThietBiID: string) {
     let url_ = this.BaseURL + '/api/CD_DM_ThietBi/' + ThietBiID;

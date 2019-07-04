@@ -14,10 +14,16 @@ import { KhuvucmayComponent } from './khuvucmay/khuvucmay.component';
 import { QuydinhdiemdanhgiaComponent } from './quydinhdiemdanhgia/quydinhdiemdanhgia.component';
 import { KhuvucvesinhcongnghiepComponent } from './khuvucvesinhcongnghiep/khuvucvesinhcongnghiep.component';
 import { ChitietvesinhcongnghiepComponent } from './chitietvesinhcongnghiep/chitietvesinhcongnghiep.component';
+import { VattucodienComponent } from './vattucodien/vattucodien.component';
+import { NhomvattucodienComponent } from './nhomvattucodien/nhomvattucodien.component';
 
 
 @NgModule({
-  declarations: [PhongbanComponent, ThietbiComponent, NhomthietbiComponent, DonvitinhComponent, KhuvucmayComponent, QuydinhdiemdanhgiaComponent, KhuvucvesinhcongnghiepComponent, ChitietvesinhcongnghiepComponent],
+  declarations: [PhongbanComponent, ThietbiComponent, NhomthietbiComponent,
+     DonvitinhComponent, KhuvucmayComponent, QuydinhdiemdanhgiaComponent,
+      KhuvucvesinhcongnghiepComponent, ChitietvesinhcongnghiepComponent,
+       VattucodienComponent,
+       NhomvattucodienComponent],
   imports: [
     SharedModule,
     DanhmucRoutingModule,

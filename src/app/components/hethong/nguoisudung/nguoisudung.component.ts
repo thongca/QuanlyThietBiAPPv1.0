@@ -16,6 +16,7 @@ import { RootbaseUrlService } from '../../../shared/rootbase-url.service';
 // import searchroot
 import { SearchService } from '../../../shared/search.service';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { ThietbiService } from '../../danhmuc/thietbi/thietbi.service';
 
 @Component({
   selector: 'app-nguoisudung',
@@ -61,7 +62,7 @@ export class NguoisudungComponent implements OnInit, OnDestroy {
  checkall: boolean;
 dataservice: any;
 _users: DelUser;
-options = {s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0, PhongbanID: ''};
+options = {s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0, PhongbanID: '', NhaMayID: null};
 // khai báo thông tin đăng nhập
 usercontext_: {};
 
@@ -82,6 +83,10 @@ subscription: Subscription;
   @ViewChild('largeModal') public largeModal: ModalDirective;
   @ViewChild('dangerModal') public dangerModal: ModalDirective;
   @ViewChild('warningModal') public warningModal: ModalDirective;
+  listNhaMay_: {
+    NhaMayID: number;
+    TenNhaMay: string;
+  }[];
   // tslint:disable-next-line:max-line-length
   constructor(private spinnerService: Ng4LoadingSpinnerService ,
      private s: SearchService,
@@ -90,8 +95,34 @@ subscription: Subscription;
      private _nhomngdservice: NhomnguoidungService,
      private baseUrl_: RootbaseUrlService,
      private  permissionsService: NgxPermissionsService,
+     private thietbiservice_: ThietbiService,
       private toastr: ToastrService) {
         this.BaseUrl = this.baseUrl_.sbaseURL;
+        this.user = {
+          UserID: '',
+          UserName: '',
+          Password: '',
+          FullName: '',
+          Email: '',
+          PhoneNumber: '',
+          Address: '',
+          IsOrder: 0,
+          PhongbanID: '',
+          IsActive: true,
+          IsAdmin: false,
+          AvaUser: '',
+          BirthDay: '',
+          SexUser: true,
+          GroupRoleID: '',
+          GroupRoleName: '',
+          BanGiamDoc: false,
+          LaTruongPhong: false,
+          NhaMayID: null,
+        };
+        this.listNhaMay_ = [{
+          NhaMayID: null,
+          TenNhaMay: ''
+        }];
        }
   SetTotalPage() {
     this.options.totalpage = Math.ceil(this.options.total / this.options.pz);
@@ -116,33 +147,38 @@ subscription: Subscription;
         this.R1GetDataUser();
       }
     });
-    this.user = {
-      UserID: '',
-      UserName: '',
-      Password: '',
-      FullName: '',
-      Email: '',
-      PhoneNumber: '',
-      Address: '',
-      IsOrder: 0,
-      PhongbanID: '',
-      IsActive: true,
-      IsAdmin: false,
-      AvaUser: '',
-      BirthDay: '',
-      SexUser: true,
-      GroupRoleID: '',
-      GroupRoleName: '',
-      BanGiamDoc: false,
-      LaTruongPhong: false,
-    };
     this.r1getListNhomQuyen();
     this.r1getListPhongBan();
+    this.R1DanhSachNhaMay();
   }
  openAttachfile (check) {
     if (check === 'works') {
         $('input.inputimgFileWorks').click();
     }
+}
+// danh sách nhà máy
+R1DanhSachNhaMay() {
+  const model_ = {NhaMayID: this._userInfo.R1_GetNhaMayID()};
+  this.thietbiservice_.r1GetNhaMay(model_).subscribe(res => {
+    if (res !== undefined) {
+      if (res['error'] === 1) {
+        return false;
+      }
+      const data = res['data'];
+      if (data !== undefined) {
+        this.listNhaMay_ = data;
+      }
+    }
+  }, err => {
+    if (err.status === 500) {
+      this.toastr.error('Mất kết nối đến máy chủ, Vui lòng kiểm tra lại đường dẫn!', 'Thông báo');
+      return false;
+    }
+    if (err.status === 404) {
+      this.toastr.error('Lỗi xác thực máy chủ, Vui lòng kiểm tra lại!', 'Thông báo');
+      return false;
+    }
+  });
 }
 SelectIDEditModel(UserID) {
   this.modeltitle = 'Sửa người sử dụng';
@@ -162,7 +198,7 @@ Showmodal(check) {
       PhongbanID = this.user.PhongbanID;
     }
     // tslint:disable-next-line:max-line-length
-    this.user = {UserID: '', UserName: '', Password: '', FullName: '', Email: '',  PhoneNumber: '', PhongbanID: PhongbanID , Address: '', IsOrder: 0,  IsActive: true,  IsAdmin: false, AvaUser: '',  BirthDay: '',  SexUser: true, GroupRoleID: '', GroupRoleName: '', LaTruongPhong: false, BanGiamDoc: false };
+    this.user = {UserID: '', UserName: '', Password: '', FullName: '', Email: '',  PhoneNumber: '', PhongbanID: PhongbanID , Address: '', IsOrder: 0,  IsActive: true,  IsAdmin: false, AvaUser: '',  BirthDay: '',  SexUser: true, GroupRoleID: '', GroupRoleName: '', LaTruongPhong: false, BanGiamDoc: false, NhaMayID: null };
     // nếu thêm mới thì đưa img về mặc định
     this.imgURL = '../../../../assets/img/avatars/user.png';
     this.largeModal.show();
@@ -290,7 +326,9 @@ phongBanChanged(PhongbanID) {
   this.options.PhongbanID = PhongbanID;
   this.R1GetDataUser();
 }
-
+ChangeNhaMay() {
+  this.R1GetDataUser();
+  }
 // Tìm kiếm
 // Phân trang
 NextPage() {

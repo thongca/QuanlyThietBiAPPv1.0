@@ -59,9 +59,7 @@ errormodal: string;
      private toastr: ToastrService,
      private  permissionsService: NgxPermissionsService,
     private thietbiservice_: ThietbiService
-  ) { }
-
-  ngOnInit() {
+  ) {
     this.modelthietbi_ = {
       ThietBiID: '',
       MaThietBi: '',
@@ -90,11 +88,20 @@ errormodal: string;
       IsSelect: false,
       IsChange: false,
     };
+    this.listNhaMay_ = [{
+      NhaMayID: null,
+      TenNhaMay: '',
+    }];
+    this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
+   }
+
+  ngOnInit() {
      // check permission admin
-     if (this._userInfo.user.IsAdmin === undefined) {
-      this._userInfo.user.IsAdmin = false;
-    }
-    this.permissionsService.loadPermissions([`${this._userInfo.user.IsAdmin}`]);
+     let Permission = this._userInfo.r1GetobjPermission();
+     if (Permission === undefined) {
+       Permission = 'NoAdmin';
+     }
+     this.permissionsService.loadPermissions([`${Permission}`]);
 
     // tìm kiếm
     this.todos$.subscribe(res => {
@@ -117,7 +124,8 @@ errormodal: string;
 
 // danh sách nhà máy
 R1DanhSachNhaMay() {
-  this.thietbiservice_.r1GetNhaMay().subscribe(res => {
+  const model_ = {NhaMayID: this._userInfo.R1_GetNhaMayID()};
+  this.thietbiservice_.r1GetNhaMay(model_).subscribe(res => {
     if (res !== undefined) {
       if (res['error'] === 1) {
         return false;
@@ -125,7 +133,6 @@ R1DanhSachNhaMay() {
       const data = res['data'];
       if (data !== undefined) {
         this.listNhaMay_ = data;
-        this.options.NhaMayID = this.listNhaMay_[0].NhaMayID;
       }
     }
   }, err => {

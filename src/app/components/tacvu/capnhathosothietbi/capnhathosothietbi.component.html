@@ -3,7 +3,7 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-header">
-            <div class="select-tieuchi">
+            <div class="select-tieuchi" *ngxPermissionsOnly="['Administrator']">
                 <button (click)="Active = !Active" type="button" class="buttom-dropdown" title="Chọn tiêu chí">
                   <img src="assets/img/brand/settings.png" class="img-plus-header" alt="plus" />
                   <a>
@@ -11,7 +11,7 @@
                   </a>
                 </button>
                 <ul *ngIf="Active === true" class="ul-dropdown">
-                    <li class="li-select" *ngxPermissionsOnly="['Administrator']">
+                    <li class="li-select" >
                         <select id="select5" name="select5" class="form-control" [(ngModel)]="options._ThietbiID"
                           (ngModelChange)="ThietBiChanged(modelHoSoThietBi_.ThietBiID)">
                           <option value="">----- Chọn thiết bị -----</option>

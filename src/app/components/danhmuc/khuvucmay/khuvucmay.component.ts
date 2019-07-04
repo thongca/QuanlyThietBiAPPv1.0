@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { Subscription } from 'rxjs';
+import { ThietbiService } from '../thietbi/thietbi.service';
 @Component({
   selector: 'app-khuvucmay',
   templateUrl: './khuvucmay.component.html',
@@ -19,7 +20,7 @@ export class KhuvucmayComponent implements OnInit, OnDestroy {
   private subscription1: Subscription;
   private subscription2: Subscription;
   // options
- options = {s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0, _ThietbiID: ''};
+ options = {s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0, _ThietbiID: '', NhaMayID: null};
   // model
   litsKhuVucMay_: Khuvucmay[] = [];
   litsChiTietMay_: Chitietmay[] = [];
@@ -27,6 +28,10 @@ export class KhuvucmayComponent implements OnInit, OnDestroy {
   modelChiTietMay_: Chitietmay;
   listThietBi_: Thietbi[] = [];
   listKetQua_: KetQuaImport;
+  listNhaMay_: {
+    NhaMayID: number,
+    TenNhaMay: ''
+  }[];
     // string
     public modeltitle: string;
     CheckLength: number;
@@ -52,8 +57,15 @@ IsFlag: boolean;
     private toastr: ToastrService,
     private  permissionsService: NgxPermissionsService,
     private spinnerService: Ng4LoadingSpinnerService ,
-    private khuvucmayservice_: KhuvucmayService
-  ) { }
+    private khuvucmayservice_: KhuvucmayService,
+    private thietbiservice_: ThietbiService,
+  ) {
+    this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
+    this.listNhaMay_ = [{
+      NhaMayID: null,
+      TenNhaMay: ''
+    }];
+   }
 
   ngOnInit() {
 
@@ -78,16 +90,42 @@ IsFlag: boolean;
     });
     this.R1GetListTKhuVuc();
     this.R1GetListThietBi();
+    this.R1DanhSachNhaMay();
   }
 
   SetTotalPage() {
     this.options.totalpage = Math.ceil(this.options.total / this.options.pz);
     this.options.mathP = this.options.pz * this.options.p;
 }
+
+// danh sách nhà máy
+R1DanhSachNhaMay() {
+  const model_ = {NhaMayID: this._userInfo.R1_GetNhaMayID()};
+  this.thietbiservice_.r1GetNhaMay(model_).subscribe(res => {
+    if (res !== undefined) {
+      if (res['error'] === 1) {
+        return false;
+      }
+      const data = res['data'];
+      if (data !== undefined) {
+        this.listNhaMay_ = data;
+      }
+    }
+  }, err => {
+    if (err.status === 500) {
+      this.toastr.error('Mất kết nối đến máy chủ, Vui lòng kiểm tra lại đường dẫn!', 'Thông báo');
+      return false;
+    }
+    if (err.status === 404) {
+      this.toastr.error('Lỗi xác thực máy chủ, Vui lòng kiểm tra lại!', 'Thông báo');
+      return false;
+    }
+  });
+}
 // danh sách thiet bi
 R1GetListThietBi() {
   this.spinnerService.show();
-   this.subscription1 = this.khuvucmayservice_.r1Listthietbi().subscribe(res => {
+   this.subscription1 = this.khuvucmayservice_.r1Listthietbi(this.options).subscribe(res => {
       this.spinnerService.hide();
       if (res['error'] === 1) {
         this.toastr.error(res['ms'], 'Thông báo lỗi');
@@ -128,6 +166,10 @@ r2ImportFile() {
 }
 // danh sách khu vuc máy
 R1GetListTKhuVuc() {
+  const NhaMayID = this._userInfo.R1_GetNhaMayID();
+  if (NhaMayID !== null && NhaMayID !== 0) {
+    this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
+  }
   this.spinnerService.show();
    this.subscription = this.khuvucmayservice_.r1ListKhuVuc(this.options).subscribe(res => {
       this.spinnerService.hide();
@@ -308,6 +350,10 @@ Showmodal(check) {
 thietBiChanged(ID) {
 this.R1GetListTKhuVuc();
 }
+ChangeNhaMay() {
+  this.R1GetListThietBi();
+  this.R1GetListTKhuVuc();
+  }
 // modal
 SelectIDEditModel(KhuVucID: string) {
   this.IsFlag = true;
@@ -345,10 +391,14 @@ selectRowTS (ChiTietID) {
 }
 // làm mới trang
 refreshData() {
+  this.spinnerService.show();
   this.options.s = '';
   this.s.SearchRoot(this.options.s);
   this.options.p = 1;
+  this.options.NhaMayID = '';
   this.toastr.success('Tải lại trang thành công', 'Thông báo');
+  this.ngOnInit();
+  this.spinnerService.hide();
 }
 // checked
 toggleAll (rowto, checked) {

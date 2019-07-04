@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Baocaotinhtrangthietbi, BaocaotinhtrangthietbiTB, BaocaotinhtrangthietbiPareto } from './baocaotinhtrangthietbi.model';
 import { SearchService } from '../../../shared/search.service';
 import { Thietbi } from '../../danhmuc/thietbi/thietbi';
+import { UserInfoService } from '../../../shared/user-info.service';
 
 @Component({
   selector: 'app-baocaotinhtrangthietbi',
@@ -17,7 +18,7 @@ import { Thietbi } from '../../danhmuc/thietbi/thietbi';
 export class BaocaotinhtrangthietbiComponent implements OnInit, AfterViewInit, OnDestroy {
   options = {
     s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0, KhuVucID: '',
-    _ThietbiID: '', DateStart: Date, DateEnd: Date, Typewhere: 0
+    _ThietbiID: '', DateStart: Date, DateEnd: Date, Typewhere: 0, NhaMayID: null
   };
   sub: Subscription;
 
@@ -62,9 +63,11 @@ listThietBi_: Thietbi[] = [];
     private spinnerService: Ng4LoadingSpinnerService,
     private toastr: ToastrService,
     private s: SearchService,
-    private khuvucmayservice_: KhuvucmayService
+    private khuvucmayservice_: KhuvucmayService,
+    private _userInfo: UserInfoService
   ) {
     this.Active = false;
+    this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
   }
   ngOnInit() {
     // tìm kiếm
@@ -83,7 +86,7 @@ listThietBi_: Thietbi[] = [];
       // danh sách thiet bi
       R1GetListThietBi() {
         this.spinnerService.show();
-        this.sub = this.khuvucmayservice_.r1Listthietbi().subscribe(res => {
+        this.sub = this.khuvucmayservice_.r1Listthietbi(this.options.NhaMayID).subscribe(res => {
           this.spinnerService.hide();
           if (res['error'] === 1) {
             this.toastr.error(res['ms'], 'Thông báo lỗi');

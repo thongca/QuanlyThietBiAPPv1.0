@@ -129,7 +129,7 @@ objThoiGian: {
         ThoiGianKetThuc: this.date,
         ThoiGianBatDau: null,
       };
-      this.MaThietBi = sessionStorage.getItem('MaThietBi');
+      this.MaThietBi =  JSON.stringify(sessionStorage.getItem('MaThietBi'));
    }
 
   ngOnInit() {
@@ -180,6 +180,7 @@ this.hosoThietBiService_.r1GetListThietBiservice().subscribe(res => {
       }
       this.r1GetListHoSoThietBi();
       this.r1GetListThongSoKyThuat();
+      this.ThietBiChanged();
     }
   }
 });

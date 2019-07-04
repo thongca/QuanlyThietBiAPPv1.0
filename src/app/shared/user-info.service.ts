@@ -15,7 +15,8 @@ export class UserInfoService {
     IsAdmin: boolean,
     UserID: string,
     UserName: string,
-    Permission: string
+    Permission: string,
+    NhaMayID: number,
   };
 
   public AvaUrl: string;
@@ -58,5 +59,14 @@ return Permission;
       AvatarUrl = '/upload/user.png';
     }
     return AvatarUrl;
+  }
+  R1_GetNhaMayID(): number {
+    const retrievedObject = localStorage.getItem('user');
+    this.user = JSON.parse(retrievedObject);
+    let NhaMayID = this.user.NhaMayID;
+    if (NhaMayID === null || NhaMayID === undefined) {
+      NhaMayID = 0;
+    }
+    return NhaMayID;
   }
 }

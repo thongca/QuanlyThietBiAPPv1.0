@@ -21,7 +21,7 @@ export class ChitietvesinhcongnghiepComponent implements OnInit, OnDestroy {
 
   date: Date = new Date();
   options = {s: '', p: 1, pz: 2000, totalpage: 0, total: 0, paxpz: 0,
-  mathP: 0, _ThietbiID: '', KhuVucVSCNID: '', IsTime: '', T5: true};
+  mathP: 0, _ThietbiID: '', KhuVucVSCNID: '', IsTime: '', T5: true, NhaMayID: null};
   @ViewChild('ImportExModal') public ImportExModal: ModalDirective;
   private subscription: Subscription;
   private sub: Subscription;
@@ -58,6 +58,7 @@ public Active: boolean;
     private chitietvesinhCNService_: ChitietvesinhcongnghiepService
   ) {
     this.Active = false;
+    this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
   }
 
   ngOnInit() {
@@ -73,8 +74,9 @@ public Active: boolean;
   }
       // danh sách thiet bi
       R1GetListThietBi() {
+        const model_ = {NhaMayID: this._userInfo.R1_GetNhaMayID()};
         this.spinnerService.show();
-        this.sub = this.khuvucmayservice_.r1Listthietbi().subscribe(res => {
+        this.sub = this.khuvucmayservice_.r1Listthietbi(model_).subscribe(res => {
           this.spinnerService.hide();
           if (res['error'] === 1) {
             this.toastr.error(res['ms'], 'Thông báo lỗi');

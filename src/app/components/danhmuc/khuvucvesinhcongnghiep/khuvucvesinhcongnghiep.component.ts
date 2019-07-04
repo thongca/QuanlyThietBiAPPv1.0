@@ -16,7 +16,7 @@ import { KhuvucmayService } from '../khuvucmay/khuvucmay.service';
   styleUrls: ['./khuvucvesinhcongnghiep.component.scss']
 })
 export class KhuvucvesinhcongnghiepComponent implements OnInit {
-  options = {s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0, _ThietbiID: ''};
+  options = {s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0, _ThietbiID: '', NhaMayID: null};
   CheckLength: number;
   checkall: boolean;
   sub: Subscription;
@@ -43,6 +43,7 @@ listThietBi_: {
     private khuvucmayservice_: KhuvucmayService,
   ) {
     this.checkall = false;
+    this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
    }
   @ViewChild('largeModal') public largeModal: ModalDirective;
   @ViewChild('warningModal') public warningModal: ModalDirective;
@@ -102,7 +103,7 @@ listThietBi_: {
     // danh sách thiet bi
     R1GetListThietBi() {
       this.spinnerService.show();
-      this.sub = this.khuvucmayservice_.r1Listthietbi().subscribe(res => {
+      this.sub = this.khuvucmayservice_.r1Listthietbi(this.options).subscribe(res => {
         this.spinnerService.hide();
         if (res['error'] === 1) {
           this.toastr.error(res['ms'], 'Thông báo lỗi');

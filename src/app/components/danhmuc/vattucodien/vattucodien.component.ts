@@ -1,51 +1,45 @@
-import { DonvitinhService } from './donvitinh.service';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { ModalDirective } from 'ngx-bootstrap';
 import { Subscription } from 'rxjs';
-import { ModalDirective } from 'ngx-bootstrap/modal';
+import { Vattucodien } from '../VatTucodien/VatTucodien.model';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { SearchService } from '../../../shared/search.service';
+import { UserInfoService } from '../../../shared/user-info.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { UserInfoService } from '../../../shared/user-info.service';
-// import searchroot
-import { SearchService } from '../../../shared/search.service';
-import { HttpHeaders } from '@angular/common/http';
+import { VattucodienService } from './vattucodien.service';
+import { KetQuaImport } from '../khuvucmay/khuvucmay';
 
 @Component({
-  selector: 'app-donvitinh',
-  templateUrl: './donvitinh.component.html',
-  styleUrls: ['./donvitinh.component.scss']
+  selector: 'app-vattucodien',
+  templateUrl: './vattucodien.component.html',
+  styleUrls: ['./vattucodien.component.scss']
 })
-export class DonvitinhComponent implements OnInit, OnDestroy {
- options = {s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0};
-
+export class VattucodienComponent implements OnInit, OnDestroy {
+  options = {s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0};
   // subscript
   private subscription: Subscription;
-  private subscription1: Subscription;
 
   // modal
   @ViewChild('largeModal') public largeModal: ModalDirective;
   @ViewChild('warningModal') public warningModal: ModalDirective;
-
+  @ViewChild('ImportExModal') public ImportExModal: ModalDirective;
   // tìm kiếm
   todos$ = this.s.$search;
   checkall: boolean;
   // string
   public modeltitle: string;
   CheckLength: number;
-  DonViTinhID: string;
+  VatTuID: string;
   errormodal: string;
   // obj
-  modeldonvitinh_: {
-    DonViTinhID: string;
-    TenDonVi: string;
-  };
+  modelVatTu_: Vattucodien;
 
   // list
-  listDonViTinh_: {
-    DonViTinhID: string;
-    TenDonVi: string;
-    checked: boolean
-  }[];
+  listVatTu_: Vattucodien[];
+  listKetQua_: KetQuaImport;
+// file
+  _files: File;
 
   constructor(
       private spinnerService: Ng4LoadingSpinnerService ,
@@ -53,14 +47,22 @@ export class DonvitinhComponent implements OnInit, OnDestroy {
      private _userInfo: UserInfoService,
      private toastr: ToastrService,
      private  permissionsService: NgxPermissionsService,
-     private donviservice_: DonvitinhService
-  ) { }
+     private vattuservice_: VattucodienService
+  ) {
+    this.modelVatTu_ = {
+      VatTuID:  null,
+      MaVatTu:  '',
+      TenVatTu:  '',
+      ThuTu:  0,
+      NhomVatTuID: '',
+      ThietBiID: '',
+      IsActive: true,
+      checked: false,
+      NhaMayID: null
+    };
+  }
 
   ngOnInit() {
-    this.modeldonvitinh_ = {
-      DonViTinhID: '',
-      TenDonVi: ''
-    };
         // check permission admin
         let Permission = this._userInfo.r1GetobjPermission();
         if (Permission === undefined) {
@@ -72,10 +74,10 @@ export class DonvitinhComponent implements OnInit, OnDestroy {
     this.todos$.subscribe(res => {
       if (res === undefined || res === '') {
         this.options.s = '';
-        this.R1GetListDonViTinh();
+        this.R1GetListVatTu();
       } else {
         this.options.s = res;
-        this.R1GetListDonViTinh();
+        this.R1GetListVatTu();
       }
     });
 
@@ -84,16 +86,19 @@ export class DonvitinhComponent implements OnInit, OnDestroy {
     this.options.totalpage = Math.ceil(this.options.total / this.options.pz);
     this.options.mathP = this.options.pz * this.options.p;
 }
+
+
 // danh sách đơn vị tính
-R1GetListDonViTinh() {
+R1GetListVatTu() {
+  this.CheckLength = 0;
   this.spinnerService.show();
-   this.subscription = this.donviservice_.r1ListDonViTinh(this.options).subscribe(res => {
+   this.subscription = this.vattuservice_.r1ListVatTu(this.options).subscribe(res => {
       this.spinnerService.hide();
       if (res['error'] === 1) {
         this.toastr.error(res['ms'], 'Thông báo lỗi');
         return false;
       }
-      this.listDonViTinh_ = res['data'];
+      this.listVatTu_ = res['data'];
       this.options.total = res['total'];
       this.SetTotalPage();
       if (this.options.p > 1) {
@@ -105,9 +110,19 @@ R1GetListDonViTinh() {
 }
 Showmodal(check) {
   if (check === 'add') {
-    this.modeltitle = 'Thêm mới đơn vị tính';
+    this.modeltitle = 'Thêm mới nhóm vật tư';
     // tslint:disable-next-line:max-line-length
-    this.modeldonvitinh_ = {DonViTinhID: '', TenDonVi: ''};
+    this.modelVatTu_ = {
+      VatTuID:  null,
+      MaVatTu:  null,
+      TenVatTu:  '',
+      ThuTu:  0,
+      NhomVatTuID: '',
+      ThietBiID: '',
+      IsActive: true,
+      checked: false,
+      NhaMayID: null
+    };
     this.largeModal.show();
   } else {
 }
@@ -122,16 +137,15 @@ modalUserInGroup(DonViTinhID) {
 // });
 }
 
-
-// thêm mới, sửa đơn vị tính
-R2AdDataNhomNguoiDung(): boolean {
-  if (this.modeldonvitinh_.TenDonVi === '') {
+// thêm mới, sửa nhóm vật tư
+R2AdDataVatTu(): boolean {
+  if (this.modelVatTu_.MaVatTu === '') {
   this.toastr.warning('Vui lòng nhập thông tin vào các trường có dấu (*)', 'Cảnh báo');
     return false;
   }
-  if (this.modeldonvitinh_.DonViTinhID === '' || this.modeldonvitinh_.DonViTinhID === null) {
+  if (this.modelVatTu_.VatTuID === '' || this.modelVatTu_.VatTuID === null) {
     this.spinnerService.show();
-    this.donviservice_.R2AddDonViTinh(this.modeldonvitinh_).subscribe(res => {
+    this.vattuservice_.R2AddVatTu(this.modelVatTu_).subscribe(res => {
       this.spinnerService.hide();
       if (res !== undefined) {
 
@@ -139,75 +153,110 @@ R2AdDataNhomNguoiDung(): boolean {
             this.toastr.error(res['ms'], 'Thông báo lỗi');
             return false;
           } else {
-            this.toastr.success('Thêm mới đơn vị tính thành công.', 'Thông báo');
-            this.R1GetListDonViTinh();
+            this.toastr.success('Thêm mới nhóm vật tư thành công thành công.', 'Thông báo');
+            this.R1GetListVatTu();
             this.largeModal.hide();
           }
       }
     });
   } else {
     this.spinnerService.show();
-    this.donviservice_.r3updateDonViTinh(this.DonViTinhID, this.modeldonvitinh_).subscribe(res => {
+    this.vattuservice_.r3updateVatTu(this.VatTuID, this.modelVatTu_).subscribe(res => {
       this.spinnerService.hide();
         if (res !== undefined) {
           if (res['error'] === 1) {
             this.toastr.error(res['ms'], 'Thông báo lỗi');
             return false;
           }
-          this.toastr.success('Sửa đơn vị tính thành công!', 'Thông báo');
-          this.R1GetListDonViTinh();
+          this.toastr.success('Sửa nhóm vật tư thành công!', 'Thông báo');
+          this.R1GetListVatTu();
           this.largeModal.hide();
         }
+    }, err => {
+      if (err.status === 500) {
+        this.toastr.success('Mất kết nối đến máy chủ, Vui lòng kiểm tra lại đường dẫn hoặc liên hệ quản trị viên!', 'Thông báo');
+        return false;
+      }
     });
   }
 
 }
 // modal
-SelectIDEditModel(DonViTinhID: string) {
-  this.modeltitle = 'Sửa đơn vị tính';
-  this.DonViTinhID = DonViTinhID;
- this.subscription1 =  this.donviservice_.r1GetDVTbyID(DonViTinhID).subscribe(res => {
+SelectIDEditModel(VatTuID: string) {
+  this.modeltitle = 'Sửa nhóm vật tư';
+  this.VatTuID = VatTuID;
+ this.subscription =  this.vattuservice_.r1GetVTbyID(VatTuID).subscribe(res => {
     if (res !== undefined) {
       if (res['error']  === 1) {
         this.toastr.error(res['ms'], 'Thông báo lỗi');
         return false;
+      } else if (res['error']  === 0) {
+        this.modelVatTu_ = res['data'];
+        this.largeModal.show();
       }
-     this.modeldonvitinh_ = res['data'];
     }
-    this.largeModal.show();
   });
 }
 
 HideModal() {
   this.largeModal.hide();
-  this.R1GetListDonViTinh();
+  this.R1GetListVatTu();
+}
+// import file excel
+ChonFile(files) {
+  if (files.length === 0) {
+    return;
+  }
+  // tslint:disable-next-line:prefer-const
+  let mimeType = files[0].type;
+  this._files = files;
+}
+ImportFile() {
+  this.ImportExModal.show();
 }
 
+r2ImportFile() {
+  this.spinnerService.show();
+  this.subscription = this.vattuservice_.R2ImportExcel(this._files).subscribe(res => {
+    if (res['body'] !== undefined) {
+      this.listKetQua_ = res['body'] as KetQuaImport;
+      if (res['body'].error === 1) {
+        this.toastr.error( this.listKetQua_.ms, 'Thông báo lỗi');
+        this.spinnerService.hide();
+        return false;
+      } else if (this.listKetQua_.error === 0) {
+        this.spinnerService.hide();
+        this.ImportExModal.hide();
+        this.R1GetListVatTu();
+        this.toastr.success('Thêm mới vật tư bằng tệp excel thành công.', 'Thông báo');
+      }
+    }
+  });
+}
 
 xacnhanXoa(rowto) {
   if (this.CheckLength > 0) {
-    this.r4DelDonViTinh(rowto);
+    this.r4DelVatTu(rowto);
   }
 }
-r4DelDonViTinh(rowto) {
+r4DelVatTu(rowto) {
  const arr = [
   ];
   rowto.forEach(function (item) {
     if (item.checked) {
-      const obj = {DonViTinhID: item.DonViTinhID};
+      const obj = {VatTuID: item.VatTuID};
      arr.push(obj);
     }
 });
-  this.donviservice_.r4deleteDonViTinh(arr).subscribe(res => {
+  this.vattuservice_.r4deleteVatTu(arr).subscribe(res => {
     if (res !== undefined) {
       if (res['error'] === 1) {
       this.toastr.error(res['ms'], 'Thông báo lỗi');
         return false;
       }
       this.warningModal.hide();
-      this.toastr.success('Xóa thành công đơn vị tính', 'Thông báo');
-      this.CheckLength = 0;
-      this.R1GetListDonViTinh();
+      this.toastr.success('Nhóm vật tư ' + res['ms'] + ' đã tồn tại dữ liệu liên quan, Vui lòng kiểm tra lại!', 'Thông báo');
+      this.R1GetListVatTu();
     }
   });
 }
@@ -218,11 +267,11 @@ toggleAll (rowto, checked) {
   rowto.forEach(function (value, key) {
       rowto[key].checked = !checked;
   });
-  const listvitrual = this.listDonViTinh_.filter(c => c.checked === true);
+  const listvitrual = this.listVatTu_.filter(c => c.checked === true);
   this.CheckLength = listvitrual.length;
 }
 CheckedList(checked) {
-  const listvitrual = this.listDonViTinh_.filter(c => c.checked === true);
+  const listvitrual = this.listVatTu_.filter(c => c.checked === true);
   if (listvitrual.length === 1 || listvitrual.length === 0) {
     if (!checked === true) {
       this.CheckLength = 1;
@@ -242,14 +291,14 @@ CheckedList(checked) {
 NextPage() {
   if (this.options.p < this.options.totalpage) {
   this.options.p++;
-  this.R1GetListDonViTinh();
+  this.R1GetListVatTu();
   }
 }
 
 PrevPage() {
   if (this.options.p > 1) {
   this.options.p--;
-  this.R1GetListDonViTinh();
+  this.R1GetListVatTu();
   }
 }
 
@@ -265,12 +314,7 @@ ngOnDestroy() {
   if (this.subscription) {
     this.subscription.unsubscribe();
   }
-  if (this.subscription1) {
-    this.subscription1.unsubscribe();
-  }
-  // if (this.subscription2) {
-  //   this.subscription2.unsubscribe();
-  // }
 }
+
 
 }
