@@ -16,6 +16,7 @@ import { KhuvucvesinhcongnghiepComponent } from './khuvucvesinhcongnghiep/khuvuc
 import { ChitietvesinhcongnghiepComponent } from './chitietvesinhcongnghiep/chitietvesinhcongnghiep.component';
 import { VattucodienComponent } from './vattucodien/vattucodien.component';
 import { NhomvattucodienComponent } from './nhomvattucodien/nhomvattucodien.component';
+import { TintucComponent } from './tintuc/tintuc.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { NhomvattucodienComponent } from './nhomvattucodien/nhomvattucodien.comp
      DonvitinhComponent, KhuvucmayComponent, QuydinhdiemdanhgiaComponent,
       KhuvucvesinhcongnghiepComponent, ChitietvesinhcongnghiepComponent,
        VattucodienComponent,
-       NhomvattucodienComponent],
+       NhomvattucodienComponent,
+       TintucComponent],
   imports: [
     SharedModule,
     DanhmucRoutingModule,

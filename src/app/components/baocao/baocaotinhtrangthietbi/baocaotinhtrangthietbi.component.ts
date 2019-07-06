@@ -85,8 +85,9 @@ listThietBi_: Thietbi[] = [];
   }
       // danh sách thiet bi
       R1GetListThietBi() {
+        const model_ = {NhaMayID: this._userInfo.R1_GetNhaMayID()};
         this.spinnerService.show();
-        this.sub = this.khuvucmayservice_.r1Listthietbi(this.options.NhaMayID).subscribe(res => {
+        this.sub = this.khuvucmayservice_.r1Listthietbi(model_).subscribe(res => {
           this.spinnerService.hide();
           if (res['error'] === 1) {
             this.toastr.error(res['ms'], 'Thông báo lỗi');

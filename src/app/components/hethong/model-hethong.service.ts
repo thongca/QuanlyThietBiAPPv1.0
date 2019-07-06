@@ -53,7 +53,7 @@ export class ModelHethongService {
 
 
 
-  R3_AddUserservice(files, user) {
+  R3_AddUserservice(files, user, Nhamay) {
     const formData = new FormData();
     // tslint:disable-next-line:max-line-length
     if (files  !== undefined) {
@@ -65,6 +65,7 @@ export class ModelHethongService {
       formData.append('flag', 'NoFile' );
     }
     formData.append('user', JSON.stringify(user));
+    formData.append('NhaMay', JSON.stringify(Nhamay));
     const uploadReq = new HttpRequest('POST', this.BaseURL + this.chilURl, formData, {reportProgress: true, headers: this.tokenHeader});
 
     return this.http.request(uploadReq).pipe();
@@ -104,12 +105,10 @@ export class ModelHethongService {
   }
 
   R1GetUserByID(UserID: string) {
-   return this.http.get(this.BaseURL + '/api/AppSysUser/' + UserID, {headers: this.tokenHeader}).toPromise().then((value) => {
-    this.ObjUserByID = value;
-    });
+   return this.http.get(this.BaseURL + '/api/AppSysUser/' + UserID, {headers: this.tokenHeader});
   }
 
-  R2UpdateUser(files, user) {
+  R2UpdateUser(files, user, Nhamay) {
     console.log(user);
     const formData = new FormData();
     // tslint:disable-next-line:max-line-length
@@ -122,6 +121,7 @@ export class ModelHethongService {
       formData.append('flag', 'NoFile' );
     }
     formData.append('user', JSON.stringify(user));
+    formData.append('NhaMay', JSON.stringify(Nhamay));
     // tslint:disable-next-line:max-line-length
     const uploadReq = new HttpRequest('POST', this.BaseURL + '/api/AppSysUser/updateUser', formData, {reportProgress: true, headers: this.tokenHeader});
 

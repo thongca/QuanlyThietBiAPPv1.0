@@ -63,10 +63,8 @@ return Permission;
   R1_GetNhaMayID(): number {
     const retrievedObject = localStorage.getItem('user');
     this.user = JSON.parse(retrievedObject);
-    let NhaMayID = this.user.NhaMayID;
-    if (NhaMayID === null || NhaMayID === undefined) {
-      NhaMayID = 0;
-    }
+    const NhaMayID = this.user.NhaMayID;
+
     return NhaMayID;
   }
 }

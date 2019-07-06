@@ -1,7 +1,7 @@
 import { Subscription } from 'rxjs';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { BaocaochecklistService } from './baocaochecklist.service';
-import { ChartType, ChartOptions } from 'chart.js';
+import { Chart } from 'chart.js';
 import * as $ from 'jquery';
 import { Thietbi } from '../../danhmuc/thietbi/thietbi';
 import { KhuvucmayService } from '../../danhmuc/khuvucmay/khuvucmay.service';
@@ -13,11 +13,19 @@ import { UserInfoService } from '../../../shared/user-info.service';
   templateUrl: './baocaochecklist.component.html',
   styleUrls: ['./baocaochecklist.component.scss']
 })
-export class BaocaochecklistComponent implements OnInit, OnDestroy {
+export class BaocaochecklistComponent implements OnInit, OnDestroy, AfterViewInit {
   options = {
     s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0, KhuVucID: '',
     _ThietbiID: '', DateStart: Date, DateEnd: Date, Typewhere: 0, NhaMayID: null
   };
+// List danh sách 15 thiết bị lỗi nhiều nhất trong tháng
+list15Deviceerror_: {
+  KetQua: number;
+  MaThietBi: string;
+  NeedRepair: boolean;
+}[];
+
+  //
   ListType:
     {
       Typewhere: number,
@@ -39,7 +47,12 @@ export class BaocaochecklistComponent implements OnInit, OnDestroy {
   public Active: boolean;
   isLoad: boolean; // khi co dữ liệu mới được load html
   isReport: boolean; // xem báo cáo
-
+  // arr TB
+  dataListbarTB: any[];
+  lablesListbarTB: any[];
+    // Average
+    canvasTB: any;
+    ctxTB: any;
 // list báo cáo detail
 listBaoCao_: [];
 objThietBi: {};
@@ -119,23 +132,21 @@ public barChartData1st: any[] = [
           return false;
         }
         if (res['data'] !== undefined) {
-          const data = [];
-        const lablestring = [];
-        const bgColor = [];
-        this.listMay = res['data'];
-        this.listMay.forEach(function (item) {
-          lablestring.push(item.MaThietBi);
-          data.push(item.KetQua);
-        });
-        setTimeout(() => {
-          this.barChartLabels1st = lablestring;
-        }, 50);
-        const k = {data: data, label: 'Số lỗi'};
-        this.barChartData1st.push(k);
-        }
+          const datasetTB = [];
+          const arrlablesTB = [];
+          const data = res['data'];
+          this.list15Deviceerror_ = data;
+          this.list15Deviceerror_.forEach(function (item) {
+            datasetTB.push(item.KetQua);
+            arrlablesTB.push(item.MaThietBi);
+          });
+          this.dataListbarTB = datasetTB;
+          this.lablesListbarTB = arrlablesTB;
       }
+    }
     });
   }
+
 
   // list du lieuy bieu đồ báo cáo trong tháng
   r1ListDuLieuBieuDo() {
@@ -175,7 +186,7 @@ public barChartData1st: any[] = [
           this.pieChartColors[0].backgroundColor = bgColor;
           setTimeout(() => {
             this.pieChartLabels = lablestring;
-          }, 50);
+          }, 200);
           this.pieChartData = data;
         }
       }
@@ -239,7 +250,7 @@ public barChartData1st: any[] = [
           k.push(dataAvcsc_[0]);
           setTimeout(() => {
             this.barChartLabels = listThang_;
-          }, 50);
+          }, 200);
           this.barChartData = k;
           if (this.barChartData.length > 0) {
             this.isLoad = true;
@@ -281,6 +292,68 @@ public barChartData1st: any[] = [
         this.objThietBi = res['ThietBi'];
       });
     }
+
+
+
+
+
+    barChartTB() {
+      if (this.dataListbarTB !== undefined) {
+        this.canvasTB = document.getElementById('myChartbarTB');
+      this.ctxTB = this.canvasTB.getContext('2d');
+      const myChartbarTB = new Chart(this.ctxTB, {
+        type: 'bar',
+        data: {
+          labels: this.lablesListbarTB,
+          datasets: [{
+            label: 'Số ngày trung bình giữa hai lần dừng',
+            data: this.dataListbarTB,
+            backgroundColor: [
+              '#FF0F00',
+              '#FF6600',
+              '#FF9E01',
+              '#FCD202',
+              '#F8FF01',
+              '#B0DE09',
+              '#04D215',
+              '#0D8ECF',
+              '#0D52D1',
+              '#2A0CD0',
+              '#8A0CCF',
+              '#CD0D74',
+              '#754DEB',
+              '#DDDDDD',
+              '#999999',
+              '#333333',
+              '#000000',
+              '#000000',
+              '#000000',
+              '#000000',
+              '#000000',
+              '#000000',
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              type: 'linear',
+              position: 'left',
+              id: 'y-axis-1',
+              stacked: true,
+              ticks: {
+                suggestedMin: 0
+              },
+              scaleLabel: {
+                display: true,
+              }
+            }]
+          }
+        }
+      });
+      }
+    }
 InBaoCao() {
       setTimeout(() => {
         $('#btnprint').click();
@@ -306,5 +379,11 @@ InBaoCao() {
     if (this.sub) {
       this.sub.unsubscribe();
     }
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.barChartTB();
+    }, 500);
   }
 }

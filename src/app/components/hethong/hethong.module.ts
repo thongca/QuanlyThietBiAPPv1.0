@@ -16,7 +16,7 @@ import { User } from './user.model';
 import { MenuphongbanComponent } from './menuphongban/menuphongban.component';
 import { Menuphongban } from './menuphongban/menuphongban';
 import { MenuComponent } from './menu/menu.component';
-
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 @NgModule({
   declarations: [NguoisudungComponent, NhomnguoidungComponent, PhanmenunhomquyenComponent, MenuphongbanComponent, MenuComponent ],
@@ -25,7 +25,8 @@ import { MenuComponent } from './menu/menu.component';
     HethongRoutingModule,
     ModalModule,
     FormsModule,
-    SharedModule
+    SharedModule,
+    NgMultiSelectDropDownModule
   ],
   providers: [
     User,

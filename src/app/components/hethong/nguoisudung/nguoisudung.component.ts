@@ -17,6 +17,7 @@ import { RootbaseUrlService } from '../../../shared/rootbase-url.service';
 import { SearchService } from '../../../shared/search.service';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { ThietbiService } from '../../danhmuc/thietbi/thietbi.service';
+import { NhamayrootService } from '../../../shared/nhamayroot.service';
 
 @Component({
   selector: 'app-nguoisudung',
@@ -24,13 +25,22 @@ import { ThietbiService } from '../../danhmuc/thietbi/thietbi.service';
   styleUrls: ['./nguoisudung.component.scss']
 })
 export class NguoisudungComponent implements OnInit, OnDestroy {
+  // Nhà máy
+  selectedItems: {
+    NhaMayID: number;
+    TenNhaMay: string;
+  }[];
+  dropdownSettings = {};
   // phòng ban
   phongban_: {
     PhongbanID: string,
     TenPhongBan: string
   }[];
+  ModelNhaMay: any;
   // search
   todos$ = this.s.$search;
+  // nhà máy
+  nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
   public list: {
     error: '',
     data: [
@@ -90,6 +100,7 @@ subscription: Subscription;
   // tslint:disable-next-line:max-line-length
   constructor(private spinnerService: Ng4LoadingSpinnerService ,
      private s: SearchService,
+     private nhaMaySevice_: NhamayrootService,
      private _userInfo: UserInfoService,
      private hethongsv: ModelHethongService,
      private _nhomngdservice: NhomnguoidungService,
@@ -130,6 +141,16 @@ subscription: Subscription;
 }
 
   ngOnInit() {
+    this.selectedItems = this.listNhaMay_.filter(x => x.NhaMayID === this.listNhaMay_[0].NhaMayID);
+    this.dropdownSettings = {
+      singleSelection: false,
+      idField: 'NhaMayID',
+      textField: 'TenNhaMay',
+      selectAllText: 'Chọn tất cả',
+      unSelectAllText: 'Bỏ chọn tất cả',
+      itemsShowLimit: 1,
+      allowSearchFilter: false
+    };
         // check permission admin
         let Permission = this._userInfo.r1GetobjPermission();
         if (Permission === undefined) {
@@ -147,44 +168,27 @@ subscription: Subscription;
         this.R1GetDataUser();
       }
     });
+    this.nhaMayID$.subscribe(res => {
+      if (res !== undefined) {
+        this.R1GetDataUser();
+        this.r1getListNhomQuyen();
+        this.r1getListPhongBan();
+      }
+    });
     this.r1getListNhomQuyen();
     this.r1getListPhongBan();
-    this.R1DanhSachNhaMay();
   }
  openAttachfile (check) {
     if (check === 'works') {
         $('input.inputimgFileWorks').click();
     }
 }
-// danh sách nhà máy
-R1DanhSachNhaMay() {
-  const model_ = {NhaMayID: this._userInfo.R1_GetNhaMayID()};
-  this.thietbiservice_.r1GetNhaMay(model_).subscribe(res => {
-    if (res !== undefined) {
-      if (res['error'] === 1) {
-        return false;
-      }
-      const data = res['data'];
-      if (data !== undefined) {
-        this.listNhaMay_ = data;
-      }
-    }
-  }, err => {
-    if (err.status === 500) {
-      this.toastr.error('Mất kết nối đến máy chủ, Vui lòng kiểm tra lại đường dẫn!', 'Thông báo');
-      return false;
-    }
-    if (err.status === 404) {
-      this.toastr.error('Lỗi xác thực máy chủ, Vui lòng kiểm tra lại!', 'Thông báo');
-      return false;
-    }
-  });
-}
 SelectIDEditModel(UserID) {
   this.modeltitle = 'Sửa người sử dụng';
   this.UserID = UserID;
-  this.hethongsv.R1GetUserByID(UserID).then(res => {
- this.user = this.hethongsv.ObjUserByID;
+  this.hethongsv.R1GetUserByID(UserID).subscribe(res => {
+ this.user = res['data'];
+ this.ModelNhaMay = res['datanm'];
  this.largeModal.show();
  this.imgURL = this.BaseUrl +  this.hethongsv.ObjUserByID.AvaUser;
   }
@@ -239,7 +243,7 @@ return false;
 }
   if (this.user.UserID === null || this.user.UserID === '') {
     this.spinnerService.show();
-    this.hethongsv.R3_AddUserservice(this._files, this.user)
+    this.hethongsv.R3_AddUserservice(this._files, this.user, this.ModelNhaMay)
     .subscribe(next => {
       this.result =  next['body'] as ResAdd ;
       if (this.result !== undefined) {
@@ -255,7 +259,7 @@ return false;
       }
     });
   } else {
-    this.hethongsv.R2UpdateUser(this._files, this.user).then(res => {
+    this.hethongsv.R2UpdateUser(this._files, this.user, this.ModelNhaMay).then(res => {
       this.R1GetDataUser();
     }).catch();
     this.largeModal.hide();
@@ -277,6 +281,7 @@ DelUser() {
   );
 }
 R1GetDataUser() {
+  this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
   this.hethongsv.R1_GetDataUser(this.options).then((res: any) => {
     this.dataservice = this.hethongsv.list.data;
     this.options.total = this.hethongsv.list.total;

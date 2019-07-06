@@ -15,12 +15,25 @@ import { RootbaseUrlService } from './../../shared/rootbase-url.service';
 
 import { searchRoot } from '../../shared/ketqua-tra-ve';
 import { ToastrService } from 'ngx-toastr';
+import { ThietbiService } from '../../components/danhmuc/thietbi/thietbi.service';
+import { NhamayrootService } from '../../shared/nhamayroot.service';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './default-layout.component.html'
 })
 export class DefaultLayoutComponent implements OnDestroy, OnInit {
+  @ViewChild('largeModal') public largeModal: ModalDirective;
+  NhaMayID: number;
+    // Nhà máy
+    selectedItems: {
+      NhaMayID: number;
+      TenNhaMay: string;
+    }[];
+    dropdownSettings = {};
+
+    // search
   todos$ = this.search.$search;
   private sub: Subscription;
   _listMenu: [
@@ -33,6 +46,10 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
       children: []
     }
   ];
+  listNhaMay_: {
+    NhaMayID: number;
+    TenNhaMay: string;
+  }[];
   objUser_: {
     FullName: string;
     AvaUser: string;
@@ -52,8 +69,12 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     private sbaseUrl_: RootbaseUrlService,
     private suserInfo_: UserInfoService,
     public search: SearchService,
+    public nhamayrootSer_: NhamayrootService,
     private toastr: ToastrService,
+    private _userInfo: UserInfoService,
+    private  permissionsService: NgxPermissionsService,
     private menu: MenuDetailService,
+    private thietbiservice_: ThietbiService,
     private router: Router, @Inject(DOCUMENT) _document?: any) {
     if (localStorage.getItem('token') === null || localStorage.getItem('token') === undefined) {
       this.router.navigateByUrl('/login');
@@ -67,18 +88,6 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
       attributeFilter: ['class']
     });
     this.avatarUser = this.sbaseUrl_.sbaseURL +  this.suserInfo_.R1_GetDataUser();
-  }
-  ngOnInit() {
-    // tìm kiếm
-    this.todos$.subscribe(res => {
-      let ss = '';
-      if (res === undefined || res === '') {
-        ss = '';
-      } else {
-        ss = res;
-      }
-      this.s = ss;
-    });
     this.menu.getDataMenu().subscribe(
       (res: any) => {
         if (res['body'].error === 1) {
@@ -86,6 +95,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
           localStorage.removeItem('listQuyen');
           localStorage.removeItem('token');
           localStorage.removeItem('user');
+          localStorage.removeItem('NhaMayID');
           sessionStorage.clear();
           this.router.navigateByUrl('/login');
           return false;
@@ -99,14 +109,74 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
       }
     );
   }
+  ngOnInit() {
+     // check permission admin
+     let Permission = this._userInfo.r1GetobjPermission();
+     if (Permission === undefined) {
+       Permission = 'NoAdmin';
+     }
+     this.permissionsService.loadPermissions([`${Permission}`]);
+    // tìm kiếm
+    this.todos$.subscribe(res => {
+      let ss = '';
+      if (res === undefined || res === '') {
+        ss = '';
+      } else {
+        ss = res;
+      }
+      this.s = ss;
+    });
+    this.R1DanhSachNhaMay();
+  }
+    // danh sách nhà máy
+    R1DanhSachNhaMay() {
+      const Nhamayid = localStorage.getItem('NhaMayID');
+      const model_ = { NhaMayID: this._userInfo.R1_GetNhaMayID() };
+      this.thietbiservice_.r1GetNhaMay(model_).subscribe(res => {
+        if (res !== undefined) {
+          if (res['error'] === 1) {
+            return false;
+          }
+          const data = res['data'];
+          if (data !== undefined) {
+            this.listNhaMay_ = data;
+            if (Nhamayid !== null) {
+              this.NhaMayID = Number(Nhamayid);
+            } else {
+              this.NhaMayID = this.listNhaMay_[0].NhaMayID;
+              localStorage.setItem('NhaMayID',  JSON.stringify(this.NhaMayID));
+            }
+          }
+        }
+      }, err => {
+        if (err.status === 500) {
+          this.toastr.error('Mất kết nối đến máy chủ, Vui lòng kiểm tra lại đường dẫn!', 'Thông báo');
+          return false;
+        }
+        if (err.status === 404) {
+          this.toastr.error('Lỗi xác thực máy chủ, Vui lòng kiểm tra lại!', 'Thông báo');
+          return false;
+        }
+      });
+    }
   Search() {
     const _s = this.s as unknown as string;
     this.search.SearchRoot(_s);
+  }
+  showmodal() {
+    this.largeModal.show();
+  }
+  ThayDoiPhanXuongSanXuat() {
+    const Nhamayid = JSON.stringify(this.NhaMayID);
+  localStorage.setItem('NhaMayID', Nhamayid);
+  this.nhamayrootSer_.NhaMaySer(Nhamayid);
+  this.largeModal.hide();
   }
   LogOut(): void {
     localStorage.removeItem('listQuyen');
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('NhaMayID');
     sessionStorage.clear();
     this.router.navigateByUrl('/login');
   }

@@ -9,6 +9,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 import { ThietbiService } from './thietbi.service';
 import { Thongsokythuat, Thietbi, ThietbiDM } from './thietbi';
 import * as $ from 'jquery';
+import { NhamayrootService } from '../../../shared/nhamayroot.service';
 @Component({
   selector: 'app-thietbi',
   templateUrl: './thietbi.component.html',
@@ -38,7 +39,8 @@ errormodal: string;
 
   // tìm kiếm
   todos$ = this.s.$search;
-
+  // nhà máy
+  nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
   // string
   public modeltitle: string;
   CheckLength: number;
@@ -55,6 +57,7 @@ errormodal: string;
   constructor(
      private spinnerService: Ng4LoadingSpinnerService ,
      private s: SearchService,
+     private nhaMaySevice_: NhamayrootService,
      private _userInfo: UserInfoService,
      private toastr: ToastrService,
      private  permissionsService: NgxPermissionsService,
@@ -102,10 +105,9 @@ errormodal: string;
        Permission = 'NoAdmin';
      }
      this.permissionsService.loadPermissions([`${Permission}`]);
-
     // tìm kiếm
     this.todos$.subscribe(res => {
-      if (res === undefined || res === '') {
+      if (res === undefined || res === '""') {
         this.options.s = '';
         this.R1GetListThietBi();
       } else {
@@ -113,39 +115,19 @@ errormodal: string;
         this.R1GetListThietBi();
       }
     });
+    this.nhaMayID$.subscribe(res => {
+      if (res !== undefined) {
+        this.R1GetListThietBi();
+      }
+    });
     this.r1GetListNhomTB();
     this.r1GetListNDonViTinh();
-    this.R1DanhSachNhaMay();
   }
   SetTotalPage() {
     this.options.totalpage = Math.ceil(this.options.total / this.options.pz);
     this.options.mathP = this.options.pz * this.options.p;
 }
 
-// danh sách nhà máy
-R1DanhSachNhaMay() {
-  const model_ = {NhaMayID: this._userInfo.R1_GetNhaMayID()};
-  this.thietbiservice_.r1GetNhaMay(model_).subscribe(res => {
-    if (res !== undefined) {
-      if (res['error'] === 1) {
-        return false;
-      }
-      const data = res['data'];
-      if (data !== undefined) {
-        this.listNhaMay_ = data;
-      }
-    }
-  }, err => {
-    if (err.status === 500) {
-      this.toastr.error('Mất kết nối đến máy chủ, Vui lòng kiểm tra lại đường dẫn!', 'Thông báo');
-      return false;
-    }
-    if (err.status === 404) {
-      this.toastr.error('Lỗi xác thực máy chủ, Vui lòng kiểm tra lại!', 'Thông báo');
-      return false;
-    }
-  });
-}
 // danh sách nhóm thiết bị
 r1GetListNhomTB() {
  this.subscription2 = this.thietbiservice_.r1Listnhomthietbi().subscribe(res => {
@@ -165,6 +147,7 @@ r1GetListNDonViTinh() {
  }
 // danh sách thiet bi
 R1GetListThietBi() {
+  this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
   this.spinnerService.show();
    this.subscription = this.thietbiservice_.r1ListThietBi(this.options).subscribe(res => {
       this.spinnerService.hide();

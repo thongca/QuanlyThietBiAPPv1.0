@@ -72,7 +72,7 @@ const routes: Routes = [
     path: 'vattucodien',
     component: VattucodienComponent,
     data: {routeLink: '/danhmuc/vattucodien'}
-  },
+  }
 ];
 
 @NgModule({

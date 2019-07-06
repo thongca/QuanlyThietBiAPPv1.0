@@ -5,47 +5,45 @@
         <div class="card-header">
           <ul class="ul-box-crud">
             <li appBtnPer="create" data-toggle="modal" (click)="Showmodal('add')" title="Thêm mới">
-                <img src="assets/img/brand/plus.png" class="img-plus-header" alt="plus"/>
-                <a>
+              <img src="assets/img/brand/plus.png" class="img-plus-header" alt="plus" />
+              <a>
                 <strong appBtnPer>Thêm mới</strong>
               </a>
             </li>
             <li data-toggle="modal" (click)="refreshData()" title="Làm mới">
-              <img src="assets/img/brand/refresh-page-option.png" class="img-plus-header" alt="plus"/>
+              <img src="assets/img/brand/refresh-page-option.png" class="img-plus-header" alt="plus" />
               <a>
-              <strong>Làm mới</strong>
-            </a>
-          </li>
-          <li data-toggle="modal" appBtnPer="delete" (click)="warningModal.show()" title="Xóa" *ngIf="CheckLength > 0">
-            <img src="assets/img/brand/trash.png" class="img-plus-header" alt="plus"/>
-            <a>
-            <strong>Xóa</strong>
-          </a>
-        </li>
-        <li class="li-select">
-            <select id="select3" *ngxPermissionsOnly="['Administrator', 'AdminRoom']" name="select3" class="form-control" [(ngModel)]="options.NhaMayID" (ngModelChange)="ChangeNhaMay()">
-              <option value="">----- Chọn nhà máy -----</option>
-              <option *ngFor="let c of listNhaMay_" [ngValue]="c.NhaMayID">{{c.TenNhaMay}}</option>
-            </select>
-          </li>
-        <li class="li-select" *ngxPermissionsOnly="['Administrator']">
-            <select id="select2" name="select2" class="form-control" [(ngModel)]="options.PhongbanID" (ngModelChange)="phongBanChanged(options.PhongbanID)">
+                <strong>Làm mới</strong>
+              </a>
+            </li>
+            <li data-toggle="modal" appBtnPer="delete" (click)="warningModal.show()" title="Xóa"
+              *ngIf="CheckLength > 0">
+              <img src="assets/img/brand/trash.png" class="img-plus-header" alt="plus" />
+              <a>
+                <strong>Xóa</strong>
+              </a>
+            </li>
+            <li class="li-select" *ngxPermissionsOnly="['Administrator']">
+              <select id="select2" name="select2" class="form-control" [(ngModel)]="options.PhongbanID"
+                (ngModelChange)="phongBanChanged(options.PhongbanID)">
                 <option value="">----- Chọn phòng -----</option>
-              <option *ngFor="let c of phongban_" [ngValue]="c.PhongbanID">{{c.TenPhongBan}}</option>
-            </select>
-        </li>
+                <option *ngFor="let c of phongban_" [ngValue]="c.PhongbanID">{{c.TenPhongBan}}</option>
+              </select>
+            </li>
           </ul>
         </div>
         <div class="card-body">
           <table class="table table-bordered table-striped table-sm table-app">
             <thead>
               <tr>
-                <th class="th-checkbox" width=40><input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="checkall" id="inline-checkbox3" (click)="toggleAll(dataservice, checkall)"  value="option3"> </th>
-                
+                <th class="th-checkbox" width=40><input class="table-checkbox" type="checkbox" [checked]="false"
+                    [(ngModel)]="checkall" id="inline-checkbox3" (click)="toggleAll(dataservice, checkall)"
+                    value="option3"> </th>
+
                 <th class="text-center" width="50">STT</th>
                 <th width=200>Tên đăng nhập</th>
                 <th>Họ và tên</th>
-                <th width=100  class="text-center">Ngày sinh</th>
+                <th width=100 class="text-center">Ngày sinh</th>
                 <th width=200>Phòng ban</th>
                 <th width=200>Nhóm người dùng</th>
                 <th width=80 class="text-center">Ảnh</th>
@@ -55,54 +53,59 @@
             </thead>
             <tbody>
               <tr *ngFor="let item of dataservice; let i = index">
-                <td class="td-checkbox"><input class="table-checkbox" type="checkbox" id="inline-checkbox3" value="option3" [checked]="item.checked" [(ngModel)]="item.checked" (click)="CheckedList(item.checked)"></td>
-                <td  class="text-center">{{i + 1}}</td>
+                <td class="td-checkbox"><input class="table-checkbox" type="checkbox" id="inline-checkbox3"
+                    value="option3" [checked]="item.checked" [(ngModel)]="item.checked"
+                    (click)="CheckedList(item.checked)"></td>
+                <td class="text-center">{{i + 1}}</td>
                 <td>{{item.UserName}}</td>
                 <td>{{item.FullName}}</td>
-                <td  class="text-center">{{item.BirthDay | date: 'dd/MM/yyyy'}}</td>
+                <td class="text-center">{{item.BirthDay | date: 'dd/MM/yyyy'}}</td>
                 <td>{{item.TenPhongBan}}</td>
                 <td>{{item.GroupRoleName}}</td>
                 <td class="text-center">
                   <img class="img-ins-td" src="{{BaseUrl}}{{item.AvaUser}}" alt="">
                 </td>
-                <td class="text-center" >
-                    <span class="badge badge-success" [ngStyle]="{'background-color': item.IsActive === true ? '' : 'red'}">{{item.IsActive === true ? 'Kích hoạt' : 'Không'}}</span>
-                  </td>
+                <td class="text-center">
+                  <span class="badge badge-success"
+                    [ngStyle]="{'background-color': item.IsActive === true ? '' : 'red'}">{{item.IsActive === true ? 'Kích hoạt' : 'Không'}}</span>
+                </td>
                 <td class="text-center" appBtnPer="update" (click)="SelectIDEditModel(item.UserID)" title="Sửa">
                   <img class="img-icon-edit" src="assets/img/brand/edit.png" alt="Sửa">
                 </td>
             </tbody>
           </table>
           <nav *ngIf="options.totalpage > 1">
-              <ul class="pagination">
-                  <li class="page-item"><a class="page-link" (click)="PrevPage()">Prev</a></li>
-                  <li class="page-item">
-                      <a class="page-link"> {{(options.p-1)*options.pz+1}}</a>
-                  </li>
-                  <li class="page-item">
-                      <a class="page-link"> - </a>
-                  </li>
-                  <li class="page-item">
-                      <a class="page-link" *ngIf="options.pz*options.p > options.total"> {{options.total}}</a>
-                      <a class="page-link" *ngIf="options.pz*options.p <= options.total"> {{options.pz*options.p}}</a>
-                  </li>
-                  <li class="page-item">
-                      <a class="page-link">trong số</a>
-                    </li>
-                  <li class="page-item">
-                    <a class="page-link">{{options.total}}</a>
-                  </li>
-                  <li class="page-item" (click)="NextPage()"><a class="page-link">Next</a></li>
-                </ul>
+            <ul class="pagination">
+              <li class="page-item"><a class="page-link" (click)="PrevPage()">Prev</a></li>
+              <li class="page-item">
+                <a class="page-link"> {{(options.p-1)*options.pz+1}}</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link"> - </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" *ngIf="options.pz*options.p > options.total"> {{options.total}}</a>
+                <a class="page-link" *ngIf="options.pz*options.p <= options.total"> {{options.pz*options.p}}</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link">trong số</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link">{{options.total}}</a>
+              </li>
+              <li class="page-item" (click)="NextPage()"><a class="page-link">Next</a></li>
+            </ul>
           </nav>
-        </div>   
+        </div>
       </div>
     </div>
     <!--/.col-->
   </div>
   <!--/.row-->
 </div>
-<div bsModal #largeModal="bs-modal" class="modal fade" id="modalUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" [config]="{'backdrop':'static', 'keyboard': false}" data-keyboard="false"> 
+<div bsModal #largeModal="bs-modal" class="modal fade" id="modalUser" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true" [config]="{'backdrop':'static', 'keyboard': false}"
+  data-keyboard="false">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -112,213 +115,239 @@
         </button>
       </div>
       <div class="modal-body">
-          <form action="" method="post" autocomplete="off" enctype="multipart/form-data" class="form-horizontal">
-            <div class="animated fadeIn">
-                <div class="row">
-                  <div class="col-sm-12">
-                    <div class="card box-card-md">
-                      <div class="card-body box-cardbody-md">
-                        <div class="row">
-                          <div class="col-sm-6">
-                            <div class="form-group row">
-                              <label class="title-text col-form-label" for="name">Họ và tên
-                                <span>*</span>
-                              </label>
-                              <div class="input-text">
-                                  <input type="text" class="form-control" id="name" placeholder="Họ tên" [(ngModel)]="user.FullName" [ngModelOptions]="{standalone: true}">
-                              </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="title-text col-form-label" for="date-input">Ngày sinh</label>
-                                <div class="input-text">
-                                  <input class="form-control" id="date-input" type="date" name="date-input" placeholder="Ngày sinh" [(ngModel)]="user.BirthDay" [ngModelOptions]="{standalone: true}">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="title-text col-form-label" for="name">Điện thoại
-                                 
-                                </label>
-                                <div class="input-text">
-                                    <input type="text" class="form-control" id="name" placeholder="Điện thoại" [(ngModel)]="user.PhoneNumber" [ngModelOptions]="{standalone: true}">
-                                </div>
-                              </div>
+        <form action="" method="post" autocomplete="off" enctype="multipart/form-data" class="form-horizontal">
+          <div class="animated fadeIn">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="card box-card-md">
+                  <div class="card-body box-cardbody-md">
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="name">Họ và tên
+                            <span>*</span>
+                          </label>
+                          <div class="input-text">
+                            <input type="text" class="form-control" id="name" placeholder="Họ tên"
+                              [(ngModel)]="user.FullName" [ngModelOptions]="{standalone: true}">
                           </div>
-                          <div class="col-sm-6">
-                              <input #file type="file" accept='image/*' class="inputimgFileWorks avataruser" (change)="preview(file.files)" />
-                              <img [src]="imgURL" class="img-avatarUser" (click)="openAttachfile('works')" height="200">
+                        </div>
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="date-input">Ngày sinh</label>
+                          <div class="input-text">
+                            <input class="form-control" id="date-input" type="date" name="date-input"
+                              placeholder="Ngày sinh" [(ngModel)]="user.BirthDay" [ngModelOptions]="{standalone: true}">
                           </div>
-                        </div><!--/.row-->
-                        <div class="row">
-                            <div class="col-sm-6">
-                              <div class="form-group row">
-                                <label class="title-text col-form-label" for="name">Tên đăng nhập
-                                    <span>*</span>
-                                </label>
-                                <div class="input-text">
-                                    <input type="text" [disabled]="user.UserID !== ''"  class="form-control" id="name" placeholder="Tên đăng nhập" [(ngModel)]="user.UserName" [ngModelOptions]="{standalone: true}">
-                                </div>
-                              </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group row">
-                                    <label class="title-text col-form-label" for="name">Mật khẩu
-                                        <span>*</span>
-                                    </label>
-                                    <div class="input-text">
-                                        <input type="password" class="form-control" id="name" placeholder="Mật khẩu" [(ngModel)]="user.Password" [ngModelOptions]="{standalone: true}">
-                                    </div>
-                                  </div>
-                            </div>
-                          </div><!--/.row-->
-                          <div class="row">
-                              <div class="col-sm-12">
-                                <div class="form-group row">
-                                  <label class="title-text col-form-label" for="name">Địa chỉ
-                                   
-                                  </label>
-                                  <div class="input-text">
-                                      <input type="text" class="form-control" id="name" placeholder="Địa chỉ" [(ngModel)]="user.Address" [ngModelOptions]="{standalone: true}">
-                                  </div>
-                                </div>
-                              </div>
-                            </div><!--/.row-->
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="form-group row">
-                                      <label class="title-text col-form-label" for="name">Chọn nhà máy
-                                           <span>*</span>
-                                      </label>
-                                      <div class="input-text">
-                                        <select id="select3" name="select3" class="form-control" [(ngModel)]="user.NhaMayID">
-                                            <option value="">----- Chọn nhà máy -----</option>
-                                          <option *ngFor="let c of listNhaMay_" [ngValue]="c.NhaMayID">{{c.TenNhaMay}}</option>
-                                        </select>
-                                      </div>
-                                    </div>
-                                  </div>
-                                <div class="col-sm-6">
-                                  <div class="form-group row">
-                                    <label class="title-text col-form-label" for="name">Nhóm
-                                         
-                                    </label>
-                                    <div class="input-text">
-                                      <select id="select1" name="select1" class="form-control" [(ngModel)]="user.GroupRoleID">
-                                          <option value="">----- Chọn nhóm -----</option>
-                                        <option *ngFor="let c of nhomuser" [ngValue]="c.GroupRoleID">{{c.GroupRoleName}}</option>
-                                      </select>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group row">
-                                      <label class="title-text col-form-label" for="name">Phòng ban
-                                           
-                                      </label>
-                                      <div class="input-text">
-                                        <select id="select2" name="select2" class="form-control" [(ngModel)]="user.PhongbanID">
-                                            <option value="">----- Chọn phòng -----</option>
-                                          <option *ngFor="let c of phongban_" [ngValue]="c.PhongbanID">{{c.TenPhongBan}}</option>
-                                        </select>
-                                      </div>
-                                    </div>
-                                  </div>
-                              </div><!--/.row-->
-                              
-                              <div class="row">
-                                  <div class="col-sm-6">
-                                      <div class="form-group row">
-                                          <label class="title-text col-form-label" for="name">Email
-                                           
-                                          </label>
-                                          <div class="input-text">
-                                              <input type="text" class="form-control" id="name" [(ngModel)]="user.Email" [ngModelOptions]="{standalone: true}"  placeholder="example@app.vn">
-                                          </div>
-                                        </div>
-                                  </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group row">
-                                        <label class="title-text col-form-label" for="inline-radios">Kích hoạt</label>
-                                        <div class="input-text col-form-label">
-                                          <div class="form-check form-check-inline mr-1" id="inline-radios">
-                                            <input class="form-check-input" type="radio" [(ngModel)]="user.IsActive" [ngModelOptions]="{standalone: true}" name="IsActive" id="IsActive" [value]="true">
-                                            <label class="form-check-label" for="inlineRadio1">Có</label>
-                                          </div>
-                                          <div class="form-check form-check-inline mr-1">
-                                            <input class="form-check-input" type="radio" [(ngModel)]="user.IsActive" [ngModelOptions]="{standalone: true}" name="IsActive" id="IsActive" [value]="false">
-                                            <label class="form-check-label" for="inlineRadio2">Không</label>
-                                          </div>
-                                        </div>
-                                      </div>
-                                </div>
-                              </div>
-                              <div class="row">
-                                <div class="col-sm-6">
-                                  <div class="form-group row">
-                                    <label class="title-text col-form-label" for="inline-radios">Giới tính</label>
-                                    <div class="input-text col-form-label">
-                                      <div class="form-check form-check-inline mr-1" id="inline-radios">
-                                        <input class="form-check-input" type="radio" name="SexUser" [(ngModel)]="user.SexUser" [ngModelOptions]="{standalone: true}" id="SexUser" [value]="true">
-                                        <label class="form-check-label" for="inlineRadio1">Nam</label>
-                                      </div>
-                                      <div class="form-check form-check-inline mr-1">
-                                        <input class="form-check-input" type="radio" name="SexUser" [(ngModel)]="user.SexUser" [ngModelOptions]="{standalone: true}" id="SexUser" [value]="false">
-                                        <label class="form-check-label" for="inlineRadio2">Nữ</label>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="col-sm-6" *ngxPermissionsOnly="['Administrator']">
-                                    <div class="form-group row" >
-                                        <label class="title-text col-form-label" for="inline-radios">Ban giám đốc</label>
-                                        <div class="input-text col-form-label">
-                                          <div class="form-check form-check-inline mr-1" id="inline-radios">
-                                            <input class="form-check-input" type="radio" [(ngModel)]="user.BanGiamDoc" [ngModelOptions]="{standalone: true}" name="BanGiamDoc" id="BanGiamDoc" [value]="true">
-                                            <label class="form-check-label" for="inlineRadio1">Có</label>
-                                          </div>
-                                          <div class="form-check form-check-inline mr-1">
-                                            <input class="form-check-input" type="radio" [(ngModel)]="user.BanGiamDoc" [ngModelOptions]="{standalone: true}" name="BanGiamDoc" id="BanGiamDoc" [value]="false">
-                                            <label class="form-check-label" for="inlineRadio2">Không</label>
-                                          </div>
-                                        </div>
-                                      </div>
-                                </div>
-                                  <div class="col-sm-6" *ngxPermissionsOnly="['Administrator','AdminRoom']">
-                                    <div class="form-group row"  >
-                                      <label class="title-text col-form-label" for="inline-radios">Admin phòng</label>
-                                      <div class="input-text col-form-label">
-                                        <div class="form-check form-check-inline mr-1" id="inline-radios">
-                                          <input class="form-check-input" type="radio" name="LaTruongPhong" [(ngModel)]="user.LaTruongPhong" [ngModelOptions]="{standalone: true}" id="LaTruongPhong" [value]="true">
-                                          <label class="form-check-label" for="inlineRadio1">Có</label>
-                                        </div>
-                                        <div class="form-check form-check-inline mr-1">
-                                          <input class="form-check-input" type="radio" name="LaTruongPhong" [(ngModel)]="user.LaTruongPhong" [ngModelOptions]="{standalone: true}" id="LaTruongPhong" [value]="false">
-                                          <label class="form-check-label" for="inlineRadio2">Không</label>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div class="col-sm-6" *ngxPermissionsOnly="['Administrator']" >
-                                    <div class="form-group row" >
-                                        <label class="title-text col-form-label" for="inline-radios">Quản trị</label>
-                                        <div class="input-text col-form-label">
-                                          <div class="form-check form-check-inline mr-1" id="inline-radios">
-                                            <input class="form-check-input" type="radio" [(ngModel)]="user.IsAdmin" [ngModelOptions]="{standalone: true}" name="IsAdmin" id="IsAdmin" [value]="true">
-                                            <label class="form-check-label" for="inlineRadio1">Có</label>
-                                          </div>
-                                          <div class="form-check form-check-inline mr-1">
-                                            <input class="form-check-input" type="radio" [(ngModel)]="user.IsAdmin" [ngModelOptions]="{standalone: true}" name="IsAdmin" id="IsAdmin" [value]="false">
-                                            <label class="form-check-label" for="inlineRadio2">Không</label>
-                                          </div>
-                                        </div>
-                                      </div>
-                                </div>
-                                </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="name">Điện thoại
+
+                          </label>
+                          <div class="input-text">
+                            <input type="text" class="form-control" id="name" placeholder="Điện thoại"
+                              [(ngModel)]="user.PhoneNumber" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <input #file type="file" accept='image/*' class="inputimgFileWorks avataruser"
+                          (change)="preview(file.files)" />
+                        <img [src]="imgURL" class="img-avatarUser" (click)="openAttachfile('works')" height="200">
                       </div>
                     </div>
-                  </div><!--/.col-->
-                </div><!--/.row-->
+                    <!--/.row-->
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="name">Tên đăng nhập
+                            <span>*</span>
+                          </label>
+                          <div class="input-text">
+                            <input type="text" [disabled]="user.UserID !== ''" class="form-control" id="name"
+                              placeholder="Tên đăng nhập" [(ngModel)]="user.UserName"
+                              [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="name">Mật khẩu
+                            <span>*</span>
+                          </label>
+                          <div class="input-text">
+                            <input type="password" class="form-control" id="name" placeholder="Mật khẩu"
+                              [(ngModel)]="user.Password" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--/.row-->
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="name">Địa chỉ
+
+                          </label>
+                          <div class="input-text">
+                            <input type="text" class="form-control" id="name" placeholder="Địa chỉ"
+                              [(ngModel)]="user.Address" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--/.row-->
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="name">Chọn nhà máy
+                            <span>*</span>
+                          </label>
+                          <div class="input-text">
+                              <ng-multiselect-dropdown name="ModelNhaMay" class="multiple-select" [placeholder]="'----- Chọn nhà máy -----'" [data]="listNhaMay_"
+                               [settings]="dropdownSettings" [(ngModel)]="ModelNhaMay">
+                            </ng-multiselect-dropdown>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="name">Nhóm
+
+                          </label>
+                          <div class="input-text">
+                            <select id="select1" name="select1" class="form-control" [(ngModel)]="user.GroupRoleID">
+                              <option value="">----- Chọn nhóm -----</option>
+                              <option *ngFor="let c of nhomuser" [ngValue]="c.GroupRoleID">{{c.GroupRoleName}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="name">Phòng ban
+
+                          </label>
+                          <div class="input-text">
+                            <select id="select2" name="select2" class="form-control" [(ngModel)]="user.PhongbanID">
+                              <option value="">----- Chọn phòng -----</option>
+                              <option *ngFor="let c of phongban_" [ngValue]="c.PhongbanID">{{c.TenPhongBan}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--/.row-->
+
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="name">Email
+
+                          </label>
+                          <div class="input-text">
+                            <input type="text" class="form-control" id="name" [(ngModel)]="user.Email"
+                              [ngModelOptions]="{standalone: true}" placeholder="example@app.vn">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="inline-radios">Kích hoạt</label>
+                          <div class="input-text col-form-label">
+                            <div class="form-check form-check-inline mr-1" id="inline-radios">
+                              <input class="form-check-input" type="radio" [(ngModel)]="user.IsActive"
+                                [ngModelOptions]="{standalone: true}" name="IsActive" id="IsActive" [value]="true">
+                              <label class="form-check-label" for="inlineRadio1">Có</label>
+                            </div>
+                            <div class="form-check form-check-inline mr-1">
+                              <input class="form-check-input" type="radio" [(ngModel)]="user.IsActive"
+                                [ngModelOptions]="{standalone: true}" name="IsActive" id="IsActive" [value]="false">
+                              <label class="form-check-label" for="inlineRadio2">Không</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="inline-radios">Giới tính</label>
+                          <div class="input-text col-form-label">
+                            <div class="form-check form-check-inline mr-1" id="inline-radios">
+                              <input class="form-check-input" type="radio" name="SexUser" [(ngModel)]="user.SexUser"
+                                [ngModelOptions]="{standalone: true}" id="SexUser" [value]="true">
+                              <label class="form-check-label" for="inlineRadio1">Nam</label>
+                            </div>
+                            <div class="form-check form-check-inline mr-1">
+                              <input class="form-check-input" type="radio" name="SexUser" [(ngModel)]="user.SexUser"
+                                [ngModelOptions]="{standalone: true}" id="SexUser" [value]="false">
+                              <label class="form-check-label" for="inlineRadio2">Nữ</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6" *ngxPermissionsOnly="['Administrator']">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="inline-radios">Ban giám đốc</label>
+                          <div class="input-text col-form-label">
+                            <div class="form-check form-check-inline mr-1" id="inline-radios">
+                              <input class="form-check-input" type="radio" [(ngModel)]="user.BanGiamDoc"
+                                [ngModelOptions]="{standalone: true}" name="BanGiamDoc" id="BanGiamDoc" [value]="true">
+                              <label class="form-check-label" for="inlineRadio1">Có</label>
+                            </div>
+                            <div class="form-check form-check-inline mr-1">
+                              <input class="form-check-input" type="radio" [(ngModel)]="user.BanGiamDoc"
+                                [ngModelOptions]="{standalone: true}" name="BanGiamDoc" id="BanGiamDoc" [value]="false">
+                              <label class="form-check-label" for="inlineRadio2">Không</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6" *ngxPermissionsOnly="['Administrator','AdminRoom']">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="inline-radios">Admin phòng</label>
+                          <div class="input-text col-form-label">
+                            <div class="form-check form-check-inline mr-1" id="inline-radios">
+                              <input class="form-check-input" type="radio" name="LaTruongPhong"
+                                [(ngModel)]="user.LaTruongPhong" [ngModelOptions]="{standalone: true}"
+                                id="LaTruongPhong" [value]="true">
+                              <label class="form-check-label" for="inlineRadio1">Có</label>
+                            </div>
+                            <div class="form-check form-check-inline mr-1">
+                              <input class="form-check-input" type="radio" name="LaTruongPhong"
+                                [(ngModel)]="user.LaTruongPhong" [ngModelOptions]="{standalone: true}"
+                                id="LaTruongPhong" [value]="false">
+                              <label class="form-check-label" for="inlineRadio2">Không</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6" *ngxPermissionsOnly="['Administrator']">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="inline-radios">Quản trị</label>
+                          <div class="input-text col-form-label">
+                            <div class="form-check form-check-inline mr-1" id="inline-radios">
+                              <input class="form-check-input" type="radio" [(ngModel)]="user.IsAdmin"
+                                [ngModelOptions]="{standalone: true}" name="IsAdmin" id="IsAdmin" [value]="true">
+                              <label class="form-check-label" for="inlineRadio1">Có</label>
+                            </div>
+                            <div class="form-check form-check-inline mr-1">
+                              <input class="form-check-input" type="radio" [(ngModel)]="user.IsAdmin"
+                                [ngModelOptions]="{standalone: true}" name="IsAdmin" id="IsAdmin" [value]="false">
+                              <label class="form-check-label" for="inlineRadio2">Không</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-          </form>
+              <!--/.col-->
+            </div>
+            <!--/.row-->
+          </div>
+        </form>
 
       </div>
       <div class="modal-footer">
@@ -328,41 +357,42 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-<div bsModal #dangerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-danger" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Thông báo</h4>
-          <button type="button" class="close" (click)="dangerModal.hide()" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <p class="notifyerr">{{errormodal}}&hellip;</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="dangerModal.hide()">Thoát</button>
-        </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
-  <div bsModal #warningModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-warning" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">Xác nhận</h4>
-            <button type="button" class="close" (click)="warningModal.hide()" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>Bạn có chắc chắn muốn xóa các trường đã chọn không ?&hellip;</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" (click)="warningModal.hide()">Thoát</button>
-            <button type="button" class="btn btn-warning" (click)="xacnhanXoa()">Xác nhận</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-    
+<div bsModal #dangerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-danger" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Thông báo</h4>
+        <button type="button" class="close" (click)="dangerModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="notifyerr">{{errormodal}}&hellip;</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="dangerModal.hide()">Thoát</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div bsModal #warningModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-warning" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Xác nhận</h4>
+        <button type="button" class="close" (click)="warningModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có chắc chắn muốn xóa các trường đã chọn không ?&hellip;</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="warningModal.hide()">Thoát</button>
+        <button type="button" class="btn btn-warning" (click)="xacnhanXoa()">Xác nhận</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

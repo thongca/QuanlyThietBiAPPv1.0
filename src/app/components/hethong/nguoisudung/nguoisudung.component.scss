@@ -9,3 +9,12 @@
     float: right;
     margin-right: 60px;
 }
+.multiselect-dropdown .dropdown-btn{
+    padding: 4px 12px !important;
+    border: 1px solid #e4e7ea !important;
+}
+.multiple-select .dropdown-btn .dropdown-down{
+    border-top: 8px solid #000000;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}

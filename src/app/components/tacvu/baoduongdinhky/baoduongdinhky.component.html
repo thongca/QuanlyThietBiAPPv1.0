@@ -11,6 +11,12 @@
                   </a>
                 </button>
                 <ul *ngIf="Active === true" class="ul-dropdown">
+                    <li *ngxPermissionsOnly="['Administrator', 'AdminRoom', 'TwoFactory']" class="li-select">
+                        <select id="select2" name="select2" class="form-control" [(ngModel)]="options.NhaMayID" (ngModelChange)="ChangeNhaMay()">
+                          <option value= null>----- Chọn nhà máy -----</option>
+                          <option *ngFor="let c of listNhaMay_" [ngValue]="c.NhaMayID">{{c.TenNhaMay}}</option>
+                        </select>
+                      </li>
                   <li class="li-select">
                     <a>
                       Chọn thiết bị:
@@ -37,6 +43,12 @@
               <img src="assets/img/brand/refresh-page-option.png" class="img-plus-header" alt="plus"/>
               <a>
               <strong>Làm mới</strong>
+            </a>
+          </li>
+          <li data-toggle="modal" (click)="ThucHien()" title="Làm mới">
+              <img src="assets/img/brand/filter-filled-tool-symbol.png" class="img-plus-header" alt="ThucHien" />
+              <a>
+              <strong>Thực hiện</strong>
             </a>
           </li>
           <li class="li-select ma-may">

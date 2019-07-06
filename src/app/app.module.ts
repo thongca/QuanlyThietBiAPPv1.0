@@ -66,6 +66,7 @@ import { TacvuComponent } from './components/tacvu/tacvu.component';
 
 import { BsDatepickerModule, DatepickerModule } from 'ngx-bootstrap';
 
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 @NgModule({
 
@@ -111,7 +112,8 @@ import { BsDatepickerModule, DatepickerModule } from 'ngx-bootstrap';
     ModalModule.forRoot(),
     NgxPermissionsModule.forRoot(),
     BsDatepickerModule.forRoot(),
-    BotDetectCaptchaModule
+    BotDetectCaptchaModule,
+    NgMultiSelectDropDownModule
   ],
   providers: [
     {
