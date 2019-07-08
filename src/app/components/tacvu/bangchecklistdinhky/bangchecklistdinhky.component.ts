@@ -11,6 +11,7 @@ import { KhuvucmayService } from '../../danhmuc/khuvucmay/khuvucmay.service';
 import { Chitietmay, Khuvucmay, ChiTietMayCheckListD, KhuVucPara, Thang } from '../../danhmuc/khuvucmay/khuvucmay';
 import { BangchecklistdinhkyService } from './bangchecklistdinhky.service';
 import { Router } from '@angular/router';
+import { NhamayrootService } from '../../../shared/nhamayroot.service';
 @Component({
   selector: 'app-bangchecklistdinhky',
   templateUrl: './bangchecklistdinhky.component.html',
@@ -55,7 +56,8 @@ public Active: boolean;
     private permissionsService: NgxPermissionsService,
     private spinnerService: Ng4LoadingSpinnerService,
     private khuvucmayservice_: KhuvucmayService,
-    private bangcheckListdinhKyService_: BangchecklistdinhkyService
+    private bangcheckListdinhKyService_: BangchecklistdinhkyService,
+    private nhaMaySevice_: NhamayrootService,
   ) {
     this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
     this.KhuVucID = '';
@@ -89,16 +91,22 @@ public Active: boolean;
     };
     this.Active = false;
   }
-
+  // nhà máy
+  nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
   ngOnInit() {
     if (this.date.getMonth() < 10) {
       this.options.IsTime = `${this.date.getFullYear()}-0${this.date.getMonth() + 1}`;
     } else {
       this.options.IsTime = `${this.date.getFullYear()}-${this.date.getMonth() + 1}`;
     }
-    this.R1GetListChiTietMay();
+
     this.R1GetKhuVucMay();
     this.R1GetListThietBi();
+    this.nhaMayID$.subscribe(res => {
+      if (res !== undefined) {
+    this.R1GetListThietBi();
+      }
+    });
   }
 
   Monthchanged() {
@@ -128,25 +136,37 @@ public Active: boolean;
       }
       const ThietBi_ = res['ThietBi'];
       this.objThietBi = ThietBi_[0];
-      sessionStorage.setItem('MaThietBi', this.objThietBi.MaThietBi);
+      if (this.objThietBi !== undefined) {
+        sessionStorage.setItem('MaThietBi', this.objThietBi.MaThietBi);
+      }
       this.listchitietCheckList_ = res['data'];
     });
   }
   // danh sách thiet bi
   R1GetListThietBi() {
+    this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
     this.spinnerService.show();
-    const model_ = {NhaMayID: this._userInfo.R1_GetNhaMayID()};
+    const model_ = {NhaMayID:  this.options.NhaMayID};
     this.sub = this.khuvucmayservice_.r1Listthietbi(model_).subscribe(res => {
       this.spinnerService.hide();
       if (res['error'] === 1) {
         this.toastr.error(res['ms'], 'Thông báo lỗi');
         return false;
       }
-      this.listThietBi_ = res['data'];
-      if (sessionStorage.getItem('ThietBiID') === null) {
-        this.options._ThietbiID = this.listThietBi_[0].ThietBiID;
+      const data = res['data'];
+      if (data !== undefined) {
+        this.listThietBi_ = data;
+        if (data.length === 0) {
+          this.options._ThietbiID = '';
+        } else if (this.options._ThietbiID === '') {
+          this.options._ThietbiID = this.listThietBi_[0].ThietBiID;
+        }
+        if (sessionStorage.getItem('ThietBiID') === null) {
+          this.options._ThietbiID = this.listThietBi_[0].ThietBiID;
+        }
       }
       this.R1GetListChiTietMay();
+      this.R1GetKhuVucMay();
     });
   }
 
@@ -172,6 +192,7 @@ public Active: boolean;
     }
   }
   ChangeThietBi() {
+    this.options.KhuVucID = '';
     sessionStorage.setItem('ThietBiID', this.options._ThietbiID);
     this.R1GetListChiTietMay();
     this.R1GetKhuVucMay();

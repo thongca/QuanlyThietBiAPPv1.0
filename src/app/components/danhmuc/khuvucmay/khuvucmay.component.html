@@ -30,12 +30,6 @@
               </a>
             </li>
             <li class="li-select">
-              <select id="select3" *ngxPermissionsOnly="['Administrator', 'AdminRoom', 'TwoFactory']" name="select3" class="form-control" [(ngModel)]="options.NhaMayID" (ngModelChange)="ChangeNhaMay()">
-                <option value="">----- Chọn nhà máy -----</option>
-                <option *ngFor="let c of listNhaMay_" [ngValue]="c.NhaMayID">{{c.TenNhaMay}}</option>
-              </select>
-            </li>
-            <li class="li-select">
               <select id="select2" *ngxPermissionsOnly="['Administrator', 'AdminRoom']" name="select2" class="form-control" [(ngModel)]="options._ThietbiID"
                 (ngModelChange)="thietBiChanged(options._ThietbiID)">
                 <option value="">----- Chọn thiết bị -----</option>

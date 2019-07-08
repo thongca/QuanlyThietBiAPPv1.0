@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { ModalDirective } from 'ngx-bootstrap';
 import { KhuvucmayService } from '../khuvucmay/khuvucmay.service';
+import { NhamayrootService } from '../../../shared/nhamayroot.service';
 
 @Component({
   selector: 'app-khuvucvesinhcongnghiep',
@@ -30,8 +31,6 @@ listThietBi_: {
   ThietBiID: string;
   TenThietBi: string;
 }[];
-  // tìm kiếm
-  todos$ = this.s.$search;
 
   constructor(
     private spinnerService: Ng4LoadingSpinnerService ,
@@ -41,10 +40,15 @@ listThietBi_: {
     private  permissionsService: NgxPermissionsService,
     private khuvucvsService_: KhuvucvesinhcongnghiepService,
     private khuvucmayservice_: KhuvucmayService,
+    private nhaMaySevice_: NhamayrootService,
   ) {
     this.checkall = false;
-    this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
    }
+     // tìm kiếm
+  todos$ = this.s.$search;
+     // nhà máy
+  nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
+
   @ViewChild('largeModal') public largeModal: ModalDirective;
   @ViewChild('warningModal') public warningModal: ModalDirective;
   ngOnInit() {
@@ -76,6 +80,12 @@ listThietBi_: {
         this.r1ListKhuVucVS();
       }
     });
+    this.nhaMayID$.subscribe(res => {
+      if (res !== undefined) {
+    this.R1GetListThietBi();
+    this.r1ListKhuVucVS();
+      }
+    });
   }
   SetTotalPage() {
     this.options.totalpage = Math.ceil(this.options.total / this.options.pz);
@@ -83,6 +93,7 @@ listThietBi_: {
 }
   // danh sách khu vực vệ sinh theo thiết bị
   r1ListKhuVucVS() {
+    this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
     this.khuvucvsService_.r1ListKhuVucVS(this.options).subscribe(res => {
       if (res !== undefined) {
         if (res['error'] === 1) {
@@ -102,6 +113,7 @@ listThietBi_: {
   }
     // danh sách thiet bi
     R1GetListThietBi() {
+      this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
       this.spinnerService.show();
       this.sub = this.khuvucmayservice_.r1Listthietbi(this.options).subscribe(res => {
         this.spinnerService.hide();

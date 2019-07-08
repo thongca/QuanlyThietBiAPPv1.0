@@ -166,6 +166,9 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   showmodal() {
     this.largeModal.show();
   }
+  HideModal() {
+    this.largeModal.hide();
+  }
   ThayDoiPhanXuongSanXuat() {
     const Nhamayid = JSON.stringify(this.NhaMayID);
   localStorage.setItem('NhaMayID', Nhamayid);

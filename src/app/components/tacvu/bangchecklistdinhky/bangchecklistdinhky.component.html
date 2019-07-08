@@ -50,7 +50,7 @@
         </a>
       </li>
      
-      <li class="li-select ma-may">
+      <li *ngIf="options._ThietbiID !== '' && objThietBi !== undefined" class="li-select ma-may">
        <strong *ngIf="objThietBi.MaThietBi !== ''">
         Mã máy: {{objThietBi.MaThietBi}}
        </strong>

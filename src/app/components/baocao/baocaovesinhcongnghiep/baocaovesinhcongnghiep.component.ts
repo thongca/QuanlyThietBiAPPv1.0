@@ -13,6 +13,7 @@ import { DatePipe } from '@angular/common';
 defineLocale('vi', viLocale);
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import * as $ from 'jquery';
+import { NhamayrootService } from '../../../shared/nhamayroot.service';
 @Component({
   selector: 'app-baocaovesinhcongnghiep',
   templateUrl: './baocaovesinhcongnghiep.component.html',
@@ -25,7 +26,8 @@ CoTuan5: boolean;
  // subscript
  private subscription: Subscription;
  // options
-options = {s: '', p: 1, pz: 2000, totalpage: 0, total: 0, paxpz: 0, mathP: 0, _ThietbiID: '', IsTime : this.date};
+options = {s: '', p: 1, pz: 2000, totalpage: 0, total: 0, paxpz: 0, mathP: 0,
+ _ThietbiID: '', IsTime : this.date, NhaMayID: null};
  // model
  litsVsCN_: Baocaovesinhcongnghiep[] = [];
 
@@ -50,13 +52,15 @@ IsFlag: boolean;
    private  permissionsService: NgxPermissionsService,
    private spinnerService: Ng4LoadingSpinnerService ,
    private baocaovscnservice_: BaocaovesinhcongnghiepService,
-   private datelageService: BsLocaleService
+   private datelageService: BsLocaleService,
+   private nhaMaySevice_: NhamayrootService,
  ) {
   this.datelageService.use('vi');
   this.Month_ = this.date.getMonth() + 1;
   this.CoTuan5 = false;
   }
-
+  // nhà máy
+  nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
  ngOnInit() {
        // check permission admin
        let Permission = this._userInfo.r1GetobjPermission();
@@ -76,6 +80,12 @@ IsFlag: boolean;
      }
    });
    this.R1GetListVSCN();
+        // tìm kiếm
+        this.nhaMayID$.subscribe(res => {
+          if (res !== undefined) {
+        this.R1GetListVSCN();
+          }
+        });
  }
 
  SetTotalPage() {
@@ -84,6 +94,7 @@ IsFlag: boolean;
 }
 // danh sách báo cáo
 R1GetListVSCN() {
+  this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
  this.spinnerService.show();
   this.subscription = this.baocaovscnservice_.r1ListBaocaoVSCN(this.options).subscribe(res => {
      this.spinnerService.hide();

@@ -9,6 +9,7 @@ import { Baocaotinhtrangthietbi, BaocaotinhtrangthietbiTB, Baocaotinhtrangthietb
 import { SearchService } from '../../../shared/search.service';
 import { Thietbi } from '../../danhmuc/thietbi/thietbi';
 import { UserInfoService } from '../../../shared/user-info.service';
+import { NhamayrootService } from '../../../shared/nhamayroot.service';
 
 @Component({
   selector: 'app-baocaotinhtrangthietbi',
@@ -16,9 +17,10 @@ import { UserInfoService } from '../../../shared/user-info.service';
   styleUrls: ['./baocaotinhtrangthietbi.component.scss']
 })
 export class BaocaotinhtrangthietbiComponent implements OnInit, AfterViewInit, OnDestroy {
+  date: Date = new Date();
   options = {
     s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0, KhuVucID: '',
-    _ThietbiID: '', DateStart: Date, DateEnd: Date, Typewhere: 0, NhaMayID: null
+    _ThietbiID: '', DateStart: Date, DateEnd: Date, Typewhere: 0, NhaMayID: null, IsTime: this.date
   };
   sub: Subscription;
 
@@ -64,11 +66,15 @@ listThietBi_: Thietbi[] = [];
     private toastr: ToastrService,
     private s: SearchService,
     private khuvucmayservice_: KhuvucmayService,
-    private _userInfo: UserInfoService
+    private _userInfo: UserInfoService,
+    private nhaMaySevice_: NhamayrootService,
   ) {
     this.Active = false;
     this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
   }
+    // nhà máy
+    nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
+
   ngOnInit() {
     // tìm kiếm
     this.todos$.subscribe(res => {
@@ -82,10 +88,21 @@ listThietBi_: Thietbi[] = [];
     this.r1ListDuLieuTB2DungMay();
     this.r1ListPareto();
     this.R1GetListThietBi();
+     // tìm kiếm
+     this.nhaMayID$.subscribe(res => {
+      if (res !== undefined) {
+        this.r1ListDuLieuDungMay();
+        this.r1ListDuLieuTB2DungMay();
+        this.r1ListPareto();
+        this.R1GetListThietBi();
+        this.ngAfterViewInit();
+      }
+    });
   }
       // danh sách thiet bi
       R1GetListThietBi() {
-        const model_ = {NhaMayID: this._userInfo.R1_GetNhaMayID()};
+        this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
+        const model_ = {NhaMayID: this.options.NhaMayID};
         this.spinnerService.show();
         this.sub = this.khuvucmayservice_.r1Listthietbi(model_).subscribe(res => {
           this.spinnerService.hide();
@@ -101,6 +118,7 @@ listThietBi_: Thietbi[] = [];
       }
   // list du lieuy bieu đồ báo cáo du lieu số giờ dừng máy
   r1ListDuLieuDungMay() {
+    this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
     this.sub = this.baocaotinhtrangservice_.r1ListBCListTTGDungMay(this.options).subscribe(res => {
       if (res !== undefined) {
         if (res['error'] === 1) {
@@ -124,6 +142,7 @@ listThietBi_: Thietbi[] = [];
   }
   // list du lieuy bieu đồ báo cáo du lieu số giờ dừng máy
   r1ListDuLieuTB2DungMay() {
+    this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
     this.sub = this.baocaotinhtrangservice_.r1ListBCListTTGTB(this.options).subscribe(res => {
       if (res !== undefined) {
         if (res['error'] === 1) {
@@ -148,6 +167,7 @@ listThietBi_: Thietbi[] = [];
 
   // list du lieuy bieu đồ báo cáo du lieu số giờ dừng máy
   r1ListPareto() {
+    this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
     this.sub = this.baocaotinhtrangservice_.r1ListPareto(this.options).subscribe(res => {
       if (res !== undefined) {
         if (res['error'] === 1) {
@@ -180,11 +200,13 @@ listThietBi_: Thietbi[] = [];
     });
   }
   ngAfterViewInit() {
+    this.spinnerService.show();
     setTimeout(() => {
       this.barChartTotal();
       this.barChartTB();
       this.ParetoChartTB();
-    }, 500);
+    }, 1000);
+    this.spinnerService.hide();
   }
   barChartTotal() {
     if (this.dataListbar !== undefined) {
@@ -393,6 +415,12 @@ listThietBi_: Thietbi[] = [];
       this.Active = false;
     }
   }
+  onOpenCalendar(container) {
+    container.monthSelectHandler = (event: any): void => {
+      container._store.dispatch(container._actions.select(event.date));
+    };
+    container.setViewMode('month');
+   }
   // làm mới trang
   refreshData() {
     this.options.s = '';

@@ -45,7 +45,7 @@
                   <strong>Xuất báo cáo</strong>
                 </a>
               </li>
-              <li class="li-select ma-may">
+              <li *ngIf="options._ThietbiID !== ''" class="li-select ma-may">
                   <strong *ngIf="MaThietBi !== ''">
                     Mã máy: {{MaThietBi}}
                   </strong>

@@ -9,13 +9,14 @@ import { ThietbiService } from '../../danhmuc/thietbi/thietbi.service';
 import { Thietbi, Thongsokythuat } from '../../danhmuc/thietbi/thietbi';
 import { Router } from '@angular/router';
 import * as $ from 'jquery';
+import { NhamayrootService } from '../../../shared/nhamayroot.service';
 @Component({
   selector: 'app-danhsachthietbi',
   templateUrl: './danhsachthietbi.component.html',
   styleUrls: ['./danhsachthietbi.component.scss']
 })
 export class DanhsachthietbiComponent implements OnInit {
- options = {s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0, NhomThietBiID: ''};
+ options = {s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0, NhomThietBiID: '', NhaMayID: null};
 
   private subscription: Subscription;
   private subscription2: Subscription;
@@ -44,9 +45,11 @@ litsthongsokythuat_: Thongsokythuat[] = [];
     private toastr: ToastrService,
     private  permissionsService: NgxPermissionsService,
    private thietbiservice_: ThietbiService,
+   private nhaMaySevice_: NhamayrootService,
    private router: Router,
   ) { }
-
+  // nhà máy
+  nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
   ngOnInit() {
     this.modelthietbi_ = {
       ThietBiID: '',
@@ -78,6 +81,11 @@ litsthongsokythuat_: Thongsokythuat[] = [];
         this.R1GetListThietBi();
       }
     });
+    this.nhaMayID$.subscribe(res => {
+      if (res !== undefined) {
+    this.R1GetListThietBi();
+      }
+    });
     this.R1GetNhomThietBi();
     this.R1GetListThietBi();
   }
@@ -87,6 +95,7 @@ litsthongsokythuat_: Thongsokythuat[] = [];
 }
 // danh sách thiet bi
 R1GetListThietBi() {
+  this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
   this.spinnerService.show();
    this.subscription = this.thietbiservice_.r1ListThietBi(this.options).subscribe(res => {
       this.spinnerService.hide();

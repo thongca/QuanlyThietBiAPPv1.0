@@ -8,6 +8,7 @@ import { KhuvucmayService } from '../../danhmuc/khuvucmay/khuvucmay.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { UserInfoService } from '../../../shared/user-info.service';
+import { NhamayrootService } from '../../../shared/nhamayroot.service';
 @Component({
   selector: 'app-baocaochecklist',
   templateUrl: './baocaochecklist.component.html',
@@ -77,6 +78,7 @@ objThietBi: {};
     private spinnerService: Ng4LoadingSpinnerService,
     private toastr: ToastrService,
     private _userInfo: UserInfoService,
+    private nhaMaySevice_: NhamayrootService,
   ) {
     this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
     this.Active = false;
@@ -112,6 +114,8 @@ public barChartData1st: any[] = [
   public pieChartLabels: string[] = [];
   public pieChartData: number[] = [];
   public pieChartType = 'pie';
+  // nhà máy
+  nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
 
   ngOnInit() {
     this.options.Typewhere = 3;
@@ -122,6 +126,11 @@ public barChartData1st: any[] = [
     this.ListType = data;
     this.options._ThietbiID = sessionStorage.getItem('ThietBiID');
     this.R1GetListThietBi();
+    this.nhaMayID$.subscribe(res => {
+      if (res !== undefined) {
+    this.R1GetListThietBi();
+      }
+    });
   }
   // list du lieuy bieu đồ báo cáo du lieu máy hong nhiều
   r1ListDuLieuMayHongNhieu() {
@@ -261,6 +270,7 @@ public barChartData1st: any[] = [
   }
   // danh sách thiet bi
   R1GetListThietBi() {
+    this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
     this.spinnerService.show();
     this.sub = this.khuvucmayservice_.r1Listthietbi(this.options).subscribe(res => {
       this.spinnerService.hide();
@@ -268,14 +278,23 @@ public barChartData1st: any[] = [
         this.toastr.error(res['ms'], 'Thông báo lỗi');
         return false;
       }
-      this.listThietBi_ = res['data'];
-      if (sessionStorage.getItem('ThietBiID') === null) {
-        this.options._ThietbiID = this.listThietBi_[0].ThietBiID;
+      const data = res['data'];
+      if (data !== undefined) {
+        if (data.length === 0) {
+          this.options._ThietbiID = '';
+        } else if (this.options._ThietbiID === '') {
+          this.options._ThietbiID = data[0].ThietBiID;
+        }
+        if (sessionStorage.getItem('ThietBiID') === null) {
+          this.options._ThietbiID = data[0].ThietBiID;
+        }
       }
+      this.listThietBi_ = data;
       this.r1ListDuLieuBieuDo();
       this.r1ListDuLieuNam();
       this.r1ListDuLieuMayHongNhieu();
       this.R1GetListBaoCaoDetail();
+      this.ShowChart();
     });
   }
 
@@ -295,7 +314,11 @@ public barChartData1st: any[] = [
 
 
 
-
+ShowChart() {
+  setTimeout(() => {
+    this.barChartTB();
+  }, 500);
+}
 
     barChartTB() {
       if (this.dataListbarTB !== undefined) {
@@ -306,7 +329,7 @@ public barChartData1st: any[] = [
         data: {
           labels: this.lablesListbarTB,
           datasets: [{
-            label: 'Số ngày trung bình giữa hai lần dừng',
+            label: 'Số lỗi',
             data: this.dataListbarTB,
             backgroundColor: [
               '#FF0F00',
@@ -361,6 +384,7 @@ InBaoCao() {
     }
   XemBieuDo() {
     this.isReport = false;
+    this.ShowChart();
   }
   XemBaoCao() {
     this.isReport = true;

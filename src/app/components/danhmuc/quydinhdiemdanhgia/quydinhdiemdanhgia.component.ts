@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs';
 import { Quydinhdanhgia } from './quydinhdanhgia.model';
 import { QuydinhdanhgiaService } from './quydinhdanhgia.service';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
@@ -7,6 +8,7 @@ import { UserInfoService } from '../../../shared/user-info.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { ModalDirective } from 'ngx-bootstrap';
+import { NhamayrootService } from '../../../shared/nhamayroot.service';
 
 @Component({
   selector: 'app-quydinhdiemdanhgia',
@@ -14,9 +16,12 @@ import { ModalDirective } from 'ngx-bootstrap';
   styleUrls: ['./quydinhdiemdanhgia.component.scss']
 })
 export class QuydinhdiemdanhgiaComponent implements OnInit, OnDestroy {
-  options = {s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0};
+  options = {s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0, NhaMayID: null};
   checkall: boolean;
   CheckLength: number;
+
+  // unsub
+  private sub: Subscription;
 // string
 modeltitle: string;
 QuyDinhDiemID: string;
@@ -30,7 +35,13 @@ QuyDinhDiemID: string;
     private toastr: ToastrService,
     private  permissionsService: NgxPermissionsService,
     private quydinhService_: QuydinhdanhgiaService,
+    private nhaMaySevice_: NhamayrootService,
   ) { }
+  // tìm kiếm
+  todos$ = this.s.$search;
+  // nhà máy
+  nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
+
   @ViewChild('largeModal') public largeModal: ModalDirective;
   ngOnInit() {
     this.listQuyDinh_ = [{
@@ -45,10 +56,26 @@ QuyDinhDiemID: string;
     DiemQuyDinh: 0,
     TenThietBi: '',
     };
+     // tìm kiếm
+     this.todos$.subscribe(res => {
+      if (res === undefined || res === '""') {
+        this.options.s = '';
+        this.r1ListQuyDinh();
+      } else {
+        this.options.s = res;
+        this.r1ListQuyDinh();
+      }
+    });
+    this.nhaMayID$.subscribe(res => {
+      if (res !== undefined) {
+    this.r1ListQuyDinh();
+      }
+    });
     this.r1ListQuyDinh();
   }
   r1ListQuyDinh() {
-    this.quydinhService_.r1ListQuyDInhDiem(this.options).subscribe(res => {
+    this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
+   this.sub = this.quydinhService_.r1ListQuyDInhDiem(this.options).subscribe(res => {
       if (res !== undefined) {
         if (res['error'] === 1) {
           this.toastr.error(res['ms'], 'Thông báo lỗi');
@@ -87,7 +114,9 @@ QuyDinhDiemID: string;
     });
   }
 ngOnDestroy() {
-
+if (this.sub) {
+  this.sub.unsubscribe();
+}
 }
 HideModal() {
   this.largeModal.hide();

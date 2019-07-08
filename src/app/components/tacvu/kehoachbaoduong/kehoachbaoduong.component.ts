@@ -15,6 +15,7 @@ import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { listLocales } from 'ngx-bootstrap/chronos';
 import { Subscription } from 'rxjs';
 import {formatDate} from '@angular/common';
+import { NhamayrootService } from '../../../shared/nhamayroot.service';
 @Component({
   selector: 'app-kehoachbaoduong',
   templateUrl: './kehoachbaoduong.component.html',
@@ -28,7 +29,7 @@ export class KehoachbaoduongComponent implements OnInit, OnDestroy {
   date: Date = new Date();
   options = {
     s: '', p: 1, pz: 2000, totalpage: 0, total: 0, paxpz: 0, mathP: 0,
-    _ThietbiID: '', Nam: this.date.getFullYear()
+    _ThietbiID: '', Nam: this.date.getFullYear(), NhaMayID: null
   };
      // tìm kiếm
 todos$ = this.s.$search;
@@ -43,7 +44,8 @@ listBaoDuongThietBi_: Kehoachbaoduong[];
     private  permissionsService: NgxPermissionsService,
     private kehoachbaoduongThietBiService_: KehoachbaoduongService,
     private router: Router,
-    private datelageService: BsLocaleService
+    private datelageService: BsLocaleService,
+    private nhaMaySevice_: NhamayrootService,
   ) {
     this.datelageService.use('vi');
     this.isInShow = false;
@@ -62,6 +64,8 @@ listNam_: {Nam: number, NamString: string}[] =
 {Nam: 2029, NamString: 'Năm 2029'},
 {Nam: 2030, NamString: 'Năm 2030'},
 ];
+  // nhà máy
+  nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
   ngOnInit() {
     if (this.listNam_[this.listNam_.length - 1].Nam === this.date.getFullYear()) {
       for (let index = 1; index <= 10; index++) {
@@ -83,11 +87,17 @@ listNam_: {Nam: number, NamString: string}[] =
       }
     });
     this.r1GetListKeHoachBaoDuong();
+    this.nhaMayID$.subscribe(res => {
+      if (res !== undefined) {
+    this.r1GetListKeHoachBaoDuong();
+      }
+    });
   }
   r1GetListKeHoachBaoDuong() {
+    this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
     this.isInShow = false;
     this.spinnerService.show();
-    this.kehoachbaoduongThietBiService_.r1GetListThietBiBaoDuongservice(this.options.Nam).subscribe(res => {
+    this.kehoachbaoduongThietBiService_.r1GetListThietBiBaoDuongservice(this.options).subscribe(res => {
       if (res !== undefined) {
         if (res['error'] === 1) {
           this.toastr.error(res['ms'], 'Thông báo lỗi');

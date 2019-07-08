@@ -14,7 +14,7 @@ export class CapnhathosothietbiService {
     this.BaseURL = this.baseUrl_.sbaseURL;
   }
 
-  r1GetListThietBiservice() {
+  r1GetListThietBiservice(options) {
     let url_ = this.BaseURL + '/api/CD_TV_HoSoThietBi/r1getListThietBi';
     url_ = url_.replace(/[?&]$/, '');
     const options_: any = {
@@ -23,7 +23,7 @@ export class CapnhathosothietbiService {
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       })
     };
-    return this.http.get(url_, options_);
+    return this.http.post(url_, options, options_);
   }
   r1GetListHoSoThietBi(option) {
     let url_ = this.BaseURL + '/api/CD_TV_HoSoThietBi/r1getListHoSoThietBi';

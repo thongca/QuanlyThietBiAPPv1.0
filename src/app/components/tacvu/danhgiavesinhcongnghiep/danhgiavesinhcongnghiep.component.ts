@@ -13,6 +13,7 @@ import * as cloneDeep from 'lodash/cloneDeep';
 import { Thietbi } from './../../danhmuc/thietbi/thietbi';
 import { KhuvucmayService } from '../../danhmuc/khuvucmay/khuvucmay.service';
 import { ThietbirootService } from '../../../shared/thietbiroot.service';
+import { NhamayrootService } from '../../../shared/nhamayroot.service';
 @Component({
   selector: 'app-danhgiavesinhcongnghiep',
   templateUrl: './danhgiavesinhcongnghiep.component.html',
@@ -40,7 +41,6 @@ Active: boolean;
 // file
   _files: File;
   // string
-  ThietBiID: string;
   modaltitle: string;
   VeSinhCongNghiepMID: string;
   MaThietBi: string;
@@ -100,7 +100,8 @@ listThietBi_: Thietbi[] = [];
     private spinnerService: Ng4LoadingSpinnerService ,
     private danhgiavscongnghiepService_: DanhgiavesinhcongnghiepService,
     private khuvucmayservice_: KhuvucmayService,
-    private thietbirootService_: ThietbirootService
+    private thietbirootService_: ThietbirootService,
+    private nhaMaySevice_: NhamayrootService,
   ) {
     this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
     this.datacheck_ = {
@@ -110,7 +111,7 @@ listThietBi_: Thietbi[] = [];
     IsCheckT4: 0,
     IsCheckT5: 0,
     };
-    this.ThietBiID = sessionStorage.getItem('ThietBiID');
+    this.options._ThietbiID = sessionStorage.getItem('ThietBiID');
     this.modelUser_ = {
       UserName: '',
       Password: ''
@@ -143,6 +144,8 @@ listThietBi_: Thietbi[] = [];
     this.MaThietBi = sessionStorage.getItem('MaThietBi');
     this.Active = false;
   }
+ // nhà máy
+ nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
 
   ngOnInit() {
     let Permission = this._userInfo.r1GetobjPermission();
@@ -156,15 +159,19 @@ listThietBi_: Thietbi[] = [];
       this.options.IsTime = `${this.date.getFullYear()}-${this.date.getMonth() + 1}`;
     }
     if ( this.options.IsTime !== '') {
-      this.r1ListKhuVucVeSinhCongNghiep();
-      this.r1ListVeSinhCongNghiep();
       this.R1GetListThietBi();
     }
+    this.nhaMayID$.subscribe(res => {
+      if (res !== undefined) {
+    this.R1GetListThietBi();
+      }
+    });
   }
   // ll
     // danh sách thiet bi
     R1GetListThietBi() {
-      const model_ = {NhaMayID: this._userInfo.R1_GetNhaMayID()};
+      this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
+      const model_ = {NhaMayID: this.options.NhaMayID};
       this.spinnerService.show();
       this.sub = this.khuvucmayservice_.r1Listthietbi(model_).subscribe(res => {
         this.spinnerService.hide();
@@ -172,14 +179,24 @@ listThietBi_: Thietbi[] = [];
           this.toastr.error(res['ms'], 'Thông báo lỗi');
           return false;
         }
-        this.listThietBi_ = res['data'];
-        if (sessionStorage.getItem('ThietBiID') === null) {
-          this.options._ThietbiID = this.listThietBi_[0].ThietBiID;
+        const data = res['data'];
+        if (data !== undefined) {
+          this.listThietBi_ = data;
+          if (data.length === 0) {
+            this.options._ThietbiID = '';
+          } else if (this.options._ThietbiID === '') {
+            this.options._ThietbiID = this.listThietBi_[0].ThietBiID;
+          }
+          if (sessionStorage.getItem('ThietBiID') === null) {
+            this.options._ThietbiID = this.listThietBi_[0].ThietBiID;
+          }
+          this.r1ListKhuVucVeSinhCongNghiep();
+          this.r1ListVeSinhCongNghiep();
+          this.ChangeThietBi();
         }
       });
     }
   r1ListKhuVucVeSinhCongNghiep() {
-    this.options._ThietbiID = this.ThietBiID;
     this.danhgiavscongnghiepService_.r1ListKhucVucVeSinhCongNghiep(this.options).subscribe(res => {
       if (res !== undefined) {
         if (res['error'] === 1) {
@@ -203,7 +220,6 @@ listThietBi_: Thietbi[] = [];
       totalT4: 0,
       totalT5: 0,
     };
-    this.options._ThietbiID = this.ThietBiID;
   this.subscription =  this.danhgiavscongnghiepService_.r1ListVeSinhCongNghiep(this.options).subscribe(res => {
       if (res !== undefined) {
         if (res['error'] === 1) {
@@ -211,6 +227,11 @@ listThietBi_: Thietbi[] = [];
           return false;
         }
         if (res['error'] === 2) {
+          this.listVeSinhCongNghiep_ = [];
+          this.toastr.error(res['ms'], 'Thông báo');
+          return false;
+        }
+        if (res['error'] === 3) {
           this.listVeSinhCongNghiep_ = [];
           this.toastr.error(res['ms'], 'Thông báo');
           return false;
@@ -297,8 +318,8 @@ HideModal() {
   this.ImportExModal.hide();
 }
 ChangeThietBi() {
+  this.options.KhuVucVSCNID = '';
   sessionStorage.setItem('ThietBiID', this.options._ThietbiID);
-  this.ThietBiID = this.options._ThietbiID;
   this.r1ListVeSinhCongNghiep();
   this.r1ListKhuVucVeSinhCongNghiep();
   this.thietbirootService_.r1getThietBiByID(this.options._ThietbiID).subscribe(res => {
@@ -314,7 +335,7 @@ ChangeThietBi() {
   },
   err => {
     if (err.status === 404) {
-      this.toastr.error('Không có phàn hồi từ máy chủt', 'Thông báo');
+      this.toastr.error('Không có phàn hồi từ máy chủ', 'Thông báo');
     }
   });
 }

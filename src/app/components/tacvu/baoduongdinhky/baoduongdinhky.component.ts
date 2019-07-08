@@ -13,6 +13,7 @@ import { DatePipe } from '@angular/common';
 import { KhuvucmayService } from '../../danhmuc/khuvucmay/khuvucmay.service';
 import { Thietbi } from '../../danhmuc/thietbi/thietbi';
 import { ThietbiService } from '../../danhmuc/thietbi/thietbi.service';
+import { NhamayrootService } from '../../../shared/nhamayroot.service';
 @Component({
   selector: 'app-baoduongdinhky',
   templateUrl: './baoduongdinhky.component.html',
@@ -28,10 +29,6 @@ export class BaoduongdinhkyComponent implements OnInit, OnDestroy {
   };
   // list
   listThietBi_: Thietbi[] = [];
-  listNhaMay_: {
-    NhaMayID: number;
-    TenNhaMay: string;
-  }[];
   // number
   DayInsMonth: number;
   Active: boolean;
@@ -51,7 +48,8 @@ export class BaoduongdinhkyComponent implements OnInit, OnDestroy {
     public datepipe: DatePipe,
     private khuvucmayservice_: KhuvucmayService,
     private thietbirootService_: ThietbirootService,
-    private thietbiservice_: ThietbiService
+    private thietbiservice_: ThietbiService,
+    private nhaMaySevice_: NhamayrootService,
   ) {
     this.options._ThietbiID = sessionStorage.getItem('ThietBiID');
     this.DayInsMonth = this.baoduongdinhkyservice_.r1DayInsMonth(this.date);
@@ -60,73 +58,53 @@ export class BaoduongdinhkyComponent implements OnInit, OnDestroy {
     }
     this.Active = false;
     this.MaThietBi = sessionStorage.getItem('MaThietBi');
-    this.listNhaMay_ = [{
-      NhaMayID: null,
-      TenNhaMay: '',
-    }];
   }
-
+  // nhà máy
+  nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
   ngOnInit() {
     let Permission = this._userInfo.r1GetobjPermission();
     if (Permission === undefined) {
       Permission = 'NoAdmin';
     }
     this.permissionsService.loadPermissions([`${Permission}`]);
-    this.R1GetListBaoDuongDinhKy();
+
     this.R1GetListThietBi();
-    this.R1DanhSachNhaMay();
-  }
-  // danh sách nhà máy
-  R1DanhSachNhaMay() {
-    const model_ = { NhaMayID: this._userInfo.R1_GetNhaMayID() };
-    this.thietbiservice_.r1GetNhaMay(model_).subscribe(res => {
+    this.nhaMayID$.subscribe(res => {
       if (res !== undefined) {
-        if (res['error'] === 1) {
-          return false;
-        }
-        const data = res['data'];
-        if (data !== undefined) {
-          this.listNhaMay_ = data;
-        }
-      }
-    }, err => {
-      if (err.status === 500) {
-        this.toastr.error('Mất kết nối đến máy chủ, Vui lòng kiểm tra lại đường dẫn!', 'Thông báo');
-        return false;
-      }
-      if (err.status === 404) {
-        this.toastr.error('Lỗi xác thực máy chủ, Vui lòng kiểm tra lại!', 'Thông báo');
-        return false;
+    this.R1GetListThietBi();
       }
     });
   }
   // danh sách thiet bi
   R1GetListThietBi() {
+    this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
     const model_ = { NhaMayID: this.options.NhaMayID };
     this.spinnerService.show();
-    this.sub = this.khuvucmayservice_.r1Listthietbi(model_).subscribe(res => {
+    this.sub = this.khuvucmayservice_.r1Listthietbi(model_).subscribe(async res => {
       this.spinnerService.hide();
-      if (res['error'] === 1) {
+      if (await res['error'] === 1) {
         this.toastr.error(res['ms'], 'Thông báo lỗi');
         return false;
       }
-      const data = res['data'];
+      const data = await res['data'];
       if (data !== undefined) {
         this.listThietBi_ = data;
       }
       if (data.length === 0) {
         this.options._ThietbiID = '';
-      } else {
+      } else if (this.options._ThietbiID === '') {
         this.options._ThietbiID = this.listThietBi_[0].ThietBiID;
       }
       if (sessionStorage.getItem('ThietBiID') === null) {
         this.options._ThietbiID = this.listThietBi_[0].ThietBiID;
       }
+        this.R1GetListBaoDuongDinhKy();
     });
   }
   // danh sách bao dưởng định kỳ
   R1GetListBaoDuongDinhKy() {
-    this.spinnerService.show();
+    this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
+      this.spinnerService.show();
     this.sub = this.baoduongdinhkyservice_.r1ListBaoDuongDinhKy(this.options).subscribe(res => {
       this.spinnerService.hide();
       if (res['error'] === 1) {
@@ -381,6 +359,7 @@ export class BaoduongdinhkyComponent implements OnInit, OnDestroy {
         const objThietBi = res['data'];
         sessionStorage.setItem('MaThietBi', objThietBi.MaThietBi);
         this.MaThietBi = objThietBi.MaThietBi;
+        this.R1GetListBaoDuongDinhKy();
       }
     },
       err => {
@@ -389,9 +368,7 @@ export class BaoduongdinhkyComponent implements OnInit, OnDestroy {
         }
       });
   }
-  ThucHien() {
-    this.R1GetListBaoDuongDinhKy();
-  }
+
   onOpenCalendar(container) {
     container.monthSelectHandler = (event: any): void => {
       container._store.dispatch(container._actions.select(event.date));

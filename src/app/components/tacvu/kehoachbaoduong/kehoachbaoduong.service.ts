@@ -13,7 +13,7 @@ export class KehoachbaoduongService {
     this.BaseURL = this.baseUrl_.sbaseURL;
    }
 
-   r1GetListThietBiBaoDuongservice(Nam: number) {
+   r1GetListThietBiBaoDuongservice(options) {
     let url_ = this.BaseURL + '/api/CD_TV_KeHoachBaoDuong/r1getListBaoDuong';
     url_ = url_.replace(/[?&]$/, '');
     const options_: any = {
@@ -22,7 +22,7 @@ export class KehoachbaoduongService {
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       })
     };
-    return this.http.post(url_, Nam, options_);
+    return this.http.post(url_, options, options_);
   }
   r2SaveChangeKeHoachBaoDuong(model) {
     let url_ = this.BaseURL + '/api/CD_TV_KeHoachBaoDuong';

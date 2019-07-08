@@ -17,6 +17,7 @@ import { defineLocale } from 'ngx-bootstrap/chronos';
 import { viLocale } from 'ngx-bootstrap/locale';
 import { DatePipe } from '@angular/common';
 import { BsLocaleService } from 'ngx-bootstrap';
+import { NhamayrootService } from '../../../shared/nhamayroot.service';
 @Component({
   selector: 'app-capnhathosothietbi',
   templateUrl: './capnhathosothietbi.component.html',
@@ -25,7 +26,7 @@ import { BsLocaleService } from 'ngx-bootstrap';
 export class CapnhathosothietbiComponent implements OnInit, OnDestroy {
   options = {
     s: '', p: 1, pz: 2000, totalpage: 0, total: 0, paxpz: 0, mathP: 0,
-    _ThietbiID: ''
+    _ThietbiID: '', NhaMayID: null
   };
 
 private sub: Subscription;
@@ -81,7 +82,8 @@ objThoiGian: {
     private router: Router,
     private khuvucmayservice_: KhuvucmayService,
     private thietbirootService_: ThietbirootService,
-    private datelageService: BsLocaleService
+    private datelageService: BsLocaleService,
+    private nhaMaySevice_: NhamayrootService,
   ) {
     this.datelageService.use('vi');
     this.Active = false;
@@ -129,9 +131,10 @@ objThoiGian: {
         ThoiGianKetThuc: this.date,
         ThoiGianBatDau: null,
       };
-      this.MaThietBi =  JSON.stringify(sessionStorage.getItem('MaThietBi'));
+      this.MaThietBi =  sessionStorage.getItem('MaThietBi');
    }
-
+  // nhà máy
+  nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
   ngOnInit() {
         // check permission admin
         let Permission = this._userInfo.r1GetobjPermission();
@@ -151,6 +154,11 @@ objThoiGian: {
       }
     });
     this.r1GetListThietBi();
+    this.nhaMayID$.subscribe(res => {
+      if (res !== undefined) {
+    this.r1GetListThietBi();
+      }
+    });
   }
 
   SetTotalPage() {
@@ -158,30 +166,36 @@ objThoiGian: {
     this.options.mathP = this.options.pz * this.options.p;
   }
 r1GetListThietBi() {
-this.hosoThietBiService_.r1GetListThietBiservice().subscribe(res => {
+  this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
+this.hosoThietBiService_.r1GetListThietBiservice(this.options).subscribe(res => {
   if (res !== undefined) {
     if (res['error'] === 1) {
       this.toastr.error(res['ms'], 'Thông báo lỗi');
       return false;
     }
     const listThietBi = res['data'];
-    if (this.options._ThietbiID === '') {
-      this.options._ThietbiID = listThietBi[0].ThietBiID;
-    }
-    this.ThietBiID = this.options._ThietbiID;
-    if ( this.ThietBiID !== '') {
-      if (this.listThietBi_.length > 0) {
-        this.TenThietBi = listThietBi.filter(x => x.ThietBiID === this.ThietBiID)[0].TenThietBi;
+    if (listThietBi.length > 0) {
+      if (this.options._ThietbiID === '') {
+        this.options._ThietbiID = listThietBi[0].ThietBiID;
       }
-      if (this._userInfo.user.IsAdmin === false) {
-        this.listThietBi_ = listThietBi.filter(x => x.ThietBiID === this.ThietBiID);
-      } else {
-        this.listThietBi_ = listThietBi;
-      }
-      this.r1GetListHoSoThietBi();
-      this.r1GetListThongSoKyThuat();
-      this.ThietBiChanged();
+      this.ThietBiID = this.options._ThietbiID;
+      if ( this.ThietBiID !== '') {
+        if (this.listThietBi_.length > 0) {
+          this.TenThietBi = listThietBi.filter(x => x.ThietBiID === this.ThietBiID)[0].TenThietBi;
+        }
+        if (this._userInfo.user.IsAdmin === false) {
+          this.listThietBi_ = listThietBi.filter(x => x.ThietBiID === this.ThietBiID);
+        } else {
+          this.listThietBi_ = listThietBi;
+        }
     }
+    } else {
+      this.listThietBi_ = listThietBi;
+    }
+    this.ThietBiChanged();
+    this.r1GetListHoSoThietBi();
+    this.r1GetListThongSoKyThuat();
+
   }
 });
 }
@@ -346,7 +360,7 @@ ThietBiChanged() {
   },
   err => {
     if (err.status === 404) {
-      this.toastr.error('Không có phản hồi từ máy chủt', 'Thông báo');
+      this.toastr.error('Không có phản hồi từ máy chủ', 'Thông báo');
     }
   });
 }

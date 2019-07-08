@@ -9,6 +9,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { Subscription } from 'rxjs';
 import { ThietbiService } from '../thietbi/thietbi.service';
+import { NhamayrootService } from '../../../shared/nhamayroot.service';
 @Component({
   selector: 'app-khuvucmay',
   templateUrl: './khuvucmay.component.html',
@@ -48,8 +49,6 @@ IsFlag: boolean;
   @ViewChild('warningChiTietModal') public warningChiTietModal: ModalDirective;
   @ViewChild('ImportExModal') public ImportExModal: ModalDirective;
 
-    // tìm kiếm
-    todos$ = this.s.$search;
 
   constructor(
     private s: SearchService,
@@ -59,6 +58,7 @@ IsFlag: boolean;
     private spinnerService: Ng4LoadingSpinnerService ,
     private khuvucmayservice_: KhuvucmayService,
     private thietbiservice_: ThietbiService,
+    private nhaMaySevice_: NhamayrootService,
   ) {
     this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
     this.listNhaMay_ = [{
@@ -66,7 +66,10 @@ IsFlag: boolean;
       TenNhaMay: ''
     }];
    }
-
+    // tìm kiếm
+    todos$ = this.s.$search;
+  // nhà máy
+  nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
   ngOnInit() {
 
     this.modelKhuVucMay_ = new Khuvucmay();
@@ -79,8 +82,14 @@ IsFlag: boolean;
           this.permissionsService.loadPermissions([`${Permission}`]);
         }
      // tìm kiếm
-     this.todos$.subscribe(res => {
-      if (res === undefined || res === '') {
+    this.nhaMayID$.subscribe(res => {
+      if (res !== undefined) {
+    this.R1GetListThietBi();
+      }
+    });
+    this.R1GetListThietBi();
+    this.todos$.subscribe(res => {
+      if (res === undefined || res === '""') {
         this.options.s = '';
         this.R1GetListTKhuVuc();
       } else {
@@ -88,9 +97,6 @@ IsFlag: boolean;
         this.R1GetListTKhuVuc();
       }
     });
-    this.R1GetListTKhuVuc();
-    this.R1GetListThietBi();
-    this.R1DanhSachNhaMay();
   }
 
   SetTotalPage() {
@@ -98,32 +104,9 @@ IsFlag: boolean;
     this.options.mathP = this.options.pz * this.options.p;
 }
 
-// danh sách nhà máy
-R1DanhSachNhaMay() {
-  const model_ = {NhaMayID: this._userInfo.R1_GetNhaMayID()};
-  this.thietbiservice_.r1GetNhaMay(model_).subscribe(res => {
-    if (res !== undefined) {
-      if (res['error'] === 1) {
-        return false;
-      }
-      const data = res['data'];
-      if (data !== undefined) {
-        this.listNhaMay_ = data;
-      }
-    }
-  }, err => {
-    if (err.status === 500) {
-      this.toastr.error('Mất kết nối đến máy chủ, Vui lòng kiểm tra lại đường dẫn!', 'Thông báo');
-      return false;
-    }
-    if (err.status === 404) {
-      this.toastr.error('Lỗi xác thực máy chủ, Vui lòng kiểm tra lại!', 'Thông báo');
-      return false;
-    }
-  });
-}
 // danh sách thiet bi
 R1GetListThietBi() {
+  this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
   this.spinnerService.show();
    this.subscription1 = this.khuvucmayservice_.r1Listthietbi(this.options).subscribe(res => {
       this.spinnerService.hide();
@@ -132,6 +115,7 @@ R1GetListThietBi() {
         return false;
       }
      this.listThietBi_ = res['data'];
+     this.R1GetListTKhuVuc();
 });
 }
 ChonFile(files) {
@@ -166,10 +150,6 @@ r2ImportFile() {
 }
 // danh sách khu vuc máy
 R1GetListTKhuVuc() {
-  const NhaMayID = this._userInfo.R1_GetNhaMayID();
-  if (NhaMayID !== null && NhaMayID !== 0) {
-    this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
-  }
   this.spinnerService.show();
    this.subscription = this.khuvucmayservice_.r1ListKhuVuc(this.options).subscribe(res => {
       this.spinnerService.hide();

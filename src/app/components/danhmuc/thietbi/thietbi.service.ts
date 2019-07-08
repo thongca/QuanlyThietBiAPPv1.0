@@ -19,36 +19,36 @@ export class ThietbiService {
     let url_ = this.BaseURL + '/api/CD_DM_ThietBi/r1Cd_DM_NhaMay';
     url_ = url_.replace(/[?&]$/, '');
     const options_: any = {
-  ContentType: 'application/json; charset=utf-8',
-  headers: new HttpHeaders({
-    'Authorization': 'Bearer ' + localStorage.getItem('token')
-  })
-  };
-  return this.http.post(url_ , options, options_);
-}
+      ContentType: 'application/json; charset=utf-8',
+      headers: new HttpHeaders({
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+    return this.http.post(url_, options, options_);
+  }
   r1GetThietbibyID(ThietBiID: string) {
     let url_ = this.BaseURL + '/api/CD_DM_ThietBi/' + ThietBiID;
     url_ = url_.replace(/[?&]$/, '');
     const options_: any = {
-  ContentType: 'application/json; charset=utf-8',
-  headers: new HttpHeaders({
-    'Authorization': 'Bearer ' + localStorage.getItem('token')
-  })
-  };
-  return this.http.get(url_ , options_);
-}
-r1GetThongSobyID(ThongSoKTID: string, ThietBiID: string) {
-  let url_ = this.BaseURL + '/api/CD_DM_ThietBi/r1GetThongSoByID';
-  url_ = url_.replace(/[?&]$/, '');
-  const thongSoTB = {ThongSoKTID, ThietBiID};
-  const options_: any = {
-ContentType: 'application/json; charset=utf-8',
-headers: new HttpHeaders({
-  'Authorization': 'Bearer ' + localStorage.getItem('token')
-})
-};
-return this.http.post(url_ , thongSoTB, options_);
-}
+      ContentType: 'application/json; charset=utf-8',
+      headers: new HttpHeaders({
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+    return this.http.get(url_, options_);
+  }
+  r1GetThongSobyID(ThongSoKTID: string, ThietBiID: string) {
+    let url_ = this.BaseURL + '/api/CD_DM_ThietBi/r1GetThongSoByID';
+    url_ = url_.replace(/[?&]$/, '');
+    const thongSoTB = { ThongSoKTID, ThietBiID };
+    const options_: any = {
+      ContentType: 'application/json; charset=utf-8',
+      headers: new HttpHeaders({
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+    return this.http.post(url_, thongSoTB, options_);
+  }
   r1ListThietBi(options: object) {
     let url_ = this.BaseURL + '/api/CD_DM_ThietBi/r1getlistthietbi';
     url_ = url_.replace(/[?&]$/, '');
@@ -57,10 +57,10 @@ return this.http.post(url_ , thongSoTB, options_);
       headers: new HttpHeaders({
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       })
-  };
-  return this.http.post(url_, options , options_);
+    };
+    return this.http.post(url_, options, options_);
   }
-// list nhóm thiết bị
+  // list nhóm thiết bị
   r1Listnhomthietbi() {
     let url_ = this.BaseURL + '/api/CD_DM_ThietBi/r1getnhomthietbi';
     url_ = url_.replace(/[?&]$/, '');
@@ -69,8 +69,8 @@ return this.http.post(url_ , thongSoTB, options_);
       headers: new HttpHeaders({
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       })
-  };
-  return this.http.get(url_ , options_);
+    };
+    return this.http.get(url_, options_);
   }
   // list nhóm thiết bị
   r1Listdonvitinh() {
@@ -81,12 +81,12 @@ return this.http.post(url_ , thongSoTB, options_);
       headers: new HttpHeaders({
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       })
-  };
-  return this.http.get(url_ , options_);
-}
+    };
+    return this.http.get(url_, options_);
+  }
   // add
   R2AddThietBiThongSo(objThietBi: object, arrThongSo: Thongsokythuat[]) {
-    const Twoarr_ = {objThietBi, arrThongSo};
+    const Twoarr_ = { objThietBi, arrThongSo };
     let url_ = this.BaseURL + '/api/CD_DM_ThietBi/r2AddThietBiThongSo';
     url_ = url_.replace(/[?&]$/, '');
     const options_: any = {
@@ -95,43 +95,43 @@ return this.http.post(url_ , thongSoTB, options_);
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       })
     };
-return this.http.post(url_, Twoarr_, options_);
+    return this.http.post(url_, Twoarr_, options_);
   }
 
   // update
   r3updateThietBi(ID: string, objThietBi: object, arrThongSo: Thongsokythuat[]) {
-    const model_ = {objThietBi, arrThongSo};
+    const model_ = { objThietBi, arrThongSo };
     let url_ = this.BaseURL + '/api/CD_DM_ThietBi/' + ID;
-      url_ = url_.replace(/[?&]$/, '');
+    url_ = url_.replace(/[?&]$/, '');
     const options_: any = {
       ContentType: 'application/json; charset=utf-8',
       headers: new HttpHeaders({
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       })
     };
-  return this.http.put(url_, model_, options_);
+    return this.http.put(url_, model_, options_);
   }
   r4deleteThietBi(Ids: any[]) {
     let url_ = this.BaseURL + '/api/CD_DM_ThietBi/r4DelThietBi';
     url_ = url_.replace(/[?&]$/, '');
-  const options_: any = {
-    ContentType: 'application/json; charset=utf-8',
-    headers: new HttpHeaders({
-      'Authorization': 'Bearer ' + localStorage.getItem('token')
-    })
-  };
-  return this.http.post(url_, Ids, options_);
+    const options_: any = {
+      ContentType: 'application/json; charset=utf-8',
+      headers: new HttpHeaders({
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+    return this.http.post(url_, Ids, options_);
   }
   r4deleteChitiet(ID: string) {
     let url_ = this.BaseURL + '/api/CD_DM_ThietBi/' + ID;
     url_ = url_.replace(/[?&]$/, '');
-  const options_: any = {
-    ContentType: 'application/json; charset=utf-8',
-    headers: new HttpHeaders({
-      'Authorization': 'Bearer ' + localStorage.getItem('token')
-    })
-  };
-  return this.http.delete(url_, options_);
+    const options_: any = {
+      ContentType: 'application/json; charset=utf-8',
+      headers: new HttpHeaders({
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+    return this.http.delete(url_, options_);
   }
 
 

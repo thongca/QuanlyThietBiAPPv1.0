@@ -18,6 +18,10 @@
                   <option *ngFor="let c of listThietBi_" [ngValue]="c.ThietBiID">{{c.TenThietBi}}</option>
                 </select>
               </li>
+              <li class="li-select">
+                  <input class="form-control" placeholder="MM/YYYY" bsDatepicker [(ngModel)]="options.IsTime" placement="bottom" (ngModelChange)="ChangeThang(options.IsTime)" [bsConfig]="{dateInputFormat: 'MM/YYYY'}" (onShown)="onOpenCalendar($event)"
+                   >
+              </li>
             </ul>
           </div>
           <ul class="ul-box-crud">
