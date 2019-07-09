@@ -95,10 +95,20 @@ listThietBi_: Thietbi[] = [];
         this.r1ListDuLieuTB2DungMay();
         this.r1ListPareto();
         this.R1GetListThietBi();
+        this.R1GetListBaoCaoVSHangNgay();
         this.ngAfterViewInit();
       }
     });
   }
+       // danh sách báo cáo vệ sinh công nghiệp hàng ngày
+       R1GetListBaoCaoVSHangNgay() {
+        this.spinnerService.show();
+        this.sub = this.baocaotinhtrangservice_.r1ListBaocaoVesinhHangNgay(this.options).subscribe(res => {
+          this.spinnerService.hide();
+         console.log(res);
+        });
+      }
+
       // danh sách thiet bi
       R1GetListThietBi() {
         this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));

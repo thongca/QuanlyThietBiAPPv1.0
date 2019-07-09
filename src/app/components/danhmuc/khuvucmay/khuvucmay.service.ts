@@ -49,7 +49,6 @@ export class KhuvucmayService {
     };
     return this.http.post(url_, options, options_);
   }
-
   // list thiết bị select2
   r1Listthietbi(options) {
     let url_ = this.BaseURL + '/api/CD_DM_KhuVucMay/r1GetListThietBi';
