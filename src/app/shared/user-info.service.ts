@@ -49,11 +49,15 @@ export class UserInfoService {
       this.AvaUrl = this.user.AvaUser;
     }
     const Permission =  this.user.Permission;
-return Permission;
+  return Permission;
   }
   R1_GetDataUser(): string {
     const retrievedObject = localStorage.getItem('user');
     this.user = JSON.parse(retrievedObject);
+    if (this.user === null) {
+      const ms = 'error';
+      return ms;
+    }
     let AvatarUrl = this.user.AvaUser;
     if (AvatarUrl === null || AvatarUrl === undefined) {
       AvatarUrl = '/upload/user.png';

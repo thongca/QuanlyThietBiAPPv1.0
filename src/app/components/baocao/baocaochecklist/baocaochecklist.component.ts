@@ -1,7 +1,7 @@
-import { Subscription } from 'rxjs';
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { BaocaochecklistService } from './baocaochecklist.service';
 import { Chart } from 'chart.js';
+import { DatePipe } from '@angular/common';
 import * as $ from 'jquery';
 import { Thietbi } from '../../danhmuc/thietbi/thietbi';
 import { KhuvucmayService } from '../../danhmuc/khuvucmay/khuvucmay.service';
@@ -9,15 +9,23 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { UserInfoService } from '../../../shared/user-info.service';
 import { NhamayrootService } from '../../../shared/nhamayroot.service';
+import { defineLocale } from 'ngx-bootstrap/chronos';
+import { viLocale } from 'ngx-bootstrap/locale';
+import { BsLocaleService } from 'ngx-bootstrap';
+import { SearchService } from '../../../shared/search.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+defineLocale('vi', viLocale);
 @Component({
   selector: 'app-baocaochecklist',
   templateUrl: './baocaochecklist.component.html',
   styleUrls: ['./baocaochecklist.component.scss']
 })
 export class BaocaochecklistComponent implements OnInit, OnDestroy, AfterViewInit {
+  date: Date = new Date();
   options = {
     s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0, KhuVucID: '',
-    _ThietbiID: '', DateStart: Date, DateEnd: Date, Typewhere: 0, NhaMayID: null
+    _ThietbiID: '', DateStart: Date, DateEnd: Date, Typewhere: 0, NhaMayID: null, IsTime: this.date
   };
 // List danh sách 15 thiết bị lỗi nhiều nhất trong tháng
 list15Deviceerror_: {
@@ -25,7 +33,7 @@ list15Deviceerror_: {
   MaThietBi: string;
   NeedRepair: boolean;
 }[];
-
+private unsubscribe: Subject<void> = new Subject();
   //
   ListType:
     {
@@ -43,7 +51,6 @@ list15Deviceerror_: {
       Month: number,
       KetQua: number
     }[];
-  sub: Subscription;
   listThietBi_: Thietbi[] = [];
   public Active: boolean;
   isLoad: boolean; // khi co dữ liệu mới được load html
@@ -78,12 +85,16 @@ objThietBi: {};
     private spinnerService: Ng4LoadingSpinnerService,
     private toastr: ToastrService,
     private _userInfo: UserInfoService,
+    private datelageService: BsLocaleService,
     private nhaMaySevice_: NhamayrootService,
+    private datepipe: DatePipe,
+    private s: SearchService,
   ) {
     this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
     this.Active = false;
     this.isLoad = false;
     this.isReport = false;
+    this.datelageService.use('vi');
   }
 // bar chart mot cot
 public barChartOptions1st: any = {
@@ -116,7 +127,8 @@ public barChartData1st: any[] = [
   public pieChartType = 'pie';
   // nhà máy
   nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
-
+  // search
+  todos$ = this.s.$search;
   ngOnInit() {
     this.options.Typewhere = 3;
     const data = [{ Typewhere: 1, Name: 'Xem trong ngày' },
@@ -129,12 +141,22 @@ public barChartData1st: any[] = [
     this.nhaMayID$.subscribe(res => {
       if (res !== undefined) {
     this.R1GetListThietBi();
+    this.R1GetListBaoCaoDetail();
+      }
+    });
+    this.todos$.subscribe(res => {
+      if (res === undefined || res === '') {
+        this.options.s = '';
+        this.R1GetListBaoCaoDetail();
+      } else {
+        this.options.s = res;
+        this.R1GetListBaoCaoDetail();
       }
     });
   }
   // list du lieuy bieu đồ báo cáo du lieu máy hong nhiều
   r1ListDuLieuMayHongNhieu() {
-    this.sub = this.baocaocheckService_.r1ListBaocaolistHong(this.options).subscribe(res => {
+    this.baocaocheckService_.r1ListBaocaolistHong(this.options).subscribe(res => {
       if (res !== undefined) {
         if (res['error'] === 1) {
           this.toastr.error('Lỗi khi tải dữ liệu các biểu đồ', 'Thông báo');
@@ -159,7 +181,7 @@ public barChartData1st: any[] = [
 
   // list du lieuy bieu đồ báo cáo trong tháng
   r1ListDuLieuBieuDo() {
-    this.sub = this.baocaocheckService_.r1ListBaocaochecklist(this.options).subscribe(res => {
+   this.baocaocheckService_.r1ListBaocaochecklist(this.options).subscribe(res => {
       if (res !== undefined) {
         if (res['error'] === 1) {
           this.toastr.error('Lỗi khi tải dữ liệu các biểu đồ', 'Thông báo');
@@ -204,7 +226,7 @@ public barChartData1st: any[] = [
 
   // list du lieuy bieu đồ báo cáo trong năm
   r1ListDuLieuNam() {
-    this.sub = this.baocaocheckService_.r1ListBaocaochecklistMotNam(this.options).subscribe(res => {
+    this.baocaocheckService_.r1ListBaocaochecklistMotNam(this.options).subscribe(res => {
       if (res !== undefined) {
         if (res['error'] === 1) {
           this.toastr.error('Lỗi khi tải dữ liệu các biểu đồ 1', 'Thông báo');
@@ -272,7 +294,7 @@ public barChartData1st: any[] = [
   R1GetListThietBi() {
     this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
     this.spinnerService.show();
-    this.sub = this.khuvucmayservice_.r1Listthietbi(this.options).subscribe(res => {
+    this.khuvucmayservice_.r1Listthietbi(this.options).subscribe(res => {
       this.spinnerService.hide();
       if (res['error'] === 1) {
         this.toastr.error(res['ms'], 'Thông báo lỗi');
@@ -301,7 +323,9 @@ public barChartData1st: any[] = [
     // danh sách Báo cáo bảng kiểm tra máy định kỳ
     R1GetListBaoCaoDetail() {
       this.spinnerService.show();
-      this.sub = this.baocaocheckService_.r1ListBaocaoDetail(this.options).subscribe(res => {
+      this.baocaocheckService_.r1ListBaocaoDetail(this.options)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(res => {
         this.spinnerService.hide();
         if (res['error'] === 1) {
           this.toastr.error(res['ms'], 'Thông báo lỗi');
@@ -394,15 +418,25 @@ InBaoCao() {
     this.r1ListDuLieuNam();
     this.R1GetListBaoCaoDetail();
   }
+  ChangeThang(IsTime) {
+    const dateopt = this.datepipe.transform(IsTime, 'yyyy-MM-dd');
+    this.options.IsTime = new Date(dateopt);
+    this.R1GetListBaoCaoDetail();
+  }
+  onOpenCalendar(container) {
+    container.monthSelectHandler = (event: any): void => {
+      container._store.dispatch(container._actions.select(event.date));
+    };
+    container.setViewMode('month');
+   }
   Event(e) {
     if (e.target.closest('.select-tieuchi') === null) {
       this.Active = false;
     }
   }
   ngOnDestroy() {
-    if (this.sub) {
-      this.sub.unsubscribe();
-    }
+    this.unsubscribe.next();
+    this.unsubscribe.complete();
   }
 
   ngAfterViewInit() {

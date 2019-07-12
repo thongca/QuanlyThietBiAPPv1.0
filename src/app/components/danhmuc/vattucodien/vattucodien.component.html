@@ -34,7 +34,7 @@
           <table class="table table-bordered table-striped table-sm table-app">
             <thead>
               <tr>
-                <th class="th-checkbox" width=40><input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="checkall" id="inline-checkbox3" (click)="toggleAll(listNhomVatTu_, checkall)"  value="option3"> </th>
+                <th class="th-checkbox" width=40><input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="checkall" id="inline-checkbox3" (click)="toggleAll(listVatTu_, checkall)"  value="option3"> </th>
                 
                 <th class="text-center" width="50">STT</th>
                 <th width="100" class="text-center">Mã nhóm</th>
@@ -43,14 +43,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let item of listVatTu_; let i = index">
-                <td class="td-checkbox"><input class="table-checkbox" type="checkbox" id="inline-checkbox3" value="option3" [checked]="item.checked" [(ngModel)]="item.checked" (click)="CheckedList(item.checked)"></td>
-                <td  class="text-center">{{i + 1}}</td>
-                <td class="text-center">{{item.MaNhom}}</td>
-                <td>{{item.TenNhom}}</td>
-                <td appBtnPer="update" class="text-center"  >
-                  <img title="Sửa" class="img-icon-edit img-left" (click)="SelectIDEditModel(item.NhomVatTuID)" src="assets/img/brand/edit.png" alt="Sửa">
-                </td>
+              
             </tbody>
           </table>
           <nav *ngIf="options.totalpage > 1">
@@ -106,7 +99,7 @@
                                     <span>*</span>
                                   </label>
                                   <div class="input-text">
-                                      <input [disabled] ="modelVatTu_.NhomVatTuID !== ''"type="text" class="form-control" id="name" placeholder="Mã nhóm" [(ngModel)]="modelVatTu_.MaNhom" [ngModelOptions]="{standalone: true}">
+                                     
                                   </div>
                                 </div>
 
@@ -119,29 +112,12 @@
                                         <span>*</span>
                                       </label>
                                       <div class="input-text">
-                                          <input type="text" class="form-control" id="name" placeholder="Tên nhóm vật tư" [(ngModel)]="modelVatTu_.TenNhom" [ngModelOptions]="{standalone: true}">
+                                         
                                       </div>
                                     </div>
     
                                   </div>
                             </div><!--/.row-->
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group row">
-                                        <label class="title-text col-form-label" for="inline-radios">Kích hoạt</label>
-                                        <div class="input-text col-form-label">
-                                          <div class="form-check form-check-inline mr-1" id="inline-radios">
-                                            <input class="form-check-input" type="radio" [(ngModel)]="modelVatTu_.IsActive" [ngModelOptions]="{standalone: true}" name="IsActive" id="IsActive" [value]="true">
-                                            <label class="form-check-label" for="inlineRadio1">Có</label>
-                                          </div>
-                                          <div class="form-check form-check-inline mr-1">
-                                            <input class="form-check-input" type="radio" [(ngModel)]="modelVatTu_.IsActive" [ngModelOptions]="{standalone: true}" name="IsActive" id="IsActive" [value]="false">
-                                            <label class="form-check-label" for="inlineRadio2">Không</label>
-                                          </div>
-                                        </div>
-                                      </div>
-                                </div>
-                            </div>
                           </div>
                         </div>
                       </div><!--/.col-->
@@ -152,7 +128,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" (click)="largeModal.hide()">Đóng</button>
-            <button type="button" class="btn btn-primary" (click)="R2AdDataNhomVatTu()">Lưu lại</button>
+            <button type="button" class="btn btn-primary" (click)="R2AdDataVatTu()">Lưu lại</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
@@ -191,7 +167,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" (click)="warningModal.hide()">Thoát</button>
-            <button type="button" class="btn btn-warning" (click)="xacnhanXoa(listNhomVatTu_)">Xác nhận</button>
+            <button type="button" class="btn btn-warning" (click)="xacnhanXoa(listVatTu_)">Xác nhận</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->

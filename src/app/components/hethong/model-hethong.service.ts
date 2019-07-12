@@ -14,28 +14,6 @@ import { RootbaseUrlService } from '../../shared/rootbase-url.service';
   providedIn: 'root'
 })
 export class ModelHethongService {
-  public list: {
-    error: '',
-    data:
-      {
-        UserID: '';
-        UserName: '';
-        Password: '';
-        FullName: '';
-        Email: '';
-        PhoneNumber: '';
-        Address: '';
-        IsOrder: 0;
-        IsActive: true;
-        IsAdmin: false;
-        AvaUser: '';
-        BirthDay: '';
-        SexUser: true;
-        GroupRoleName: string;
-        TenPhongBan: string;
-    }[],
-    total: 0
-  };
   public ObjUserByID: any;
   public progress: number;
   private ms: {};
@@ -91,17 +69,13 @@ export class ModelHethongService {
   }
 
   R1_GetDataUser(options: object) {
-        const options_: any = {
-      observe: 'response',
-      responseType: 'blob',
+    const options_: any = {
+      ContentType: 'application/json; charset=utf-8',
       headers: new HttpHeaders({
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       })
     };
-    return this.http.post(this.BaseURL + '/api/AppSysUser/ListUsers', options , {headers: this.tokenHeader}).toPromise()
-    .then(res => {
-      this.list = res as Nguoisudung;
-    });
+    return this.http.post(this.BaseURL + '/api/AppSysUser/ListUsers', options , options_);
   }
 
   R1GetUserByID(UserID: string) {

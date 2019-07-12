@@ -5,7 +5,8 @@ import { Chart } from 'chart.js';
 import { BaocaotinhtrangthietbiService } from './baocaotinhtrangthietbi.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { ToastrService } from 'ngx-toastr';
-import { Baocaotinhtrangthietbi, BaocaotinhtrangthietbiTB, BaocaotinhtrangthietbiPareto } from './baocaotinhtrangthietbi.model';
+import { Baocaotinhtrangthietbi, BaocaotinhtrangthietbiTB, BaocaotinhtrangthietbiPareto,
+   BCvesinhhangngay } from './baocaotinhtrangthietbi.model';
 import { SearchService } from '../../../shared/search.service';
 import { Thietbi } from '../../danhmuc/thietbi/thietbi';
 import { UserInfoService } from '../../../shared/user-info.service';
@@ -23,7 +24,7 @@ export class BaocaotinhtrangthietbiComponent implements OnInit, AfterViewInit, O
     _ThietbiID: '', DateStart: Date, DateEnd: Date, Typewhere: 0, NhaMayID: null, IsTime: this.date
   };
   sub: Subscription;
-
+  MaThietBi: string;
   // arr total
   dataListbar: any[];
   lablesListbar: any[];
@@ -38,6 +39,7 @@ export class BaocaotinhtrangthietbiComponent implements OnInit, AfterViewInit, O
   listSoGioDungMay_: Baocaotinhtrangthietbi[];
   listSoGioDungMayTB_: BaocaotinhtrangthietbiTB[];
   listSoGioDungMayPare_: BaocaotinhtrangthietbiPareto[];
+  listVeSinhHangNgay_: BCvesinhhangngay[];
 
   // boolean
   Active: boolean;
@@ -57,6 +59,10 @@ listThietBi_: Thietbi[] = [];
   // Average
   canvasPareto: any;
   ctxPareto: any;
+
+  // Average
+  canvasHg: any;
+  ctxHg: any;
   // tìm kiếm
   todos$ = this.s.$search;
 
@@ -95,20 +101,10 @@ listThietBi_: Thietbi[] = [];
         this.r1ListDuLieuTB2DungMay();
         this.r1ListPareto();
         this.R1GetListThietBi();
-        this.R1GetListBaoCaoVSHangNgay();
         this.ngAfterViewInit();
       }
     });
   }
-       // danh sách báo cáo vệ sinh công nghiệp hàng ngày
-       R1GetListBaoCaoVSHangNgay() {
-        this.spinnerService.show();
-        this.sub = this.baocaotinhtrangservice_.r1ListBaocaoVesinhHangNgay(this.options).subscribe(res => {
-          this.spinnerService.hide();
-         console.log(res);
-        });
-      }
-
       // danh sách thiet bi
       R1GetListThietBi() {
         this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));

@@ -15,3 +15,4 @@ export class Baocaovesinhcongnghiep {
     Nam: number;
     CoTuan5: boolean;
 }
+

@@ -68,6 +68,9 @@ import { BsDatepickerModule, DatepickerModule } from 'ngx-bootstrap';
 
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
+// cookie
+import { CookieService } from 'ngx-cookie-service';
+
 @NgModule({
 
   declarations: [
@@ -121,7 +124,8 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     useClass: HashLocationStrategy,
   }, MenuDetailService,
 SearchService,
-searchRoot],
+searchRoot,
+CookieService],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

@@ -46,16 +46,4 @@ export class BaocaotinhtrangthietbiService {
     return this.http.post(url_, options, options_);
   }
 
-    // list báo cáo vệ sinh công nghiệp hàng ngày
-    r1ListBaocaoVesinhHangNgay(options) {
-      let url_ = this.BaseURL + '/api/CD_BC_TinhTrangThietBi/r1BaoCaoVSHangNgay';
-      url_ = url_.replace(/[?&]$/, '');
-      const options_: any = {
-        ContentType: 'application/json; charset=utf-8',
-        headers: new HttpHeaders({
-          'Authorization': 'Bearer ' + localStorage.getItem('token')
-        })
-      };
-      return this.http.post(url_, options, options_);
-    }
 }

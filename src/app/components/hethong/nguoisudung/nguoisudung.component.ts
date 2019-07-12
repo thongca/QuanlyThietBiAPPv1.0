@@ -134,6 +134,7 @@ subscription: Subscription;
           NhaMayID: null,
           TenNhaMay: ''
         }];
+        this.R1DanhSachNhaMay();
        }
   SetTotalPage() {
     this.options.totalpage = Math.ceil(this.options.total / this.options.pz);
@@ -148,7 +149,7 @@ subscription: Subscription;
       textField: 'TenNhaMay',
       selectAllText: 'Chọn tất cả',
       unSelectAllText: 'Bỏ chọn tất cả',
-      itemsShowLimit: 1,
+      itemsShowLimit: 2,
       allowSearchFilter: false
     };
         // check permission admin
@@ -183,6 +184,31 @@ subscription: Subscription;
         $('input.inputimgFileWorks').click();
     }
 }
+ // danh sách nhà máy
+ R1DanhSachNhaMay() {
+  const Nhamayid = localStorage.getItem('NhaMayID');
+  const model_ = { NhaMayID: this._userInfo.R1_GetNhaMayID() };
+  this.thietbiservice_.r1GetNhaMay(model_).subscribe(res => {
+    if (res !== undefined) {
+      if (res['error'] === 1) {
+        return false;
+      }
+      const data = res['data'];
+      if (data !== undefined) {
+        this.listNhaMay_ = data;
+      }
+    }
+  }, err => {
+    if (err.status === 500) {
+      this.toastr.error('Mất kết nối đến máy chủ, Vui lòng kiểm tra lại đường dẫn!', 'Thông báo');
+      return false;
+    }
+    if (err.status === 404) {
+      this.toastr.error('Lỗi xác thực máy chủ, Vui lòng kiểm tra lại!', 'Thông báo');
+      return false;
+    }
+  });
+}
 SelectIDEditModel(UserID) {
   this.modeltitle = 'Sửa người sử dụng';
   this.UserID = UserID;
@@ -190,7 +216,9 @@ SelectIDEditModel(UserID) {
  this.user = res['data'];
  this.ModelNhaMay = res['datanm'];
  this.largeModal.show();
- this.imgURL = this.BaseUrl +  this.hethongsv.ObjUserByID.AvaUser;
+ if (this.user !== undefined) {
+  this.imgURL = this.BaseUrl +  this.user.AvaUser;
+ }
   }
   );
 }
@@ -207,7 +235,6 @@ Showmodal(check) {
     this.imgURL = '../../../../assets/img/avatars/user.png';
     this.largeModal.show();
   } else {
-    this.dataservice = this.hethongsv.list.data;
     this.largeModal.hide();
 }
 }
@@ -282,16 +309,22 @@ DelUser() {
 }
 R1GetDataUser() {
   this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
-  this.hethongsv.R1_GetDataUser(this.options).then((res: any) => {
-    this.dataservice = this.hethongsv.list.data;
-    this.options.total = this.hethongsv.list.total;
-    this.SetTotalPage();
-    if (this.options.p > 1) {
-        this.options.paxpz = (this.options.p - 1) * this.options.pz;
-    } else {
-      this.options.paxpz = 0;
+  this.hethongsv.R1_GetDataUser(this.options).subscribe((res: any) => {
+    if (res !== undefined) {
+      if (res['error'] === 1) {
+        this.toastr.error(res['ms'], 'Thông báo');
+        return false;
+      }
+      const data = res['data'];
+      this.dataservice = data;
+      this.options.total = res['total'];
+      this.SetTotalPage();
+      if (this.options.p > 1) {
+          this.options.paxpz = (this.options.p - 1) * this.options.pz;
+      } else {
+        this.options.paxpz = 0;
+      }
     }
-
   });
 }
 r1getListNhomQuyen() {

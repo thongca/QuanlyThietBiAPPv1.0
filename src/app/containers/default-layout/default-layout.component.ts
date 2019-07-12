@@ -18,7 +18,6 @@ import { ToastrService } from 'ngx-toastr';
 import { ThietbiService } from '../../components/danhmuc/thietbi/thietbi.service';
 import { NhamayrootService } from '../../shared/nhamayroot.service';
 import { NgxPermissionsService } from 'ngx-permissions';
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: './default-layout.component.html'
@@ -87,7 +86,14 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
       attributes: true,
       attributeFilter: ['class']
     });
-    this.avatarUser = this.sbaseUrl_.sbaseURL +  this.suserInfo_.R1_GetDataUser();
+    if (this.suserInfo_.R1_GetDataUser() !== 'error') {
+      this.avatarUser = this.sbaseUrl_.sbaseURL +  this.suserInfo_.R1_GetDataUser();
+    } else {
+      this.toastr.error('Lỗi khi lấy thông tin người sử dụng, Vui lòng đăng nhập lại để tiếp tục!', 'Thông báo');
+      localStorage.clear();
+      this.router.navigateByUrl('/login');
+     return;
+    }
     this.menu.getDataMenu().subscribe(
       (res: any) => {
         if (res['body'].error === 1) {

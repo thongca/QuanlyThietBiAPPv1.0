@@ -115,7 +115,17 @@ export class BaoduongdinhkyComponent implements OnInit, OnDestroy {
     });
   }
   r2LuuThayDoiBaoDuongDinhKy() {
-    this.baoduongdinhkyservice_.r2LuuThayDoi(this.listbaoduongdinhky_).subscribe(res => {
+    const data = this.listbaoduongdinhky_.filter(x => x.IsChange === true);
+    if (data !== undefined) {
+      if (data.length === 0) {
+        this.toastr.info('Không có trường nào thay đổi, Vui lòng kiểm tra lại!', 'Thông báo');
+        return false;
+      }
+    } else {
+      this.toastr.info('Lỗi khi luu thay đổi kiểm tra bảo dưỡng hàng ngày, Vui lòng kiểm tra lại!', 'Thông báo');
+      return false;
+    }
+    this.baoduongdinhkyservice_.r2LuuThayDoi(data).subscribe(res => {
       if (res !== undefined) {
         if (res['error'] === 1) {
           this.toastr.error(res['ms'], 'Thông báo');
@@ -139,6 +149,7 @@ export class BaoduongdinhkyComponent implements OnInit, OnDestroy {
       });
   }
   ChangeD(row: Baoduongdinhky, itemD: string, res: string) {
+    row.IsChange = true;
     if (itemD === 'D' || itemD.toUpperCase() === 'KD') {
     } else if (itemD === 'd') {
       switch (res) {

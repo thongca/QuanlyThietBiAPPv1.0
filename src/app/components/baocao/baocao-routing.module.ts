@@ -4,6 +4,7 @@ import { AuthGuard } from '../../auth/auth.guard';
 import { BaocaochecklistComponent } from './baocaochecklist/baocaochecklist.component';
 import { BaocaovesinhcongnghiepComponent } from './baocaovesinhcongnghiep/baocaovesinhcongnghiep.component';
 import { BaocaotinhtrangthietbiComponent } from './baocaotinhtrangthietbi/baocaotinhtrangthietbi.component';
+import { BaocaovesinhmayhangngayComponent } from './baocaovesinhmayhangngay/baocaovesinhmayhangngay.component';
 const routes: Routes = [
   {
     canActivateChild: [AuthGuard],
@@ -22,6 +23,12 @@ const routes: Routes = [
     path: 'baocaotinhtrangthietbi',
     component: BaocaotinhtrangthietbiComponent,
     data: {routeLink: '/baocao/baocaotinhtrangthietbi'}
+  },
+  {
+    canActivateChild: [AuthGuard],
+    path: 'baocaovesinhmayhangngay',
+    component: BaocaovesinhmayhangngayComponent,
+    data: {routeLink: '/baocao/baocaovesinhmayhangngay'}
   },
 ];
 

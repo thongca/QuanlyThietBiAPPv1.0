@@ -1,0 +1,65 @@
+.select-tieuchi{
+    display: inline-block;
+}
+.select-tieuchi ul{
+    position: absolute;
+    z-index: 1;
+    list-style: none;
+    padding-left: 0px;
+    margin-bottom: 0;
+    border: 1px solid #ddd;
+}
+.select-tieuchi ul li{
+    padding: 10px;
+}
+.buttom-dropdown{
+    background-color: #20a8d8;
+    border: none;
+    color: white;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 6px 10px 6px 10px;
+    outline:none;
+}
+.buttom-dropdown:hover{
+    background-color: #f86c6b;
+}
+.ul-box-crud{
+    margin-left: 10px;
+}
+.divinTd{
+    background-color: #20a8d8;
+    color: white;
+    font-weight: 600;
+}
+.table-baocao{
+    margin-bottom: 15px;
+    width: 100%;
+}
+.table-baocao strong{
+    font-size: 38px;
+}
+.display-none{
+    display: none;
+}
+.table-baocao-border-black {
+    font-family: 'Times New Roman', Times, serif;
+}
+.table-baocao-border-black tbody tr td{
+    border: 1px solid black !important;
+    color: black;
+    font-size: 20px;
+}
+.table-baocao-border-black tbody{
+    border: none !important;
+}
+.table-baocao-border-black thead th {
+    border: 1px solid black !important;
+    font-size: 20px;
+}
+.td-contains-img img{
+    width: 80%;
+}
+.table-print{
+    font-size: 24px;
+}

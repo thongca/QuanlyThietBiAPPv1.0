@@ -15,4 +15,13 @@ export class BaocaotinhtrangthietbiPareto {
     NguyenNhanTomTat: string;
     SoLoi: number;
 }
+export class BCvesinhhangngay {
+    ThietBiID: string;
+    BaoDuongNgayID: string;
+    TenCongViec: string;
+    khongDatCount: number;
+    datCount: number;
+    DaysInMonth: number;
+}
+
 

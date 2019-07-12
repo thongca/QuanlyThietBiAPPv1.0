@@ -18,6 +18,11 @@
             <option *ngFor="let c of listThietBi_" [ngValue]="c.ThietBiID">{{c.TenThietBi}}</option>
           </select>
         </li>
+        <li class="li-select">
+            <input class="form-control" placeholder="MM/YYYY" bsDatepicker [(ngModel)]="options.IsTime"
+              placement="bottom" (ngModelChange)="ChangeThang(options.IsTime)"
+              [bsConfig]="{dateInputFormat: 'MM/YYYY'}" (onShown)="onOpenCalendar($event)">
+          </li>
         <!-- <li class="li-select" [ngStyle]="{'padding-top': '0'}">
           <a>
             Từ ngày:
@@ -51,7 +56,7 @@
           <strong>Thực hiện</strong>
         </a>
       </li>
-      <li *ngIf="isReport ===  true" data-toggle="modal" title="Thực hiện lọc theo tiêu chí" (click)="InBaoCao()">
+      <li *ngIf="isReport ===  true" appBtnPer="export"  data-toggle="modal" title="Thực hiện lọc theo tiêu chí" (click)="InBaoCao()">
           <img src="assets/img/brand/printer-.png" class="img-plus-header" alt="ThucHien" />
           <a>
             <strong>Xuất báo cáo</strong>

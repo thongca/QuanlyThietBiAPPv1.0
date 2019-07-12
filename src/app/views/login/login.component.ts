@@ -6,7 +6,6 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { CaptchaComponent } from 'angular-captcha';
 import { RootbaseUrlService } from '../../shared/rootbase-url.service';
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: 'login.component.html',
@@ -34,7 +33,7 @@ private BaseURL: string;
     private router: Router,
     private spinnerService: Ng4LoadingSpinnerService ,
     private toastr: ToastrService,
-    private baseUrl_: RootbaseUrlService
+    private baseUrl_: RootbaseUrlService,
     ) {
       this.BaseURL = this.baseUrl_.sbaseURL;
   }

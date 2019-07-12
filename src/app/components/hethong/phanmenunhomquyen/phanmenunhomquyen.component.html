@@ -80,16 +80,16 @@
                               <input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightView" id="inline-checkbox3" (click)="subChangeView(item,item.RightView)"  value="option3">
                           </td>
                           <td class="text-center">
-                              <input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightAdd" id="inline-checkbox3" (click)="subChange(item,item.RightAdd)"  value="option3">
+                              <input *ngIf="item.MenuRank > 2" class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightAdd" id="inline-checkbox3" (click)="subChange(item,item.RightAdd)"  value="option3">
                           </td>
                           <td class="text-center">
-                              <input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightUpdate" id="inline-checkbox3" (click)="subChange(item,item.RightUpdate)" value="option3">
+                              <input *ngIf="item.MenuRank > 2" class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightUpdate" id="inline-checkbox3" (click)="subChange(item,item.RightUpdate)" value="option3">
                           </td>
                           <td class="text-center">
-                              <input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightDel" id="inline-checkbox3" (click)="subChange(item,item.RightDel)" value="option3">
+                              <input *ngIf="item.MenuRank > 2" class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightDel" id="inline-checkbox3" (click)="subChange(item,item.RightDel)" value="option3">
                           </td>
                           <td class="text-center">
-                              <input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightExport" id="inline-checkbox3" (click)="subChange(item,item.RightExport)" value="option3">
+                              <input *ngIf="item.MenuRank > 2" class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightExport" id="inline-checkbox3" (click)="subChange(item,item.RightExport)" value="option3">
                           </td>
                         </tr>
                       </tbody>

@@ -34,4 +34,5 @@ export class Baoduongdinhky {
     D29: string;
     D30: string;
     D31: string;
+    IsChange: boolean;
 }
