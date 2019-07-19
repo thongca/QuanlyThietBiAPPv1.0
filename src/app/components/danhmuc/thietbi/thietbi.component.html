@@ -25,8 +25,8 @@
             </li>
           </ul>
         </div>
-        <div class="card-body">
-          <table class="table table-bordered table-striped table-sm table-app">
+        <div class="card-body card-media-1280">
+          <table class="table table-bordered table-striped table-sm table-app tables-tb">
             <thead>
               <tr>
                 <th class="th-checkbox" width=40><input class="table-checkbox" type="checkbox" [checked]="false"
@@ -138,7 +138,7 @@
                           <label class="title-text col-form-label" for="name">Tên thiết bị
                             <span>*</span>
                           </label>
-                          <div class="input-text">
+                          <div *ngIf="modelthietbi_.TenThietBi != undefined" class="input-text">
                             <input type="text" class="form-control" id="name" placeholder="Tên thiết bị"
                               [(ngModel)]="modelthietbi_.TenThietBi" [ngModelOptions]="{standalone: true}">
                           </div>

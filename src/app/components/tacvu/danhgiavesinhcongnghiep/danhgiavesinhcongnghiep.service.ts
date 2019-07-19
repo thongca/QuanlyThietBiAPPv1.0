@@ -2,6 +2,7 @@ import { Children } from './danhgiavesinhcongnghiep.model';
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient, HttpRequest } from '@angular/common/http';
 import { RootbaseUrlService } from '../../../shared/rootbase-url.service';
+import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -13,9 +14,8 @@ export class DanhgiavesinhcongnghiepService {
   ) {
     this.BaseURL = this.baseUrl_.sbaseURL;
   }
-
   // list vệ sinh công nghiệp master
-  r1ObjM(options: object) {
+  r1ObjM(options: object): Observable<any> {
     let url_ = this.BaseURL + '/api/CD_TV_VeSinhCongNghiepM/r1GetObjM';
     url_ = url_.replace(/[?&]$/, '');
     const options_: any = {
@@ -27,7 +27,7 @@ export class DanhgiavesinhcongnghiepService {
   return this.http.post(url_, options , options_);
   }
   // list vệ sinh công nghiệp
-  r1ListVeSinhCongNghiep(options: object) {
+  r1ListVeSinhCNServe(options: object): Observable<any> {
     let url_ = this.BaseURL + '/api/CD_TV_VeSinhCongNghiepM/r1GetListVeSinhCongNghiep';
     url_ = url_.replace(/[?&]$/, '');
     const options_: any = {

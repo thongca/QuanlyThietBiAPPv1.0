@@ -156,3 +156,15 @@ tr.ts-tr-box{
 .display-none{
     display: none;
 }
+@media (min-width: 1025px) and (max-width: 1280px){
+    .witd-end{
+        width: 300px;
+    }
+    .tables-tb {
+        table-layout: fixed;
+    }
+    .card-media-1280 {
+        overflow: auto;
+        margin-right: 15px;
+    }
+}

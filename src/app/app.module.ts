@@ -116,7 +116,7 @@ import { CookieService } from 'ngx-cookie-service';
     NgxPermissionsModule.forRoot(),
     BsDatepickerModule.forRoot(),
     BotDetectCaptchaModule,
-    NgMultiSelectDropDownModule
+    NgMultiSelectDropDownModule,
   ],
   providers: [
     {

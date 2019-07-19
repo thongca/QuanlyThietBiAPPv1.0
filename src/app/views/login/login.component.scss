@@ -18,7 +18,14 @@
   padding: 0 0 1.25rem 0;
 }
 h3{
-  margin-bottom: 30px;
+  margin-top: -10px;
+}
+h6 {
+  margin-bottom: 20px;
+  color: #2f982f;
+  font-size: 7px;
+  font-family: arial;
+  margin-top: 2px;
 }
 .row-bot{
   position: absolute;
@@ -71,4 +78,29 @@ hr{
   font-size: 30px;
     font-weight: bold;
     color: #2f982f;
+}
+.App-Text-P{
+  font-size: 30px;
+  font-weight: bold;
+  color: #f8b20c;
+}
+.logocty{
+  background-image: url('assets/img/brand/app.png');
+  width: 100px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 40px;
+  margin-top: -10px;
+  display: inline-block;
+  margin-left: 5px;
+}
+h4{
+  text-align: center;
+  color: #2f982f;
+  font-weight: bold;
+  font-size: 28px;
+}
+.dangnhap-hethong {
+    float: right;
 }

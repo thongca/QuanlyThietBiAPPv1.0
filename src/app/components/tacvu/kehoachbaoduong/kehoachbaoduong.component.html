@@ -25,12 +25,12 @@
             </li>
           </ul>
         </div>
-        <div class="card-body">
+        <div class="card-body card-media-1280">
           <table class="table table-bordered table-striped table-sm table-khbd">
             <thead>
               <tr>
                 <th class="text-center text-midle" rowspan="2" width=50>STT</th>
-                <th class="text-center text-midle" rowspan="2">Tên thiết bị</th>
+                <th class="text-center text-midle width1280" rowspan="2">Tên thiết bị</th>
                 <th rowspan="2" class="text-midle text-center" width=80>Mã số</th>
                 <th colspan="2" width=200 class="text-center">Thời gian dự kiến
                   thực hiện</th>
@@ -54,7 +54,7 @@
                 <td class="text-center">{{item.MaThietBi}}</td>
                 <td class="text-center padding0">
                   <input class="form-control" bsDatepicker placement="bottom" [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'YYYY/MM/DD' }"
-                  [(ngModel)]="item.TGDuKienBatDau"  [ngModelOptions]="{standalone: true}"  >
+                  [(ngModel)]="item.TGDuKienBatDau" [ngModelOptions]="{standalone: true}"  >
                 </td>
                 <td class="text-center padding0">
                   <input class="form-control"  bsDatepicker placement="bottom" [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'YYYY/MM/DD' }"

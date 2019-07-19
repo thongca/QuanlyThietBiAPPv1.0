@@ -15,91 +15,92 @@
           </li>
         </ul>
       </div>
-    <div class="row" [ngStyle]="{'margin': 0}">
-      <div class="col-sm-4">
-        <div class="card">
-          <div class="card-header">
-            <strong>Danh sách nhóm quyền</strong>
-         
-          </div>
-          <div class="card-body" [ngStyle]="{'padding': 0}">
-            <div class="row">
-              <div class="col-sm-12">
-                  <table class="table table-bordered">
-                      <thead>
-                        <tr>
-                            <th class="text-center" width= "50">STT</th>
-                          <th >Tên nhóm quyền</th>
-                          <th width="200">Phòng ban</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr *ngFor="let item of nhomuser; let i = index" class="item-row-nhomnguoidung isSelect-{{item.IsSelect}}" (click)="SelectRow(item)">
-                          <td class="text-center">{{i + 1}}</td>
-                          <td >
-                             {{item.GroupRoleName}}
-                          </td>
-                          <td >
-                              {{item.TenPhongBan}}
-                           </td>
-                        </tr>
-                      </tbody>
-                    </table>
-              </div>
-            </div><!--/.row-->
-          </div>
-        </div>
-      </div><!--/.col-->
-      <div class="col-sm-8" [ngStyle]="{'padding-left': 0}">
-        <div class="card">
-          <div class="card-header">
-            <strong>Danh sách menu</strong>
-            
-          </div>
-          <div class="card-body" [ngStyle]="{'padding': 0}">
-              <div class="col-lg-12" [ngStyle]="{'padding': 0}">
-                  <table class="table table-bordered">
-                      <thead>
-                        <tr>
-                            <th class="text-center" width= "50">STT</th>
-                          <th >Menu</th>
-                          <th class="text-center" width= "100">Hiện thị</th>
-                          <th class="text-center" width= "100">Thêm</th>
-                          <th class="text-center" width= "100">Sửa</th>
-                          <th class="text-center" width= "100">Xóa</th>
-                          <th class="text-center" width= "150">Xuất báo cáo</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr *ngFor="let item of _menu.data; let i = index">
-                            <td class="text-center" class="bgf-{{item.MenuRank}}">
-                                {{i + 1}}
-                            </td>
-                          <td class="pad-{{item.MenuRank}}">{{item.MenuName}}</td>
-                          <td class="text-center">
-                              <input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightView" id="inline-checkbox3" (click)="subChangeView(item,item.RightView)"  value="option3">
-                          </td>
-                          <td class="text-center">
-                              <input *ngIf="item.MenuRank > 2" class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightAdd" id="inline-checkbox3" (click)="subChange(item,item.RightAdd)"  value="option3">
-                          </td>
-                          <td class="text-center">
-                              <input *ngIf="item.MenuRank > 2" class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightUpdate" id="inline-checkbox3" (click)="subChange(item,item.RightUpdate)" value="option3">
-                          </td>
-                          <td class="text-center">
-                              <input *ngIf="item.MenuRank > 2" class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightDel" id="inline-checkbox3" (click)="subChange(item,item.RightDel)" value="option3">
-                          </td>
-                          <td class="text-center">
-                              <input *ngIf="item.MenuRank > 2" class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightExport" id="inline-checkbox3" (click)="subChange(item,item.RightExport)" value="option3">
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+      <div class="card-body card-body-overf">
+          <div class="row" [ngStyle]="{'margin': 0}">
+              <div class="col-sm-4">
+                <div class="card">
+                  <div class="card-header">
+                    <strong>Danh sách nhóm quyền</strong>
+                 
+                  </div>
+                  <div class="card-body" [ngStyle]="{'padding': 0}">
+                    <div class="row">
+                      <div class="col-sm-12">
+                          <table class="table table-bordered">
+                              <thead>
+                                <tr>
+                                    <th class="text-center" width= "50">STT</th>
+                                  <th >Tên nhóm quyền</th>
+                                  <th width="200">Phòng ban</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let item of nhomuser; let i = index" class="item-row-nhomnguoidung isSelect-{{item.IsSelect}}" (click)="SelectRow(item)">
+                                  <td class="text-center">{{i + 1}}</td>
+                                  <td >
+                                     {{item.GroupRoleName}}
+                                  </td>
+                                  <td >
+                                      {{item.TenPhongBan}}
+                                   </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                      </div>
+                    </div><!--/.row-->
+                  </div>
                 </div>
-          </div>
-        </div>
-      </div><!--/.col-->
-    </div><!--/.row-->
-  
+              </div><!--/.col-->
+              <div class="col-sm-8" [ngStyle]="{'padding-left': 0,'padding-right': 0}">
+                <div class="card">
+                  <div class="card-header">
+                    <strong>Danh sách menu</strong>
+                    
+                  </div>
+                  <div class="card-body card-media-1280" [ngStyle]="{'padding': 0}">
+                      <div class="col-lg-12" [ngStyle]="{'padding': 0}">
+                          <table class="table table-bordered tables-pq">
+                              <thead>
+                                <tr>
+                                    <th class="text-center" width= "50">STT</th>
+                                  <th class="width1280">Menu</th>
+                                  <th class="text-center" width= "90">Hiện thị</th>
+                                  <th class="text-center" width= "70">Thêm</th>
+                                  <th class="text-center" width= "70">Sửa</th>
+                                  <th class="text-center" width= "70">Xóa</th>
+                                  <th class="text-center" width= "100">Xuất báo cáo</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let item of _menu.data; let i = index">
+                                    <td class="bgf-{{item.MenuRank}} text-center padd-small">
+                                        {{i + 1}}
+                                    </td>
+                                  <td class="pad-{{item.MenuRank}} padd-small">{{item.MenuName}}</td>
+                                  <td class="text-center padd-small">
+                                      <input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightView" id="inline-checkbox3" (click)="subChangeView(item,item.RightView)"  value="option3">
+                                  </td>
+                                  <td class="text-center padd-small">
+                                      <input *ngIf="item.MenuRank > 2" class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightAdd" id="inline-checkbox3" (click)="subChange(item,item.RightAdd)"  value="option3">
+                                  </td>
+                                  <td class="text-center padd-small">
+                                      <input *ngIf="item.MenuRank > 2" class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightUpdate" id="inline-checkbox3" (click)="subChange(item,item.RightUpdate)" value="option3">
+                                  </td>
+                                  <td class="text-center padd-small">
+                                      <input *ngIf="item.MenuRank > 2" class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightDel" id="inline-checkbox3" (click)="subChange(item,item.RightDel)" value="option3">
+                                  </td>
+                                  <td class="text-center padd-small">
+                                      <input *ngIf="item.MenuRank > 2" class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="item.RightExport" id="inline-checkbox3" (click)="subChange(item,item.RightExport)" value="option3">
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                        </div>
+                  </div>
+                </div>
+              </div><!--/.col-->
+            </div><!--/.row-->
+      </div>
   </div>
   
   <div bsModal #dangerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

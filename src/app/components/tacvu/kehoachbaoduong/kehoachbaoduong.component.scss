@@ -35,11 +35,25 @@ border-radius: 0;
 .div-outline{
     display: none;
 }
-.bgr-true{
-    background-color: #ff0000 !important;
-    color: white;
-    font-weight: 400;
-}
-.bgrcb-true{
+
+.bgrcb-4{
     background-color: #fcff1e !important;
+}
+.bgrcb-2{
+    background-color: red !important;
+}
+.padding0 input{
+    border: none;
+}
+@media (min-width: 1025px) and (max-width: 1280px){
+    .width1280{
+        width: 350px;
+    }
+    .table-khbd {
+        table-layout: fixed;
+    }
+    .card-media-1280 {
+        overflow: auto;
+        margin-right: 15px;
+    }
 }

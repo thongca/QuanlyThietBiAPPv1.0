@@ -68,7 +68,7 @@
           </table>
           <nav *ngIf="options.totalpage > 1">
             <ul class="pagination">
-              <li class="page-item"><a class="page-link" (click)="PrevPage()">Prev</a></li>
+              <li class="page-item"><a class="page-link" (click)="PrevPage()" title="Trang trước"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
               <li class="page-item">
                 <a class="page-link"> {{(options.p-1)*options.pz+1}}</a>
               </li>
@@ -85,7 +85,7 @@
               <li class="page-item">
                 <a class="page-link">{{options.total}}</a>
               </li>
-              <li class="page-item" (click)="NextPage()"><a class="page-link">Next</a></li>
+              <li class="page-item" (click)="NextPage()"><a class="page-link" title="Trang sau"><i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
             </ul>
           </nav>
         </div>

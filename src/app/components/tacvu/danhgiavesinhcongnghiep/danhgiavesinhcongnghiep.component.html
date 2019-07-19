@@ -30,7 +30,7 @@
                         <option *ngFor="let c of litsKhuVucVs_" [ngValue]="c.KhuVucVSCNID">{{c.TenKhuVucVSCN}}</option>
                       </select>
                     </li>
-                    <li class="li-select">
+                    <li class="li-select" *ngxPermissionsOnly="['Administrator','AdminRoom']">
                         <a>
                             Chọn tháng:
                           </a>
@@ -40,8 +40,7 @@
                 </ul>
               </div>
           <ul class="ul-box-crud">
-            <li appBtnPer="create"
-              *ngIf="!(datacheck_.IsCheckT1 === 2 && datacheck_.IsCheckT2 === 2 && datacheck_.IsCheckT3 === 2 && datacheck_.IsCheckT4 === 2 && datacheck_.IsCheckT5 === 2)"
+            <li appBtnPer="create" *ngIf="!(datacheck_.IsCheckT1 === 2 && datacheck_.IsCheckT2 === 2 && datacheck_.IsCheckT3 === 2 && datacheck_.IsCheckT4 === 2 && datacheck_.IsCheckT5 === 2)"
               data-toggle="modal" (click)="R2LuuThayDoiVeSinhCongNghiep()" title="Thêm mới">
               <img src="assets/img/brand/save-file-option.png" class="img-plus-header" alt="plus" />
               <a>

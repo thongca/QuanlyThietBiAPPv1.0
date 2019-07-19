@@ -1,4 +1,5 @@
-import { filter } from 'rxjs/operators';
+import { async } from '@angular/core/testing';
+import { filter, takeUntil } from 'rxjs/operators';
 import { DanhgiavesinhcongnghiepService } from './danhgiavesinhcongnghiep.service';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap';
@@ -7,7 +8,7 @@ import { UserInfoService } from '../../../shared/user-info.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { Danhgiavesinhcongnghiep, Children } from './danhgiavesinhcongnghiep.model';
 import * as cloneDeep from 'lodash/cloneDeep';
 import { Thietbi } from './../../danhmuc/thietbi/thietbi';
@@ -90,8 +91,6 @@ litsKhuVucVs_: {
 listVeSinhCongNghiep_: Danhgiavesinhcongnghiep[];
 // list
 listThietBi_: Thietbi[] = [];
-
-
   constructor(
     private s: SearchService,
     private _userInfo: UserInfoService,
@@ -146,7 +145,6 @@ listThietBi_: Thietbi[] = [];
   }
  // nhà máy
  nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
-
   ngOnInit() {
     let Permission = this._userInfo.r1GetobjPermission();
       if (Permission === undefined) {
@@ -158,18 +156,17 @@ listThietBi_: Thietbi[] = [];
     } else {
       this.options.IsTime = `${this.date.getFullYear()}-${this.date.getMonth() + 1}`;
     }
-    if ( this.options.IsTime !== '') {
-      this.R1GetListThietBi();
-    }
     this.nhaMayID$.subscribe(res => {
       if (res !== undefined) {
     this.R1GetListThietBi();
       }
     });
+    this.r1ListVeSinhCongNghiep();
   }
   // ll
     // danh sách thiet bi
-    R1GetListThietBi() {
+   R1GetListThietBi() {
+     let data = [];
       this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
       const model_ = {NhaMayID: this.options.NhaMayID};
       this.spinnerService.show();
@@ -179,7 +176,7 @@ listThietBi_: Thietbi[] = [];
           this.toastr.error(res['ms'], 'Thông báo lỗi');
           return false;
         }
-        const data = res['data'];
+         data = res['data'];
         if (data !== undefined) {
           this.listThietBi_ = data;
           if (data.length === 0) {
@@ -190,10 +187,9 @@ listThietBi_: Thietbi[] = [];
           if (sessionStorage.getItem('ThietBiID') === null) {
             this.options._ThietbiID = this.listThietBi_[0].ThietBiID;
           }
-          this.r1ListKhuVucVeSinhCongNghiep();
-          this.r1ListVeSinhCongNghiep();
-          this.ChangeThietBi();
         }
+        this.r1ListKhuVucVeSinhCongNghiep();
+        this.r1ModelThietBi();
       });
     }
   r1ListKhuVucVeSinhCongNghiep() {
@@ -220,7 +216,7 @@ listThietBi_: Thietbi[] = [];
       totalT4: 0,
       totalT5: 0,
     };
-  this.subscription =  this.danhgiavscongnghiepService_.r1ListVeSinhCongNghiep(this.options).subscribe(res => {
+  this.subscription =  this.danhgiavscongnghiepService_.r1ListVeSinhCNServe(this.options).subscribe(res => {
       if (res !== undefined) {
         if (res['error'] === 1) {
           this.toastr.error('Lỗi khi lấy dữ liệu danh sách vệ sinh công nghiệp', 'Thông báo');
@@ -238,41 +234,56 @@ listThietBi_: Thietbi[] = [];
         }
         let p = true;
         const data = res['data'];
-        for (let index = 0; index < data.length; index++) {
-          data[index].children.forEach( function(item) {
-            if (item.DanhGiaT1 === true || item.DanhGiaT1 === false) {
-              item.DanhGiaKDT1 = !cloneDeep(item.DanhGiaT1);
-            }
-            if (item.DanhGiaT2 === true || item.DanhGiaT2 === false) {
-              item.DanhGiaKDT2 = !cloneDeep(item.DanhGiaT2);
-            }
-            if (item.DanhGiaT3 === true || item.DanhGiaT3 === false) {
-              item.DanhGiaKDT3 = !cloneDeep(item.DanhGiaT3);
-            }
-            if (item.DanhGiaT4 === true || item.DanhGiaT4 === false) {
-              item.DanhGiaKDT4 = !cloneDeep(item.DanhGiaT4);
-            }
-            if (item.ChiTietT5 !== null) {
-              if (item.DanhGiaT5 === true || item.DanhGiaT5 === false) {
-                item.DanhGiaKDT5 = !cloneDeep(item.DanhGiaT5);
+        if (data.length !== undefined) {
+          this.objDiemDanhGia = {
+            TongDiemT1: 0,
+            TongDiemT2: 0,
+            TongDiemT3: 0,
+            TongDiemT4: 0,
+            TongDiemT5: 0,
+            totalT1: 0,
+            totalT2: 0,
+            totalT3: 0,
+            totalT4: 0,
+            totalT5: 0,
+          };
+          for (let index = 0; index < data.length; index++) {
+            data[index].children.forEach( function(item) {
+              if (item.DanhGiaT1 === true || item.DanhGiaT1 === false) {
+                item.DanhGiaKDT1 = !cloneDeep(item.DanhGiaT1);
               }
-            }
-            if (item.CoTuan5 === true && p === false) {
-              p = false;
-            }
-          });
-          this.options.T5 = p;
-          this.objDiemDanhGia.TongDiemT1 +=  data[index].children.filter(x => x.DanhGiaT1 === true).length;
-          this.objDiemDanhGia.TongDiemT2 +=  data[index].children.filter(x => x.DanhGiaT2 === true).length;
-          this.objDiemDanhGia.TongDiemT3 +=  data[index].children.filter(x => x.DanhGiaT3 === true).length;
-          this.objDiemDanhGia.TongDiemT4 +=  data[index].children.filter(x => x.DanhGiaT4 === true).length;
-          this.objDiemDanhGia.TongDiemT5 +=  data[index].children.filter(x => x.DanhGiaT5 === true).length;
-          this.objDiemDanhGia.totalT1 +=  data[index].children.filter(x => x.ChiTietT1 !== '').length;
-          this.objDiemDanhGia.totalT2 +=  data[index].children.filter(x => x.ChiTietT2 !== '').length;
-          this.objDiemDanhGia.totalT3 +=  data[index].children.filter(x => x.ChiTietT3 !== '').length;
-          this.objDiemDanhGia.totalT4 +=  data[index].children.filter(x => x.ChiTietT4 !== '').length;
-          this.objDiemDanhGia.totalT5 +=  data[index].children.filter(x => x.ChiTietT5 !== '').length;
+              if (item.DanhGiaT2 === true || item.DanhGiaT2 === false) {
+                item.DanhGiaKDT2 = !cloneDeep(item.DanhGiaT2);
+              }
+              if (item.DanhGiaT3 === true || item.DanhGiaT3 === false) {
+                item.DanhGiaKDT3 = !cloneDeep(item.DanhGiaT3);
+              }
+              if (item.DanhGiaT4 === true || item.DanhGiaT4 === false) {
+                item.DanhGiaKDT4 = !cloneDeep(item.DanhGiaT4);
+              }
+              if (item.ChiTietT5 !== null) {
+                if (item.DanhGiaT5 === true || item.DanhGiaT5 === false) {
+                  item.DanhGiaKDT5 = !cloneDeep(item.DanhGiaT5);
+                }
+              }
+              if (item.CoTuan5 === true && p === false) {
+                p = false;
+              }
+            });
+            this.options.T5 = p;
+            this.objDiemDanhGia.TongDiemT1 +=  data[index].children.filter(x => x.DanhGiaT1 === true).length;
+            this.objDiemDanhGia.TongDiemT2 +=  data[index].children.filter(x => x.DanhGiaT2 === true).length;
+            this.objDiemDanhGia.TongDiemT3 +=  data[index].children.filter(x => x.DanhGiaT3 === true).length;
+            this.objDiemDanhGia.TongDiemT4 +=  data[index].children.filter(x => x.DanhGiaT4 === true).length;
+            this.objDiemDanhGia.TongDiemT5 +=  data[index].children.filter(x => x.DanhGiaT5 === true).length;
+            this.objDiemDanhGia.totalT1 +=  data[index].children.filter(x => x.ChiTietT1 !== '').length;
+            this.objDiemDanhGia.totalT2 +=  data[index].children.filter(x => x.ChiTietT2 !== '').length;
+            this.objDiemDanhGia.totalT3 +=  data[index].children.filter(x => x.ChiTietT3 !== '').length;
+            this.objDiemDanhGia.totalT4 +=  data[index].children.filter(x => x.ChiTietT4 !== '').length;
+            this.objDiemDanhGia.totalT5 +=  data[index].children.filter(x => x.ChiTietT5 !== '').length;
+          }
         }
+
         const VeSinhCongNghiepMID = res['VeSinhCongNghiepMID'];
        this.options.VeSinhCongNghiepMID = VeSinhCongNghiepMID;
         this.listVeSinhCongNghiep_ = data;
@@ -281,13 +292,20 @@ listThietBi_: Thietbi[] = [];
     });
   }
   r1ObjM() {
-    this.danhgiavscongnghiepService_.r1ObjM(this.options).subscribe(res => {
+   this.sub = this.danhgiavscongnghiepService_.r1ObjM(this.options).subscribe(res => {
       if (res !== undefined) {
+        console.log(res);
         if (res['error'] === 1) {
           return false;
         }
         this.modelPM = res['data'];
         this.datacheck_ = res['datacheck'];
+      }
+    },
+    err => {
+      if (err.status === 500) {
+        this.toastr.error('Mất kết nối đến máy chủ. Vui lòng kiểm tra lại đường dẫn', 'Thông báo');
+        return false;
       }
     });
   }
@@ -320,8 +338,10 @@ HideModal() {
 ChangeThietBi() {
   this.options.KhuVucVSCNID = '';
   sessionStorage.setItem('ThietBiID', this.options._ThietbiID);
-  this.r1ListVeSinhCongNghiep();
-  this.r1ListKhuVucVeSinhCongNghiep();
+this.r1ListKhuVucVeSinhCongNghiep();
+this.r1ListVeSinhCongNghiep();
+}
+r1ModelThietBi() {
   this.thietbirootService_.r1getThietBiByID(this.options._ThietbiID).subscribe(res => {
     if (res !== undefined) {
       if (res['error'] === 1) {
@@ -505,8 +525,11 @@ r2ImportFile() {
   });
 }
 ngOnDestroy(): void {
+  if (this.sub) {
+    this.sub.unsubscribe();
+  }
  if (this.subscription) {
-   this.subscription.unsubscribe();
+  this.subscription.unsubscribe();
  }
 }
 // làm mới trang

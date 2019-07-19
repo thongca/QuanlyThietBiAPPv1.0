@@ -51,7 +51,7 @@ export class ModelHethongService {
 
   R1_GetDataGroupRole() {
     const options_: any = {
-  ContentType: 'application/json',
+  ContentType: 'application/json; charset=utf-8',
   headers: new HttpHeaders({
     'Authorization': 'Bearer ' + localStorage.getItem('token')
   })

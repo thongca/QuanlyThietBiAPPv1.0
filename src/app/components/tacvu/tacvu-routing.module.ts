@@ -48,9 +48,9 @@ const routes: Routes = [
   },
   {
     canActivateChild: [AuthGuard],
-    path: 'baoduongdinhky',
+    path: 'danhgiavshangngay',
     component: BaoduongdinhkyComponent,
-    data: {routeLink: '/tacvu/baoduongdinhky'}
+    data: {routeLink: '/tacvu/danhgiavshangngay'}
   },
 ];
 

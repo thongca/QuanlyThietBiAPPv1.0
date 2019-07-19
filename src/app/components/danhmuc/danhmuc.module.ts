@@ -17,7 +17,7 @@ import { ChitietvesinhcongnghiepComponent } from './chitietvesinhcongnghiep/chit
 import { VattucodienComponent } from './vattucodien/vattucodien.component';
 import { NhomvattucodienComponent } from './nhomvattucodien/nhomvattucodien.component';
 import { TintucComponent } from './tintuc/tintuc.component';
-
+import { NguyennhandungmayComponent } from './nguyennhandungmay/nguyennhandungmay.component';
 
 @NgModule({
   declarations: [PhongbanComponent, ThietbiComponent, NhomthietbiComponent,
@@ -25,7 +25,8 @@ import { TintucComponent } from './tintuc/tintuc.component';
       KhuvucvesinhcongnghiepComponent, ChitietvesinhcongnghiepComponent,
        VattucodienComponent,
        NhomvattucodienComponent,
-       TintucComponent],
+       TintucComponent,
+       NguyennhandungmayComponent],
   imports: [
     SharedModule,
     DanhmucRoutingModule,

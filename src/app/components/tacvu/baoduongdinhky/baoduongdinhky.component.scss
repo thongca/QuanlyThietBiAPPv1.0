@@ -37,3 +37,16 @@
 .ul-box-crud{
     margin-left: 10px;
 }
+@media (min-width: 1025px) and (max-width: 1280px){
+    .width1280{
+        width: 250px;
+    }
+    .table-padd {
+        table-layout: fixed;
+    }
+    .card-media-1280 {
+        overflow: auto;
+        margin-right: 15px;
+    }
+}
+

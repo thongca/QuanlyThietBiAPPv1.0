@@ -25,6 +25,11 @@ export class resultList {
 }
 
 // tslint:disable-next-line:class-name
+export class KetQuaImPort {
+    error: number;
+    ms:  string;
+}
+// tslint:disable-next-line:class-name
 export class searchRoot {
     s: string;
 }

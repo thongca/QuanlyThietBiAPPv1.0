@@ -3,7 +3,7 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-header">
-            <div class="select-tieuchi" *ngxPermissionsOnly="['Administrator']">
+            <div class="select-tieuchi">
                 <button (click)="Active = !Active" type="button" class="buttom-dropdown" title="Chọn tiêu chí">
                   <img src="assets/img/brand/settings.png" class="img-plus-header" alt="plus" />
                   <a>
@@ -11,6 +11,12 @@
                   </a>
                 </button>
                 <ul *ngIf="Active === true" class="ul-dropdown">
+                    <li  class="li-select">
+                        <select id="select2" name="select2" class="form-control" [(ngModel)]="options.NhomThietBiID" (ngModelChange)="NhomTBChanged()">
+                            <option value="">----- Chọn nhóm thiết bị -----</option>
+                          <option *ngFor="let c of listNhomThietBi_" [ngValue]="c.NhomThietBiID">{{c.TenNhom}}</option>
+                        </select>
+                    </li>
                     <li class="li-select" >
                         <select id="select5" name="select5" class="form-control" [(ngModel)]="options._ThietbiID"
                           (ngModelChange)="ThietBiChanged(modelHoSoThietBi_.ThietBiID)">
@@ -150,8 +156,11 @@
                     <span>*</span>
                   </label>
                   <div class="input-text">
-                    <input type="text" class="form-control" id="name" [(ngModel)]="modelHoSoThietBi_.NguyenNhanTomTat"
-                      [ngModelOptions]="{standalone: true}" placeholder="20 ký tự">
+                      <select id="select1" name="select1" class="form-control"
+                      [(ngModel)]="modelHoSoThietBi_.NguyenNhanID">
+                      <option value="">----- Chọn nguyên nhân -----</option>
+                      <option *ngFor="let c of listNguyenNhan_" [ngValue]="c.NguyenNhanID">{{c.TenNguyenNhan}}</option>
+                    </select>
                   </div>
                 </div>
               </div>
@@ -332,7 +341,7 @@
 
 
 <!-- in hồ sơ thiết bị -->
-<div class="card-body" id="inbaocaohosothietbi" [ngStyle]="{'display': 'none'}">
+<div class="card-body" id="inbaocaohosothietbi" *ngIf="modelthietbi_ !== null" [ngStyle]="{'display': 'none'}">
     <div class="card-body body-card-user-box">
       <table class="table-banner">
         <tbody>
@@ -365,11 +374,12 @@
             <th rowspan="2" class="font-tenbang text-center text-midle">HỒ SƠ THIẾT BỊ</th>
 
             <th width=300 class="text-center th-titlel-hosothiebi">Ngày lập hồ sơ <br>
-              {{modelthietbi_.NgayLapHSo | date : 'dd-MM-yyyy'}}
+              <span *ngIf="modelthietbi_.NgayLapHSo !== undefined">
+                  {{modelthietbi_.NgayLapHSo | date : 'dd-MM-yyyy'}}
+              </span>
             </th>
           </tr>
           <tr>
-
             <th width=300 class="text-center th-titlel-hosothiebi">Mã số quản lý thiết bị <br>
               {{modelthietbi_.MaThietBi}}
             </th>

@@ -7,12 +7,20 @@
             <div class="card p-4">
               <div class="card-body">
                 <form>
-                  <h3><span class="App-Text-A">A</span>pp<span>P</span>rint<span>Co</span></h3>
+                  <div class="logocty">
+
+                  </div>
+                  <div class="dangnhap-hethong">
+                    <h4>
+                        ĐĂNG NHẬP HỆ THỐNG
+                    </h4>
+                  </div>
+                 <h6>KHÁCH HÀNG LUÔN LUÔN ĐÚNG</h6>
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="icon-user"></i></span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Username" autocomplete="username"
+                    <input type="text" class="form-control" placeholder="Tên đăng nhập" autocomplete="username"
                       [(ngModel)]="User.Username" (keyup.enter)="LoginClick()" [ngModelOptions]="{standalone: true}"
                       required>
                   </div>
@@ -20,7 +28,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="icon-lock"></i></span>
                     </div>
-                    <input type="password" class="form-control" placeholder="Password" autocomplete="current-password"
+                    <input type="password" class="form-control" placeholder="Mật khẩu" autocomplete="current-password"
                       (keyup.enter)="LoginClick()" [(ngModel)]="User.Password" [ngModelOptions]="{standalone: true}"
                       required>
                   </div>

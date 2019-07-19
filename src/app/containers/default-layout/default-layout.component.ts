@@ -35,6 +35,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     // search
   todos$ = this.search.$search;
   private sub: Subscription;
+  private sub1: Subscription;
   _listMenu: [
     {
       MenuID: '',
@@ -89,19 +90,15 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     if (this.suserInfo_.R1_GetDataUser() !== 'error') {
       this.avatarUser = this.sbaseUrl_.sbaseURL +  this.suserInfo_.R1_GetDataUser();
     } else {
-      this.toastr.error('Lỗi khi lấy thông tin người sử dụng, Vui lòng đăng nhập lại để tiếp tục!', 'Thông báo');
       localStorage.clear();
       this.router.navigateByUrl('/login');
      return;
     }
-    this.menu.getDataMenu().subscribe(
+    this.sub1 = this.menu.getDataMenu().subscribe(
       (res: any) => {
         if (res['body'].error === 1) {
           this.toastr.error('Bạn đã hết phiên đăng nhập. Vui lòng đăng nhập lại để tiếp tục!', 'Thông báo');
-          localStorage.removeItem('listQuyen');
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          localStorage.removeItem('NhaMayID');
+          localStorage.clear();
           sessionStorage.clear();
           this.router.navigateByUrl('/login');
           return false;
@@ -193,6 +190,9 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     this.changes.disconnect();
     if (this.sub) {
       this.sub.unsubscribe();
+    }
+    if (this.sub1) {
+      this.sub1.unsubscribe();
     }
   }
 }

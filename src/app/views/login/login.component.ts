@@ -46,6 +46,10 @@ private BaseURL: string;
     this.toastr.info('Vui lòng liên hệ với quản trị viên, để được cấp lại mật khẩu!', 'Thông báo');
   }
   LoginClick() {
+    if (this.User.Password === '' || this.User.Password === null || this.User.Username === '' || this.User.Username === null) {
+      this.toastr.error('Tên đăng nhập hoặc mật khẩu không được để trống. Vui lòng kiểm tra lại!', 'Thông báo');
+      return false;
+    }
     this.spinnerService.show();
     this.login.CheckLogin(this.User).subscribe(
       (res: any) => {
@@ -75,6 +79,9 @@ private BaseURL: string;
       err => {
         if (err.status === 500) {
           this.toastr.error('Mất kết nối máy chủ, vui lòng kiểm tra lại đường dẫn!', 'Thông báo');
+          return false;
+        } if (err.status === 502) {
+          this.toastr.error('Không có phản hồi từ máy chủ hoặc mất kết nối tới máy chủ, vui lòng kiểm tra lại đường dẫn!', 'Thông báo');
           return false;
         }
       }

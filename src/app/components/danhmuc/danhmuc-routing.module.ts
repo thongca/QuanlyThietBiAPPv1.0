@@ -11,6 +11,7 @@ import { KhuvucvesinhcongnghiepComponent } from './khuvucvesinhcongnghiep/khuvuc
 import { ChitietvesinhcongnghiepComponent } from './chitietvesinhcongnghiep/chitietvesinhcongnghiep.component';
 import { NhomvattucodienComponent } from './nhomvattucodien/nhomvattucodien.component';
 import { VattucodienComponent } from './vattucodien/vattucodien.component';
+import { NguyennhandungmayComponent } from './nguyennhandungmay/nguyennhandungmay.component';
 
 const routes: Routes = [
   {
@@ -72,6 +73,12 @@ const routes: Routes = [
     path: 'vattucodien',
     component: VattucodienComponent,
     data: {routeLink: '/danhmuc/vattucodien'}
+  },
+  {
+    canActivateChild: [AuthGuard],
+    path: 'nguyennhandungmay',
+    component: NguyennhandungmayComponent,
+    data: {routeLink: '/danhmuc/nguyennhandungmay'}
   }
 ];
 

@@ -13,6 +13,7 @@ import { KhuvucmayService } from '../khuvucmay/khuvucmay.service';
 import { ChitietvesinhcongnghiepService } from './chitietvesinhcongnghiep.service';
 import { Chitietvesinhcongnghiep } from './chitietvesinhcongnghiep.model';
 import { NhamayrootService } from '../../../shared/nhamayroot.service';
+import { KetQuaImPort } from '../../../shared/ketqua-tra-ve';
 @Component({
   selector: 'app-chitietvesinhcongnghiep',
   templateUrl: './chitietvesinhcongnghiep.component.html',
@@ -190,14 +191,21 @@ export class ChitietvesinhcongnghiepComponent implements OnInit, OnDestroy {
     this.r1ListKhuVucVeSinhCongNghiep();
   }
   r2ImportFile() {
+    this.spinnerService.show();
     this.subscription = this.danhgiavscongnghiepService_.R2ImportExcel(this._files).subscribe(res => {
-      if (res['error'] === 1) {
-        this.toastr.error(res['ms'], 'Thông báo');
+     const data = res['body'] as KetQuaImPort;
+     if (data !== undefined) {
+      if (data.error === 1) {
+        this.toastr.error(data.ms, 'Thông báo');
+        this.ImportExModal.hide();
+        this.spinnerService.hide();
         return false;
+      } else if (data.error === 0) {
+        this.r1ListVeSinhCongNghiep();
+        this.toastr.success('Import File Excel bảng đánh giá vệ sinh công nghiệp thành công!', 'Thông báo');
       }
-      this.r1ListVeSinhCongNghiep();
-      this.r1ListVeSinhCongNghiep();
-      this.toastr.success('Import File Excel bảng đánh giá vệ sinh công nghiệp thành công!', 'Thông báo');
+      this.spinnerService.hide();
+     }
     });
   }
 

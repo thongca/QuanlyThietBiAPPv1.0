@@ -1,3 +1,4 @@
+import { async } from '@angular/core/testing';
 import { LMonth } from './../../danhmuc/khuvucmay/khuvucmay';
 import { Thietbi } from './../../danhmuc/thietbi/thietbi';
 import { Subscription } from 'rxjs';
@@ -28,6 +29,7 @@ options = {
   };
   // sub
 sub: Subscription;
+sub1: Subscription;
 objThietBi: {
   TenThietBi: string;
   MaThietBi: string;
@@ -47,7 +49,8 @@ KhuVucID: string;
 listThietBi_: Thietbi[] = [];
 // bool
 public Active: boolean;
-
+  // tìm kiếm
+  todos$ = this.s.$search;
   constructor(
     private router: Router,
     private s: SearchService,
@@ -99,14 +102,21 @@ public Active: boolean;
     } else {
       this.options.IsTime = `${this.date.getFullYear()}-${this.date.getMonth() + 1}`;
     }
-
-    this.R1GetKhuVucMay();
-    this.R1GetListThietBi();
     this.nhaMayID$.subscribe(res => {
       if (res !== undefined) {
     this.R1GetListThietBi();
       }
     });
+        // tìm kiếm
+        this.todos$.subscribe(res => {
+          if (res === undefined || res === '') {
+            this.options.s = '';
+            this.R1GetListChiTietMay();
+          } else {
+            this.options.s = res;
+            this.R1GetListChiTietMay();
+          }
+        });
   }
 
   Monthchanged() {
@@ -119,7 +129,7 @@ public Active: boolean;
   // danh sách khu vuc máy
   R1GetListChiTietMay() {
     this.spinnerService.show();
-    this.sub = this.bangcheckListdinhKyService_.r1ListChiTietMay(this.options).subscribe(res => {
+    this.sub1 = this.bangcheckListdinhKyService_.r1ListChiTietMay(this.options).subscribe(res => {
       this.spinnerService.hide();
       if (res['error'] === 1) {
         this.toastr.error(res['ms'], 'Thông báo lỗi');
@@ -143,7 +153,7 @@ public Active: boolean;
     });
   }
   // danh sách thiet bi
-  R1GetListThietBi() {
+ R1GetListThietBi() {
     this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
     this.spinnerService.show();
     const model_ = {NhaMayID:  this.options.NhaMayID};
@@ -165,7 +175,6 @@ public Active: boolean;
           this.options._ThietbiID = this.listThietBi_[0].ThietBiID;
         }
       }
-      this.R1GetListChiTietMay();
       this.R1GetKhuVucMay();
     });
   }
@@ -173,6 +182,7 @@ public Active: boolean;
   R1GetKhuVucMay() {
     this.options.pz = 20000;
     this.spinnerService.show();
+    this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
     this.sub = this.khuvucmayservice_.r1ListKhuVuc(this.options).subscribe(res => {
       this.spinnerService.hide();
       if (res['error'] === 1) {
@@ -245,6 +255,9 @@ public Active: boolean;
   ngOnDestroy() {
     if (this.sub) {
       this.sub.unsubscribe();
+    }
+    if (this.sub1) {
+      this.sub1.unsubscribe();
     }
   }
   // làm mới trang

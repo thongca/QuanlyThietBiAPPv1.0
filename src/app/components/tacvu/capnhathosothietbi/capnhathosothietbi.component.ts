@@ -1,3 +1,4 @@
+import { NguyennhandungmayService } from './../../danhmuc/nguyennhandungmay/nguyennhandungmay.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Capnhathosothietbi } from './capnhathosothietbi.model';
@@ -18,6 +19,8 @@ import { viLocale } from 'ngx-bootstrap/locale';
 import { DatePipe } from '@angular/common';
 import { BsLocaleService } from 'ngx-bootstrap';
 import { NhamayrootService } from '../../../shared/nhamayroot.service';
+import { ThietbiService } from '../../danhmuc/thietbi/thietbi.service';
+import { Nguyennhandungmay } from '../../danhmuc/nguyennhandungmay/nguyennhandungmay.model';
 @Component({
   selector: 'app-capnhathosothietbi',
   templateUrl: './capnhathosothietbi.component.html',
@@ -26,9 +29,9 @@ import { NhamayrootService } from '../../../shared/nhamayroot.service';
 export class CapnhathosothietbiComponent implements OnInit, OnDestroy {
   options = {
     s: '', p: 1, pz: 2000, totalpage: 0, total: 0, paxpz: 0, mathP: 0,
-    _ThietbiID: '', NhaMayID: null
+    _ThietbiID: '', NhaMayID: null, NhomThietBiID: ''
   };
-
+private subscription2: Subscription;
 private sub: Subscription;
  // modal
  @ViewChild('largeModal') public largeModal: ModalDirective;
@@ -36,16 +39,18 @@ private sub: Subscription;
 date = new Date();
    // tìm kiếm
 todos$ = this.s.$search;
-
+// boolean
+IsChange: boolean;
 // string
 modeltitle: string;
 HoSoThietBiID: string;
 TenThietBi: string;
-ThietBiID: string;
 Active: boolean;
 CheckLength: number;
 MaThietBi: string;
 // list
+  // list nhóm thiết bị
+  listNhomThietBi_: {}[];
 listHoSoThietBi_: Capnhathosothietbi[];
 listThietBi_: [
   {
@@ -70,6 +75,8 @@ objThoiGian: {
   ThoiGianKetThuc: Date;
   ThoiGianBatDau: Date;
 };
+ // list
+ listNguyenNhan_: Nguyennhandungmay[];
 
   constructor(
     private datepipe: DatePipe,
@@ -79,15 +86,18 @@ objThoiGian: {
     private toastr: ToastrService,
     private  permissionsService: NgxPermissionsService,
     private hosoThietBiService_: CapnhathosothietbiService,
+    private thietbiservice_: ThietbiService,
     private router: Router,
     private khuvucmayservice_: KhuvucmayService,
     private thietbirootService_: ThietbirootService,
     private datelageService: BsLocaleService,
     private nhaMaySevice_: NhamayrootService,
+    private nguyennhanservice_: NguyennhandungmayService
   ) {
+    this.IsChange = false;
     this.datelageService.use('vi');
     this.Active = false;
-    this.ThietBiID = sessionStorage.getItem('ThietBiID');
+    this.options._ThietbiID = sessionStorage.getItem('ThietBiID');
     this.modelHoSoThietBi_ = {
       HoSoThietBiID: '',
       NgayLapHoSo: this.date,
@@ -105,7 +115,7 @@ objThoiGian: {
       KetLuan: false,
       VatTuCanDung: '',
       DienDaiNguyenNhan: '',
-      NguyenNhanTomTat: ''
+      NguyenNhanID: ''
       };
       this.listThietBi_ = [{
         ThietBiID: '',
@@ -132,6 +142,8 @@ objThoiGian: {
         ThoiGianBatDau: null,
       };
       this.MaThietBi =  sessionStorage.getItem('MaThietBi');
+      this.r1GetListNhomTB();
+      this.R1GetListNguyenNhan();
    }
   // nhà máy
   nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
@@ -175,22 +187,25 @@ this.hosoThietBiService_.r1GetListThietBiservice(this.options).subscribe(res => 
     }
     const listThietBi = res['data'];
     if (listThietBi.length > 0) {
-      if (this.options._ThietbiID === '') {
+      if (this.options._ThietbiID === '' || this.IsChange === true) {
         this.options._ThietbiID = listThietBi[0].ThietBiID;
       }
-      this.ThietBiID = this.options._ThietbiID;
-      if ( this.ThietBiID !== '') {
-        if (this.listThietBi_.length > 0) {
-          this.TenThietBi = listThietBi.filter(x => x.ThietBiID === this.ThietBiID)[0].TenThietBi;
+      if ( this.options._ThietbiID !== '') {
+        if (listThietBi.length > 0) {
+          this.TenThietBi = listThietBi.filter(x => x.ThietBiID === this.options._ThietbiID)[0].TenThietBi;
+        } else {
+          this.TenThietBi = '';
         }
         if (this._userInfo.user.IsAdmin === false) {
-          this.listThietBi_ = listThietBi.filter(x => x.ThietBiID === this.ThietBiID);
+          this.listThietBi_ = listThietBi.filter(x => x.ThietBiID === this.options._ThietbiID);
         } else {
           this.listThietBi_ = listThietBi;
         }
     }
     } else {
       this.listThietBi_ = listThietBi;
+      this.options._ThietbiID = '';
+      this.TenThietBi = '';
     }
     this.ThietBiChanged();
     this.r1GetListHoSoThietBi();
@@ -199,8 +214,27 @@ this.hosoThietBiService_.r1GetListThietBiservice(this.options).subscribe(res => 
   }
 });
 }
+// danh sách nhóm thiết bị
+r1GetListNhomTB() {
+  this.subscription2 = this.thietbiservice_.r1Listnhomthietbi().subscribe(res => {
+       if (res !== undefined) {
+         this.listNhomThietBi_ = res['data'];
+       }
+     });
+ }
+ // danh sách nguyên nhân
+R1GetListNguyenNhan() {
+  this.spinnerService.show();
+   this.sub = this.nguyennhanservice_.r1ListNguyenNhan(this.options).subscribe(res => {
+      this.spinnerService.hide();
+      if (res['error'] === 1) {
+        this.toastr.error(res['ms'], 'Thông báo lỗi');
+        return false;
+      }
+      this.listNguyenNhan_ = res['data'];
+});
+}
 r1GetListThongSoKyThuat() {
-  this.options._ThietbiID = this.ThietBiID;
   this.sub = this.hosoThietBiService_.r1GetThongSobyID(this.options).subscribe(res => {
     if (res !== undefined) {
       if (res['error'] === 1) {
@@ -208,7 +242,8 @@ r1GetListThongSoKyThuat() {
         return false;
       }
      const data = res['data'];
-     this.modelthietbi_ = res['datatb'];
+     const datatb =  res['datatb'];
+      this.modelthietbi_ = datatb;
      this.litsthongsocoban_  = data.filter(x => x.TSCoBan === true);
     }
   });
@@ -233,14 +268,14 @@ r1GetListHoSoThietBi() {
   }
 R2AdDataHoSo() {
   this.spinnerService.show();
-  this.modelHoSoThietBi_.ThietBiID = this.ThietBiID;
+  this.modelHoSoThietBi_.ThietBiID = this.options._ThietbiID;
   if (this.modelHoSoThietBi_.ThietBiID === ''
   || this.modelHoSoThietBi_.TinhTrangThietBi === ''
   || this.modelHoSoThietBi_.NoiDungSuaChua === ''
   || this.modelHoSoThietBi_.ThoiGianBatDau === null
   || this.modelHoSoThietBi_.NguoiThucHien === null
   || this.modelHoSoThietBi_.NguoiVanHanh === null
-  || this.modelHoSoThietBi_.NguyenNhanTomTat === ''
+  || this.modelHoSoThietBi_.NguyenNhanID === ''
   ) {
     this.toastr.error('Vui lòng nhập thông tin vào cái trường có dấu *, Vui lòng thử lại!', 'Thông báo lỗi');
     return false;
@@ -332,7 +367,7 @@ HideModal() {
         KetLuan: false,
         VatTuCanDung: '',
         DienDaiNguyenNhan: '',
-        NguyenNhanTomTat: ''
+        NguyenNhanID: ''
         };
         this.objThoiGian = {
           ThoiGianKetThuc: null,
@@ -343,9 +378,14 @@ HideModal() {
   }
   }
 // change
+  // change
+  NhomTBChanged() {
+    this.IsChange = true;
+    this.r1GetListThietBi();
+  }
 ThietBiChanged() {
+  this.IsChange = true;
   sessionStorage.setItem('ThietBiID', this.options._ThietbiID);
-  this.ThietBiID = this.options._ThietbiID;
   this.r1GetListHoSoThietBi();
   this.thietbirootService_.r1getThietBiByID(this.options._ThietbiID).subscribe(res => {
     if (res !== undefined) {
@@ -354,13 +394,18 @@ ThietBiChanged() {
         return false;
       }
       const objThietBi = res['data'];
-      sessionStorage.setItem('MaThietBi', objThietBi.MaThietBi);
-      this.MaThietBi = objThietBi.MaThietBi;
+      if (objThietBi !== undefined) {
+        sessionStorage.setItem('MaThietBi', objThietBi.MaThietBi);
+        this.MaThietBi = objThietBi.MaThietBi;
+      }
     }
   },
   err => {
     if (err.status === 404) {
       this.toastr.error('Không có phản hồi từ máy chủ', 'Thông báo');
+      return false;
+    } else if (err.status === 400) {
+      return false;
     }
   });
 }

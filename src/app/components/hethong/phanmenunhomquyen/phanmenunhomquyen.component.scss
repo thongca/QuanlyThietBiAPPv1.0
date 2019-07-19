@@ -29,3 +29,23 @@
 input[type=checkbox] {
     transform: scale(1.5);
 }
+@media (min-width: 1025px) and (max-width: 1280px){
+    .width1280{
+        width: 200px;
+    }
+    .tables-pq {
+        table-layout: fixed;
+    }
+    .card-media-1280 {
+        overflow: auto;
+        margin-right: 15px;
+    }
+}
+.padd-small{
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.card-body-overf{
+    height: calc(100vh - 115px);
+    overflow: auto;
+}

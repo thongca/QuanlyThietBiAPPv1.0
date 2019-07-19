@@ -12,7 +12,7 @@ export class BaocaotinhtrangthietbiTB {
     ThoiGianTB: number;
 }
 export class BaocaotinhtrangthietbiPareto {
-    NguyenNhanTomTat: string;
+    TenNguyenNhan: string;
     SoLoi: number;
 }
 export class BCvesinhhangngay {

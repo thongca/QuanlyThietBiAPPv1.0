@@ -21,6 +21,7 @@ import { NhamayrootService } from '../../../shared/nhamayroot.service';
 })
 export class BaoduongdinhkyComponent implements OnInit, OnDestroy {
   sub: Subscription;
+  sub1: Subscription;
   date: Date = new Date();
   listbaoduongdinhky_: Baoduongdinhky[];
   options = {
@@ -67,8 +68,6 @@ export class BaoduongdinhkyComponent implements OnInit, OnDestroy {
       Permission = 'NoAdmin';
     }
     this.permissionsService.loadPermissions([`${Permission}`]);
-
-    this.R1GetListThietBi();
     this.nhaMayID$.subscribe(res => {
       if (res !== undefined) {
     this.R1GetListThietBi();
@@ -105,7 +104,7 @@ export class BaoduongdinhkyComponent implements OnInit, OnDestroy {
   R1GetListBaoDuongDinhKy() {
     this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
       this.spinnerService.show();
-    this.sub = this.baoduongdinhkyservice_.r1ListBaoDuongDinhKy(this.options).subscribe(res => {
+    this.sub1 = this.baoduongdinhkyservice_.r1ListBaoDuongDinhKy(this.options).subscribe(res => {
       this.spinnerService.hide();
       if (res['error'] === 1) {
         this.toastr.error(res['ms'], 'Thông báo lỗi');
@@ -150,7 +149,7 @@ export class BaoduongdinhkyComponent implements OnInit, OnDestroy {
   }
   ChangeD(row: Baoduongdinhky, itemD: string, res: string) {
     row.IsChange = true;
-    if (itemD === 'D' || itemD.toUpperCase() === 'KD') {
+    if (itemD === 'D' || itemD.toUpperCase() === 'KD' ) {
     } else if (itemD === 'd') {
       switch (res) {
         case 'D1':
@@ -389,6 +388,9 @@ export class BaoduongdinhkyComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.sub) {
       this.sub.unsubscribe();
+    }
+    if (this.sub1) {
+      this.sub1.unsubscribe();
     }
   }
   // làm mới trang

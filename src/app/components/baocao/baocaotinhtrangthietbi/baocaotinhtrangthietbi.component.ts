@@ -196,7 +196,7 @@ listThietBi_: Thietbi[] = [];
           }
           this.listSoGioDungMayPare_.forEach(function (item) {
             dataset.push(item.SoLoi);
-            arrlables.push(item.NguyenNhanTomTat);
+            arrlables.push(item.TenNguyenNhan);
           });
           this.lablesListLuyKe = arrDataTyLe;
           this.dataListbarPare = dataset;
@@ -280,7 +280,7 @@ listThietBi_: Thietbi[] = [];
       data: {
         labels: this.lablesListbarTB,
         datasets: [{
-          label: 'Số ngày trung bình giữa hai lần dừng',
+          label: 'Thời gian trung bình giữa hai lần dừng',
           data: this.dataListbarTB,
           backgroundColor: [
             '#FF0F00',

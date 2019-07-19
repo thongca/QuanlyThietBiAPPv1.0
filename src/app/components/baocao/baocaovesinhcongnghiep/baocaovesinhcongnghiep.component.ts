@@ -161,6 +161,7 @@ ngOnDestroy() {
 ChangeThang(IsTime) {
   const dateopt = this.datepipe.transform(IsTime, 'yyyy-MM-dd');
   this.options.IsTime = new Date(dateopt);
+  this.Month_ = this.options.IsTime.getMonth() + 1;
   this.R1GetListVSCN();
 }
 onOpenCalendar(container) {

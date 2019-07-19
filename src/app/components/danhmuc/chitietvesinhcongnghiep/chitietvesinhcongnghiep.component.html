@@ -187,7 +187,7 @@
                           <label class="title-text col-form-label" for="name">Chọn tệp excel
                           </label>
                           <div class="input-text">
-                            <input #file type="file" class="form-control" id="name" placeholder="Mã nhóm"
+                            <input #file type="file" [ngStyle]="{'height': '40px'}" class="form-control" id="name" placeholder="Mã nhóm"
                               (change)="ChonFile(file.files)">
                           </div>
                         </div>
