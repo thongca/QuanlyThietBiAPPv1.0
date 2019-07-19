@@ -7,7 +7,8 @@ const _sData = '';
 export class SearchService {
   public DataSearch = new BehaviorSubject(_sData);
   $search: Observable<any> = this.DataSearch.asObservable();
-  constructor() { }
+  constructor() {
+  }
 
   SearchRoot(s: string) {
     this.DataSearch.next(s);

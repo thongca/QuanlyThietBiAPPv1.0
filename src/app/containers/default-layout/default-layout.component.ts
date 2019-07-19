@@ -20,7 +20,8 @@ import { NhamayrootService } from '../../shared/nhamayroot.service';
 import { NgxPermissionsService } from 'ngx-permissions';
 @Component({
   selector: 'app-dashboard',
-  templateUrl: './default-layout.component.html'
+  templateUrl: './default-layout.component.html',
+  styleUrls: ['./default-layout.component.scss']
 })
 export class DefaultLayoutComponent implements OnDestroy, OnInit {
   @ViewChild('largeModal') public largeModal: ModalDirective;

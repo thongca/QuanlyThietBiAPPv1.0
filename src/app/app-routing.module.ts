@@ -8,11 +8,12 @@ import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
 import { LoginComponent } from './views/login/login.component';
 import { RegisterComponent } from './views/register/register.component';
+import { TrangchuComponent } from './trangchuapp/trangchu/trangchu.component';
 
 
 const routes: Routes = [
   {
-    path: 'trangchu',
+    path: 'home',
     component: DefaultLayoutComponent,
     canActivate: [AuthGuard],
     data: {
@@ -55,36 +56,6 @@ const routes: Routes = [
     },
     children: [
       {
-        path: 'base',
-        canActivate: [AuthGuard],
-        loadChildren: './views/base/base.module#BaseModule'
-      },
-      {
-        canActivate: [AuthGuard],
-        path: 'buttons',
-        loadChildren: './views/buttons/buttons.module#ButtonsModule'
-      },
-      {
-        path: 'charts',
-        loadChildren: './views/chartjs/chartjs.module#ChartJSModule'
-      },
-      {
-        path: 'dashboard',
-        loadChildren: './views/dashboard/dashboard.module#DashboardModule'
-      },
-      {
-        path: 'icons',
-        loadChildren: './views/icons/icons.module#IconsModule'
-      },
-      {
-        path: 'notifications',
-        loadChildren: './views/notifications/notifications.module#NotificationsModule'
-      },
-      {
-        path: 'theme',
-        loadChildren: './views/theme/theme.module#ThemeModule'
-      },
-      {
         canActivateChild: [AuthGuard],
         path: 'hethong',
         loadChildren: './components/hethong/hethong.module#HethongModule',
@@ -107,6 +78,13 @@ const routes: Routes = [
         path: 'baocao',
         loadChildren: './components/baocao/baocao.module#BaocaoModule',
         data: {routeLink: '/baocao'}
+      },
+      {
+        path: 'trangchu',
+        component: TrangchuComponent,
+        data: {
+          title: 'Trang chủ'
+        }
       }
     ]
   },

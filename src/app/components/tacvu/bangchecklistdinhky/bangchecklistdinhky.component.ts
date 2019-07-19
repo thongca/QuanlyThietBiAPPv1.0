@@ -49,8 +49,7 @@ KhuVucID: string;
 listThietBi_: Thietbi[] = [];
 // bool
 public Active: boolean;
-  // tìm kiếm
-  todos$ = this.s.$search;
+
   constructor(
     private router: Router,
     private s: SearchService,
@@ -94,6 +93,8 @@ public Active: boolean;
     };
     this.Active = false;
   }
+    // tìm kiếm
+    todos$ = this.s.$search;
   // nhà máy
   nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
   ngOnInit() {

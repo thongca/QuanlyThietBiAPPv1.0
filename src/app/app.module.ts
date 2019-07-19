@@ -70,6 +70,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 // cookie
 import { CookieService } from 'ngx-cookie-service';
+import { TrangchuComponent } from './trangchuapp/trangchu/trangchu.component';
 
 @NgModule({
 
@@ -83,6 +84,7 @@ import { CookieService } from 'ngx-cookie-service';
     DanhmucComponent,
     PermissionComponent,
     TacvuComponent,
+    TrangchuComponent
   ],
   imports: [
     BrowserModule,

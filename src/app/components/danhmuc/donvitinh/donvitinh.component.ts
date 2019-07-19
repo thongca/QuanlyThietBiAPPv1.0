@@ -21,6 +21,7 @@ export class DonvitinhComponent implements OnInit, OnDestroy {
   // subscript
   private subscription: Subscription;
   private subscription1: Subscription;
+  private subscription2: Subscription;
 
   // modal
   @ViewChild('largeModal') public largeModal: ModalDirective;
@@ -69,7 +70,7 @@ export class DonvitinhComponent implements OnInit, OnDestroy {
         this.permissionsService.loadPermissions([`${Permission}`]);
 
     // tìm kiếm
-    this.todos$.subscribe(res => {
+   this.subscription2 = this.todos$.subscribe(res => {
       if (res === undefined || res === '') {
         this.options.s = '';
         this.R1GetListDonViTinh();
@@ -268,9 +269,9 @@ ngOnDestroy() {
   if (this.subscription1) {
     this.subscription1.unsubscribe();
   }
-  // if (this.subscription2) {
-  //   this.subscription2.unsubscribe();
-  // }
+  if (this.subscription2) {
+    this.subscription2.unsubscribe();
+  }
 }
 
 }
