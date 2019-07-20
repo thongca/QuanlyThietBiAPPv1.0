@@ -180,10 +180,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   this.largeModal.hide();
   }
   LogOut(): void {
-    localStorage.removeItem('listQuyen');
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('NhaMayID');
+    localStorage.clear();
     sessionStorage.clear();
     this.router.navigateByUrl('/login');
   }
