@@ -80,6 +80,12 @@ const routes: Routes = [
         data: {routeLink: '/baocao'}
       },
       {
+        canActivateChild: [AuthGuard],
+        path: 'danhmuctt',
+        loadChildren: './phongthitruong/danhmuctt/danhmuctt.module#DanhmucttModule',
+        data: {routeLink: '/danhmuctt'}
+      },
+      {
         path: 'trangchu',
         component: TrangchuComponent,
         data: {

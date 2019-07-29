@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { SearchService } from '../../../shared/search.service';
 import { UserInfoService } from '../../../shared/user-info.service';
@@ -47,7 +47,8 @@ litsthongsokythuat_: Thongsokythuat[] = [];
    private thietbiservice_: ThietbiService,
    private nhaMaySevice_: NhamayrootService,
    private router: Router,
-  ) { }
+  ) {
+  }
   // nhà máy
   nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
   ngOnInit() {
@@ -81,13 +82,12 @@ litsthongsokythuat_: Thongsokythuat[] = [];
         this.R1GetListThietBi();
       }
     });
-    this.nhaMayID$.subscribe(res => {
+ this.nhaMayID$.subscribe(res => {
       if (res !== undefined) {
     this.R1GetListThietBi();
       }
     });
     this.R1GetNhomThietBi();
-    this.R1GetListThietBi();
   }
   SetTotalPage() {
     this.options.totalpage = Math.ceil(this.options.total / this.options.pz);

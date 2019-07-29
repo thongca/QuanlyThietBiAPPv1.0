@@ -63,7 +63,8 @@
             <thead>
               <tr>
                 <th class="text-center" width=50>STT</th>
-                <th class="text-center">Ngày tháng</th>
+                <th class="text-center" width=120 >Ngày tháng</th>
+                <th class="text-center" width=80>Mã TB</th>
                 <th>Công việc sửa chữa, bảo dưỡng kiểm định đã thực hiện</th>
                 <th width=120 class="text-center">TG/dừng (h)</th>
                 <th appBtnPer="update" class="text-center" width=100>Chức năng</th>
@@ -73,6 +74,7 @@
               <tr *ngFor="let item of listHoSoThietBi_;let i = index">
                 <td class="text-center">{{i +  1}}</td>
                 <td class="text-center">{{item.NgayLapHoSo|date:'dd/MM/yyyy'}}</td>
+                <td class="text-center">{{item.MaThietBi}}</td>
                 <td >{{item.TinhTrangThietBi}}</td>
                 <td class="text-center">{{item.ThoiGianDung}}</td>
                 <td class="text-center" appBtnPer="update" (click)="SelectIDEditModel(item.HoSoThietBiID)" title="Sửa">

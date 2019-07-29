@@ -223,7 +223,7 @@ listThietBi_: Thietbi[] = [];
       data: {
         labels: this.lablesListbar,
         datasets: [{
-          label: 'Số giờ dừng máy (tính bằng giờ)',
+          label: 'Số giờ dừng máy',
           data: this.dataListbar,
           backgroundColor: [
             '#FF0F00',

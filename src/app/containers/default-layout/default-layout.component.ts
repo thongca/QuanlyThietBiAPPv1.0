@@ -18,6 +18,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ThietbiService } from '../../components/danhmuc/thietbi/thietbi.service';
 import { NhamayrootService } from '../../shared/nhamayroot.service';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { ChangeuserService } from '../../shared/changeuser.service';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './default-layout.component.html',
@@ -25,6 +26,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 })
 export class DefaultLayoutComponent implements OnDestroy, OnInit {
   @ViewChild('largeModal') public largeModal: ModalDirective;
+  @ViewChild('userModal') public userModal: ModalDirective;
   NhaMayID: number;
     // Nhà máy
     selectedItems: {
@@ -37,6 +39,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   todos$ = this.search.$search;
   private sub: Subscription;
   private sub1: Subscription;
+  private sub2: Subscription;
   _listMenu: [
     {
       MenuID: '',
@@ -66,6 +69,14 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   public sidebarMinimized = true;
   changes: MutationObserver;
   public element: HTMLElement;
+
+  userchangemodel_: {
+    MatKhauCu: string;
+    MatKhauMoi: string;
+    NhapLaiMatKhau: string;
+  };
+// string thông báo mật khẩu nhập lại
+notiPass: string;
   constructor(
     private sbaseUrl_: RootbaseUrlService,
     private suserInfo_: UserInfoService,
@@ -76,6 +87,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
     private  permissionsService: NgxPermissionsService,
     private menu: MenuDetailService,
     private thietbiservice_: ThietbiService,
+    private changUserService_: ChangeuserService,
     private router: Router, @Inject(DOCUMENT) _document?: any) {
     if (localStorage.getItem('token') === null || localStorage.getItem('token') === undefined) {
       this.router.navigateByUrl('/login');
@@ -92,6 +104,7 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
       this.avatarUser = this.sbaseUrl_.sbaseURL +  this.suserInfo_.R1_GetDataUser();
     } else {
       localStorage.clear();
+      sessionStorage.clear();
       this.router.navigateByUrl('/login');
      return;
     }
@@ -107,11 +120,16 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
         this.navItems = res.body.data;
       },
       err => {
-        if (err.status === 400) {
-          console.log(err);
+        if (err.status === 500) {
+          this.toastr.error('Mất kết nối đến máy chủ. Vui lòng kiểm tra lại đường dẫn để tiếp tục!', 'Thông báo');
         }
       }
     );
+    this.userchangemodel_ = {
+      MatKhauCu: '',
+      MatKhauMoi: '',
+      NhapLaiMatKhau: ''
+    };
   }
   ngOnInit() {
      // check permission admin
@@ -170,14 +188,45 @@ export class DefaultLayoutComponent implements OnDestroy, OnInit {
   showmodal() {
     this.largeModal.show();
   }
+  showmodaluser() {
+    this.userModal.show();
+  }
+
   HideModal() {
     this.largeModal.hide();
+    this.userModal.hide();
   }
   ThayDoiPhanXuongSanXuat() {
     const Nhamayid = JSON.stringify(this.NhaMayID);
   localStorage.setItem('NhaMayID', Nhamayid);
   this.nhamayrootSer_.NhaMaySer(Nhamayid);
   this.largeModal.hide();
+  }
+  // sự kiện kiểm tra pass nhập lại của người dùng
+  EventCheckPass() {
+    if (this.userchangemodel_.MatKhauMoi === this.userchangemodel_.NhapLaiMatKhau) {
+      this.notiPass = 'Mật khẩu trùng khớp';
+    } else {
+      this.notiPass = 'Mật khẩu không trùng khớp';
+    }
+    if (this.userchangemodel_.NhapLaiMatKhau.length === 0) {
+      this.notiPass = '';
+    }
+  }
+  ThayDoiMatKhau() {
+    if (this.userchangemodel_.MatKhauCu === '' || this.userchangemodel_.MatKhauCu === undefined) {
+      this.toastr.error('Vui lòng nhập vào các trường có dấu *', 'Thông báo');
+      return false;
+    }
+   this.sub2 = this.changUserService_.r3updateMatKhau(this.userchangemodel_).subscribe(res => {
+      if (res !== undefined) {
+        if (res['error'] === 1) {
+          this.toastr.error(res['ms'], 'Thông báo');
+          return false;
+        }
+        this.toastr.success('Cập nhật mật khẩu mới thành công', 'Thông báo');
+      }
+    });
   }
   LogOut(): void {
     localStorage.clear();

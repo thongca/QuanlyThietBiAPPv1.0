@@ -1,4 +1,3 @@
-import { TacvuModule } from './components/tacvu/tacvu.module';
 import { SearchService } from './shared/search.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -47,6 +46,8 @@ import { ChartsModule } from 'ng2-charts/ng2-charts';
 // import module inside software
 import { HethongModule } from './components/hethong/hethong.module';
 import { DanhmucModule } from './components/danhmuc/danhmuc.module';
+import { TacvuModule } from './components/tacvu/tacvu.module';
+import { DanhmucttModule } from './phongthitruong/danhmuctt/danhmuctt.module';
 // toarst
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
@@ -56,13 +57,12 @@ import { ToastrModule } from 'ngx-toastr';
  // modal
  import { ModalModule } from 'ngx-bootstrap/modal';
 import { searchRoot } from './shared/ketqua-tra-ve';
-import { DanhmucComponent } from './components/danhmuc/danhmuc.component';
 
 
 // Import your ngx-Permissions
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { PermissionComponent } from './auth/permission/permission.component';
-import { TacvuComponent } from './components/tacvu/tacvu.component';
+
 
 import { BsDatepickerModule, DatepickerModule } from 'ngx-bootstrap';
 
@@ -70,7 +70,12 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 // cookie
 import { CookieService } from 'ngx-cookie-service';
+// components
 import { TrangchuComponent } from './trangchuapp/trangchu/trangchu.component';
+import { TacvuComponent } from './components/tacvu/tacvu.component';
+import { DanhmucComponent } from './components/danhmuc/danhmuc.component';
+import { DanhmucttComponent } from './phongthitruong/danhmuctt/danhmuctt.component';
+
 
 @NgModule({
 
@@ -84,7 +89,8 @@ import { TrangchuComponent } from './trangchuapp/trangchu/trangchu.component';
     DanhmucComponent,
     PermissionComponent,
     TacvuComponent,
-    TrangchuComponent
+    TrangchuComponent,
+    DanhmucttComponent
   ],
   imports: [
     BrowserModule,
@@ -103,6 +109,7 @@ import { TrangchuComponent } from './trangchuapp/trangchu/trangchu.component';
     HethongModule,
     DanhmucModule,
     TacvuModule,
+    DanhmucttModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot({
       timeOut: 5000,

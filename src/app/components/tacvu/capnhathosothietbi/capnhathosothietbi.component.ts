@@ -115,7 +115,8 @@ objThoiGian: {
       KetLuan: false,
       VatTuCanDung: '',
       DienDaiNguyenNhan: '',
-      NguyenNhanID: ''
+      NguyenNhanID: '',
+      MaThietBi: ''
       };
       this.listThietBi_ = [{
         ThietBiID: '',
@@ -367,7 +368,8 @@ HideModal() {
         KetLuan: false,
         VatTuCanDung: '',
         DienDaiNguyenNhan: '',
-        NguyenNhanID: ''
+        NguyenNhanID: '',
+        MaThietBi: ''
         };
         this.objThoiGian = {
           ThoiGianKetThuc: null,

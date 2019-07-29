@@ -16,4 +16,5 @@ export class Capnhathosothietbi {
     VatTuCanDung: string;
     NguyenNhanID: string;
     DienDaiNguyenNhan: string;
+    MaThietBi: string;
 }

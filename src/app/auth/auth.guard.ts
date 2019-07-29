@@ -49,12 +49,9 @@ public _listmenuActive: {
           this._listmenuActive = res['body'];
           if ( this._listmenuActive.error === 1) {
             this.toastr.error('Bạn đã hết phiên đăng nhập. Vui lòng đăng nhập lại để tiếp tục', 'Thông báo lỗi');
-            localStorage.removeItem('listQuyen');
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
+            localStorage.clear();
             sessionStorage.clear();
             this.router.navigateByUrl('/login');
-            this.router.navigate(['/login']);
             return false;
           }
             if (this._listmenuActive.data.filter(x => x.url === route.data.routeLink).length === 0) {
@@ -67,7 +64,6 @@ public _listmenuActive: {
         }
       });
       if (localStorage.getItem('token') != null || localStorage.length !== 0) {
-        this._ssearchService.SearchRoot('');
         return true;
        } else {
          this.router.navigate(['/login']);

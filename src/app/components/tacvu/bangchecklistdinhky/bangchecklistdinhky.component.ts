@@ -110,13 +110,11 @@ public Active: boolean;
     });
         // tìm kiếm
         this.todos$.subscribe(res => {
-          if (res === undefined || res === '') {
-            this.options.s = '';
-            this.R1GetListChiTietMay();
-          } else {
+            if (res === undefined) {
+              return false;
+            }
             this.options.s = res;
             this.R1GetListChiTietMay();
-          }
         });
   }
 
