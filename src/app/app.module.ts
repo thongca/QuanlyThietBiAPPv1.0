@@ -75,6 +75,8 @@ import { TrangchuComponent } from './trangchuapp/trangchu/trangchu.component';
 import { TacvuComponent } from './components/tacvu/tacvu.component';
 import { DanhmucComponent } from './components/danhmuc/danhmuc.component';
 import { DanhmucttComponent } from './phongthitruong/danhmuctt/danhmuctt.component';
+import { TinhgiaoffsetComponent } from './phongthitruong/nghiepvutinhgia/tinhgiaoffset/tinhgiaoffset.component';
+import { NghiepvutinhgiaModule } from './phongthitruong/nghiepvutinhgia/nghiepvutinhgia.module';
 
 
 @NgModule({
@@ -110,6 +112,7 @@ import { DanhmucttComponent } from './phongthitruong/danhmuctt/danhmuctt.compone
     DanhmucModule,
     TacvuModule,
     DanhmucttModule,
+    NghiepvutinhgiaModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot({
       timeOut: 5000,

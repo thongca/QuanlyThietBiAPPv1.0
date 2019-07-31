@@ -86,6 +86,12 @@ const routes: Routes = [
         data: {routeLink: '/danhmuctt'}
       },
       {
+        canActivateChild: [AuthGuard],
+        path: 'tacvu',
+        loadChildren: './phongthitruong/nghiepvutinhgia/nghiepvutinhgia.module#NghiepvutinhgiaModule',
+        data: {routeLink: '/tacvu'}
+      },
+      {
         path: 'trangchu',
         component: TrangchuComponent,
         data: {

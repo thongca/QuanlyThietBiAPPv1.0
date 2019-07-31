@@ -1,0 +1,35 @@
+
+@media (min-width: 1367px){
+.w1000 {
+    max-width: 100em;
+} 
+}
+@media (max-width: 1366px){
+    .w1000 {
+        max-width:95%;
+    } 
+    }
+
+.inputoneoftwo{
+    width: 120px;
+    margin-left: 10px;
+    display: inline-block;
+}
+.borderrow{
+    border: 1px solid black;
+    padding: 10px;
+}
+.titlemodal{
+    position: absolute;
+    margin-top: -25px;
+    margin-left: 15px;
+    font-size: 18px;
+    background-color: white;
+    font-weight: bold;
+}
+.titlenew{
+    width: 80px !important;
+}
+.input-sl-new {
+    width: calc(100% - 100px)!important;
+}

@@ -25,14 +25,7 @@ export class DonvitinhService {
   };
   return this.http.get(url_ , options_);
 }
-r2postsmszalo() {
-  const url = 'https://developers.zalo.me';
-  const data = {
-    message: 'Thử thách bản thân với các bài toán kỹ thuật hóc búa',
-    to: '0964720070'
- };
-  return this.http.post(url, data);
-}
+
   r1ListDonViTinh(options: object) {
     let url_ = this.BaseURL + '/api/CD_DM_DonViTinh/r1getDataDonViTinh';
     url_ = url_.replace(/[?&]$/, '');
