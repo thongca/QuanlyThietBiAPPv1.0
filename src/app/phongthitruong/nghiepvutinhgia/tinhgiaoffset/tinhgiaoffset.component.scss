@@ -17,7 +17,10 @@
 }
 .borderrow{
     border: 1px solid black;
-    padding: 10px;
+    padding: 10px 0;
+    margin-bottom: 15px;
+    margin-left: 0;
+    margin-right: 0;
 }
 .titlemodal{
     position: absolute;
@@ -32,4 +35,35 @@
 }
 .input-sl-new {
     width: calc(100% - 100px)!important;
+}
+.box-spanicon-input{
+    float: right;
+    position: static;
+    margin-top: -27px;
+    margin-right: 10px;
+}
+.box-spanicon-input i {
+    font-size: 20px;
+}
+.box-spanicon-input:hover{
+cursor: pointer;
+}
+.widthbtn{
+    float: right;
+    width: 120px;
+    margin-top: 0;
+    margin-left: 15px;
+}
+.widthbtn i {
+    margin-right: 5px;
+}
+.ul-modal-bangtinhgia{
+    list-style: none;
+    display: inherit;
+}
+ul.ul-modal-bangtinhgia li {
+    margin-left: 15px;
+}
+.text-right{
+    padding-right: 20px;
 }

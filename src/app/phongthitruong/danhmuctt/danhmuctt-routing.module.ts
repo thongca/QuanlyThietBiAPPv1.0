@@ -1,3 +1,4 @@
+import { DailuongtinhiaComponent } from './dailuongtinhia/dailuongtinhia.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../../auth/auth.guard';
@@ -16,6 +17,12 @@ const routes: Routes = [
     path: 'tieuchitinhgia',
     component: TieuchitinhgiaComponent,
     data: {routeLink: '/danhmuctt/tieuchitinhgia'}
+  },
+  {
+    canActivateChild: [AuthGuard],
+    path: 'dailuongtinhgia',
+    component: DailuongtinhiaComponent,
+    data: {routeLink: '/danhmuctt/dailuongtinhgia'}
   },
 ];
 

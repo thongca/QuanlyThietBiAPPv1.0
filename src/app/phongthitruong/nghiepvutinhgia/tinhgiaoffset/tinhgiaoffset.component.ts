@@ -8,16 +8,27 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { DonvitinhService } from '../../../components/danhmuc/donvitinh/donvitinh.service';
 import { Subscription } from 'rxjs';
+import { Tinhgiaoffset, ObjSanPhamDonHang } from './tinhgiaoffset.model';
+import { Tieuchitinhgia } from '../../danhmuctt/tieuchitinhgia/tieuchitinhgia.model';
+import { TieuchitinhgiaService } from '../../danhmuctt/tieuchitinhgia/tieuchitinhgia.service';
+import { DailuongtinhgiaService } from '../../danhmuctt/dailuongtinhia/dailuongtinhgia.service';
+import { LoaiHop, LoaiIn } from '../../danhmuctt/dailuongtinhia/dailuongtinhgia.model';
 @Component({
   selector: 'app-tinhgiaoffset',
   templateUrl: './tinhgiaoffset.component.html',
   styleUrls: ['./tinhgiaoffset.component.scss']
 })
 export class TinhgiaoffsetComponent implements OnInit, OnDestroy {
-  options = {s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0};
-binh: number;
-somau: number;
-congthuc: string;
+  options = {s: '', p: 1, pz: 20, totalpage: 0, total: 0,
+  paxpz: 0, mathP: 0, MaSanPham: '', TenSanPham: '', NhaMayID: 0,
+  LoaiInID: 1, LoaiHopID: 1,
+  TongGiaMin: 0,
+  TongGiaMax: 0
+};
+SecondCode: number;
+FirstCodeOld: string;
+YearCodeOld: number;
+TotalPrice: number;
 bien1 = 'sm';
 bien2 = 'bi';
   // subscript
@@ -27,15 +38,18 @@ bien2 = 'bi';
 
   // modal
   @ViewChild('largeModal') public largeModal: ModalDirective;
+  @ViewChild('tieuchiModal') public tieuchiModal: ModalDirective;
   @ViewChild('warningModal') public warningModal: ModalDirective;
 
   // tìm kiếm
   todos$ = this.s.$search;
   checkall: boolean;
+  checkalltieuchi: boolean;
   // string
   public modeltitle: string;
   CheckLength: number;
-  DonViTinhID: string;
+  CheckLengthTieuChi: number;
+  SanPhamDonHangID: string;
   errormodal: string;
   // obj
   modeldonvitinh_: {
@@ -44,24 +58,20 @@ bien2 = 'bi';
   };
 
   // list
-  listDonViTinh_: {
-    DonViTinhID: string;
-    TenDonVi: string;
-    checked: boolean
-  }[];
-listCotSP_: {
-  SoLieuID: string;
-  KHSoLieu: string;
-  TenCot: string;
-  Title: string;
-  STT: string;
-  LoaiIn: string;
-  LoaiSoLieu: string;
-  CongThuc: string;
-}[]; // cột sản phẩm
-listCotTK_: []; // cột triển khai
-
-
+  listSanPhamDonHang_: ObjSanPhamDonHang[] = [];
+listCotSP_: Tinhgiaoffset[] = []; // cột sản phẩm
+listCotTK_: Tinhgiaoffset[] = []; // cột triển khai
+  // list
+  listTieuChiTinhGia_: Tieuchitinhgia[] = [];
+  listTCTGDaChon_: Tieuchitinhgia[] = [];
+  listTCTGChuaChon_: Tieuchitinhgia[] = [];
+  listLoaiSL_: {
+    LoaiSoLieu: number;
+    TenLoai: string;
+  }[] = [];
+  // danh sách loại hộp
+  listLoaiHop: LoaiHop[] = [];
+  listLoaiIn: LoaiIn[] = [];
   constructor(
       private spinnerService: Ng4LoadingSpinnerService ,
      private s: SearchService,
@@ -69,7 +79,9 @@ listCotTK_: []; // cột triển khai
      private toastr: ToastrService,
      private  permissionsService: NgxPermissionsService,
      private donviservice_: DonvitinhService,
-     private tinhgiaoffsservice_: TinhgiaoffsetService
+     private tinhgiaoffsservice_: TinhgiaoffsetService,
+     private tieuchitinhgiaservice_: TieuchitinhgiaService,
+     private dailuongservice_: DailuongtinhgiaService
   ) { }
 
   ngOnInit() {
@@ -94,16 +106,61 @@ listCotTK_: []; // cột triển khai
         this.R1GetListDonViTinh();
       }
     });
-this.R1GetListCot();
+    this.R1GetListTCTC();
+    this.R1GetListLoaiIn();
+    this.R1GetListLoaiHop();
   }
   SetTotalPage() {
     this.options.totalpage = Math.ceil(this.options.total / this.options.pz);
     this.options.mathP = this.options.pz * this.options.p;
 }
-// danh sách đơn vị tính
+ // danh sách loại in
+ R1GetListLoaiIn() {
+  this.spinnerService.show();
+  this.subscription = this.dailuongservice_.r1ListLoaiIn().subscribe(res => {
+    this.spinnerService.hide();
+    if (res['error'] === 1) {
+      this.toastr.error(res['ms'], 'Thông báo');
+      return false;
+    }
+    this.listLoaiIn = res['data'];
+    this.options.LoaiInID =  this.listLoaiIn[0].LoaiInID;
+  },
+    err => {
+      if (err.status === 500) {
+        this.toastr.error('Mất kết nối đến máy chủ. Vui lòng kiểm tra lại đường dẫn.', 'Thông báo');
+        return false;
+      }
+    });
+}
+  // danh sách loại hộp
+  R1GetListLoaiHop() {
+    this.spinnerService.show();
+    this.subscription = this.dailuongservice_.r1ListLoaiHop().subscribe(res => {
+      this.spinnerService.hide();
+      if (res['error'] === 1) {
+        this.toastr.error(res['ms'], 'Thông báo');
+        return false;
+      }
+      this.listLoaiHop = res['data'];
+      this.options.LoaiHopID =  this.listLoaiHop[0].LoaiHopID;
+    },
+      err => {
+        if (err.status === 500) {
+          this.toastr.error('Mất kết nối đến máy chủ. Vui lòng kiểm tra lại đường dẫn.', 'Thông báo');
+          return false;
+        }
+      });
+  }
+// danh sách cột đại lượng tính giá
 R1GetListCot() {
   this.spinnerService.show();
-   this.subscription = this.tinhgiaoffsservice_.r1ListCsl().subscribe(res => {
+   this.subscription = this.tinhgiaoffsservice_
+   .r1ListCsl(
+     this.options.MaSanPham,
+    this.options.LoaiHopID,
+    this.options.LoaiInID)
+    .subscribe(res => {
       this.spinnerService.hide();
       if (res['error'] === 1) {
         this.toastr.error(res['ms'], 'Thông báo lỗi');
@@ -114,16 +171,75 @@ R1GetListCot() {
 });
 }
 
+// công thức trong đại lượng
+tinhToanTheoCongThuc(row: Tinhgiaoffset) {
+  const listDaiLuong_ = [];
+    let congthuc = row.CongThuc; // khai báo công thức để cố đinh công thức truyền vào từ row
+    this.listCotSP_.forEach(item => {
+      if (congthuc.includes(item.KHSoLieu)) {
+        if (item.GiaTri === '' || item.GiaTri === undefined) {
+          listDaiLuong_.push(item.KHSoLieu); // đẩy đại lượng trống giá trị vào danh sách chờ hiện ra màn hình
+          return false;
+        }
+        congthuc = congthuc.replace(item.KHSoLieu, item.GiaTri);
+      }
+    });
+    this.listCotTK_.forEach(element => {
+      if (congthuc.includes(element.KHSoLieu)) {
+        if (element.GiaTri === '' || element.GiaTri === undefined) {
+          listDaiLuong_.push(element.KHSoLieu); // đẩy đại lượng trống giá trị vào danh sách chờ hiện ra màn hình
+          return false;
+        }
+        congthuc = congthuc.replace(element.KHSoLieu, element.GiaTri);
+      }
+    });
+if (listDaiLuong_.length > 0) {
+  this.toastr.error(`Vui lòng nhập giá trị vào các đại lượng ${listDaiLuong_}`, 'Thông báo');
+  return false;
+}
+    // tslint:disable
+    row.GiaTri = eval(congthuc);
+}
+R1GetListTCTC() {
+  this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
+  this.spinnerService.show();
+  this.subscription = this.tieuchitinhgiaservice_.r1ListTT_DM_TCTC(this.options).subscribe(res => {
+    this.spinnerService.hide();
+    if (res['error'] === 1) {
+      this.toastr.error(res['ms'], 'Thông báo lỗi');
+      return false;
+    }
+    this.listTieuChiTinhGia_ = res['data'];
+    this.options.total = res['total'];
+    this.SetTotalPage();
+    if (this.options.p > 1) {
+      this.options.paxpz = (this.options.p - 1) * this.options.pz;
+    } else {
+      this.options.paxpz = 0;
+    }
+  },
+    err => {
+      if (err.status === 500) {
+        this.toastr.error('Mất kết nối đến máy chủ. Vui lòng kiểm tra lại đường dẫn.', 'Thông báo');
+        return false;
+      }
+    });
+}
 // danh sách đơn vị tính
 R1GetListDonViTinh() {
   this.spinnerService.show();
-   this.subscription = this.donviservice_.r1ListDonViTinh(this.options).subscribe(res => {
+   this.subscription = this.tinhgiaoffsservice_
+   .r1ListsanPhamDH(
+    this.options.MaSanPham,
+    this.options.LoaiHopID,
+    this.options.LoaiInID
+   ).subscribe(res => {
       this.spinnerService.hide();
       if (res['error'] === 1) {
         this.toastr.error(res['ms'], 'Thông báo lỗi');
         return false;
       }
-      this.listDonViTinh_ = res['data'];
+      this.listSanPhamDonHang_ = res['data'];
       this.options.total = res['total'];
       this.SetTotalPage();
       if (this.options.p > 1) {
@@ -132,9 +248,19 @@ R1GetListDonViTinh() {
         this.options.paxpz = 0;
       }
 });
+const op = {url : '/tacvu/tinhgiaoffset'};
+this.tinhgiaoffsservice_.r1CheckCode(op).subscribe(res => {
+  this.SecondCode = res['SecondCodeOld'];
+  this.FirstCodeOld = res['FirstCodeOld'];
+  this.YearCodeOld = res['YearCodeOld'];
+  this.options.MaSanPham = `${this.FirstCodeOld}-${this.YearCodeOld}-${this.SecondCode + 1}`;
+  if (this.options.MaSanPham !== '') {
+    this.R1GetListCot();
+  }
+});
 }
 
-tinhtoan() {
+tinhtoan(listTieuc: Tieuchitinhgia[]) {
   let congthuc = ' _sm_ * 1 / _sl_ ';
   const listCot = this.listCotSP_;
   listCot.forEach(function(item) {
@@ -168,14 +294,13 @@ modalUserInGroup(DonViTinhID) {
 
 
 // thêm mới, sửa đơn vị tính
-R2AdDataNhomNguoiDung(): boolean {
-  if (this.modeldonvitinh_.TenDonVi === '') {
-  this.toastr.warning('Vui lòng nhập thông tin vào các trường có dấu (*)', 'Cảnh báo');
-    return false;
-  }
+R2AdDataBangTinhLuong() {
+  const LuaChon = {LoaiHopID: this.options.LoaiHopID, LoaiInID: this.options.LoaiInID};
+  const TongGia = {TongGiaMin: this.options.TongGiaMin , TongGiaMax: this.options.TongGiaMax};
+const sanPham = {TenSanPham: this.options.TenSanPham, MaSanPham: this.options.MaSanPham};
   if (this.modeldonvitinh_.DonViTinhID === '' || this.modeldonvitinh_.DonViTinhID === null) {
     this.spinnerService.show();
-    this.donviservice_.R2AddDonViTinh(this.modeldonvitinh_).subscribe(res => {
+    this.tinhgiaoffsservice_.R2AddBangTinhGia(this.listCotSP_, this.listCotTK_, this.listTCTGDaChon_, sanPham, LuaChon, TongGia).subscribe(res => {
       this.spinnerService.hide();
       if (res !== undefined) {
 
@@ -191,14 +316,14 @@ R2AdDataNhomNguoiDung(): boolean {
     });
   } else {
     this.spinnerService.show();
-    this.donviservice_.r3updateDonViTinh(this.DonViTinhID, this.modeldonvitinh_).subscribe(res => {
+    this.donviservice_.r3updateDonViTinh(this.SanPhamDonHangID, this.modeldonvitinh_).subscribe(res => {
       this.spinnerService.hide();
         if (res !== undefined) {
           if (res['error'] === 1) {
             this.toastr.error(res['ms'], 'Thông báo lỗi');
             return false;
           }
-          this.toastr.success('Sửa đơn vị tính thành công!', 'Thông báo');
+          this.toastr.success('Sửa bảng tính giá thành công!', 'Thông báo');
           this.R1GetListDonViTinh();
           this.largeModal.hide();
         }
@@ -207,18 +332,33 @@ R2AdDataNhomNguoiDung(): boolean {
 
 }
 // modal
-SelectIDEditModel(DonViTinhID: string) {
-  this.modeltitle = 'Sửa đơn vị tính';
-  this.DonViTinhID = DonViTinhID;
- this.subscription1 =  this.donviservice_.r1GetDVTbyID(DonViTinhID).subscribe(res => {
+SelectIDEditModel(SanPhamDonHangID: string) {
+  this.modeltitle = 'Sửa bảng tính giá';
+  this.SanPhamDonHangID = SanPhamDonHangID;
+ this.subscription1 =  this.tinhgiaoffsservice_
+ .r1GetBangTGbyID(
+  this.options.MaSanPham,
+  this.options.LoaiHopID,
+  this.options.LoaiInID,
+  SanPhamDonHangID,
+ ).subscribe(res => {
     if (res !== undefined) {
       if (res['error']  === 1) {
         this.toastr.error(res['ms'], 'Thông báo lỗi');
         return false;
       }
-     this.modeldonvitinh_ = res['data'];
+     this.listCotSP_ = res['data'];
+     this.listCotTK_ = res['datatk'];
+     this.listTCTGDaChon_ = res['datadc']
+     this.options.LoaiHopID = res['LoaiHopID']
+     this.options.LoaiInID = res['LoaiInID']
     }
     this.largeModal.show();
+  }, err => {
+    if (err.status === 500) {
+      this.toastr.error('Mất kết nối đến cơ sở dữ liệu, Vui lòng kiểm tra lại đường dẫn', 'Thông báo');
+      return false;
+    }
   });
 }
 
@@ -255,6 +395,140 @@ r4DelDonViTinh(rowto) {
     }
   });
 }
+showmodaltieuchi() {
+  // tắt checkall môi khi mở modal
+  this.checkalltieuchi = false;
+  this.tieuchiModal.show();
+  // tắt lưu cache trong khi bật modal
+  const data = this.listTieuChiTinhGia_.filter(c => c.checked === true);
+  data.forEach(function(item) {
+   item.checked = false;
+  });
+  this.listTCTGChuaChon_ = this.listTieuChiTinhGia_.filter(c=> this.listTCTGDaChon_.filter(v=>v.TieuChiID === c.TieuChiID).length !== 1);
+}
+
+// thay đổi các loại in và loại hộp
+LoaiInChanged() {
+  this.R1GetListCot();
+}
+LoaiHopChanged() {
+  this.R1GetListCot();
+}
+// xóa tiêu chí đã chọn
+XoaTieuChiDaChon(row, index) {
+  this.options.TongGiaMax = 0;
+  this.options.TongGiaMin = 0;
+  this.listTCTGDaChon_.splice(index, 1); // xóa đi một phần tử trong mảng theo index
+  // lọc khác biệt giữa 2 list
+  this.listTCTGChuaChon_ = this.listTieuChiTinhGia_.filter(c=> this.listTCTGDaChon_.filter(v=>v.TieuChiID === c.TieuChiID).length !== 1);  
+  this.listTCTGDaChon_.forEach(item => {
+    this.options.TongGiaMax += item.GiaMax;
+    this.options.TongGiaMin += item.GiaMin;
+  });
+}
+// chọn các tiêu chí
+chonTieuChi() {
+  this.options.TongGiaMax = 0;
+  this.options.TongGiaMin = 0;
+  // khai báo danh sách các đại lượng chưa nhập giá trị
+  let listDaiLuong_ = [];
+  // khai báo tông giá sản phẩm
+  let _totalprice = 0;
+  // lọc ra những tiêu chí được chọn từ modal để cho ra list đã chọn
+ const data = this.listTieuChiTinhGia_.filter(c => c.checked === true);
+ for (let index = 0; index < data.length; index++) {
+   if (this.listTCTGDaChon_ !== undefined) {
+    if ( this.listTCTGDaChon_.filter(x=>x.TieuChiID !== data[index].TieuChiID)) { // nếu tiêu chí đã tồn tại trong danh sách đã chọn thì không add vào nữa
+      this.listTCTGDaChon_.push(data[index]);
+   } 
+  } else {
+    let obj = {};
+    obj = data[index];
+    this.listTCTGDaChon_.push(obj as Tieuchitinhgia);
+   }
+ }
+// for list đã chọn để tính toán theo công thức của list đã chọn trên ô sản phầm
+  this.listTCTGDaChon_.forEach(item => {
+    let congthucmin =item.CongMin + '*' + item.CongThuc;
+    let congthucmax =item.CongMax + '*' + item.CongThuc;
+    this.listCotSP_.forEach(t => {
+      if (congthucmin.includes(t.KHSoLieu)) {  
+        if ( t.GiaTri === '' ||  t.GiaTri === undefined ||  t.GiaTri === null) {
+          listDaiLuong_.push(t.KHSoLieu);
+          return false;
+        }
+        congthucmin = congthucmin.replace(t.KHSoLieu, t.GiaTri);
+      }
+      if (congthucmax.includes(t.KHSoLieu)) {  
+        if ( t.GiaTri === '' ||  t.GiaTri === undefined ||  t.GiaTri === null) {
+          listDaiLuong_.push(t.KHSoLieu);
+          return false;
+        }
+        congthucmax = congthucmax.replace(t.KHSoLieu, t.GiaTri);
+      }
+    });
+// for list đã chọn để tính toán theo công thức của list đã chọn dưới ô kích thước triển khai
+    this.listCotTK_.forEach(element => {
+      if (congthucmin.includes(element.KHSoLieu)) {
+        if ( element.GiaTri === '' ||  element.GiaTri === undefined ||  element.GiaTri === null) {
+          listDaiLuong_.push(element.KHSoLieu);
+          return false;
+          }
+          congthucmin = congthucmin.replace(element.KHSoLieu, element.GiaTri);
+      }
+      if (congthucmax.includes(element.KHSoLieu)) {
+        if ( element.GiaTri === '' ||  element.GiaTri === undefined ||  element.GiaTri === null) {
+          listDaiLuong_.push(element.KHSoLieu);
+          return false;
+          }
+          congthucmax = congthucmax.replace(element.KHSoLieu, element.GiaTri);
+      }
+  });
+
+  // hiện thị ra màn hình những ô chưa được nhập mà còn thiếu trong công thức
+  if (listDaiLuong_.length > 0) {
+    this.toastr.error(`Vui lòng nhập giá trị vào đại lượng ${listDaiLuong_}`, 'Thông báo');
+    return false;
+  }
+  // tính tổng
+    const tongmin = eval(congthucmin);
+    const tongmax = eval(congthucmax);
+    item.GiaMin = tongmin;
+    item.GiaMax = tongmax;
+    this.options.TongGiaMax +=item.GiaMax;
+    this.options.TongGiaMin +=item.GiaMin;
+     // tắt modal
+});
+
+  // tslint:disable
+this.TotalPrice = _totalprice;
+this.listTCTGChuaChon_ = this.listTieuChiTinhGia_.filter(c=> this.listTCTGDaChon_.filter(v=>v.TieuChiID === c.TieuChiID).length !== 1)
+this.tieuchiModal.hide();
+}
+// check list in modal
+toggleAllTieuChi (rowto, checked) {
+  this.CheckLengthTieuChi = 0;
+  rowto.forEach(function (value, key) {
+      rowto[key].checked = !checked;
+  });
+  const listvitrual = this.listTCTGChuaChon_.filter(c => c.checked === true);
+  this.CheckLengthTieuChi = listvitrual.length;
+}
+CheckedListTieuchi(checked) {
+  const listvitrual = this.listTCTGChuaChon_.filter(c => c.checked === true);
+  if (listvitrual.length === 1 || listvitrual.length === 0) {
+    if (!checked === true) {
+      this.CheckLengthTieuChi = 1;
+    } else {
+      this.CheckLengthTieuChi = 0;
+    }
+  }
+  if (this.CheckLengthTieuChi ===  0) {
+    this.checkalltieuchi = false;
+  }
+
+}
+
 
 // checked
 toggleAll (rowto, checked) {
@@ -262,11 +536,11 @@ toggleAll (rowto, checked) {
   rowto.forEach(function (value, key) {
       rowto[key].checked = !checked;
   });
-  const listvitrual = this.listDonViTinh_.filter(c => c.checked === true);
+  const listvitrual = this.listSanPhamDonHang_.filter(c => c.checked === true);
   this.CheckLength = listvitrual.length;
 }
 CheckedList(checked) {
-  const listvitrual = this.listDonViTinh_.filter(c => c.checked === true);
+  const listvitrual = this.listSanPhamDonHang_.filter(c => c.checked === true);
   if (listvitrual.length === 1 || listvitrual.length === 0) {
     if (!checked === true) {
       this.CheckLength = 1;

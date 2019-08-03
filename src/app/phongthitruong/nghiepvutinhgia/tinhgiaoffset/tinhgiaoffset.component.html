@@ -5,172 +5,363 @@
         <div class="card-header">
           <ul class="ul-box-crud">
             <li appBtnPer="create" data-toggle="modal" (click)="Showmodal('add')" title="Thêm mới">
-                <img src="assets/img/brand/plus.png" class="img-plus-header" alt="plus"/>
-                <a>
+              <img src="assets/img/brand/plus.png" class="img-plus-header" alt="plus" />
+              <a>
                 <strong>Thêm mới</strong>
               </a>
             </li>
             <li data-toggle="modal" (click)="refreshData()" title="Làm mới">
-              <img src="assets/img/brand/refresh-page-option.png" class="img-plus-header" alt="plus"/>
+              <img src="assets/img/brand/refresh-page-option.png" class="img-plus-header" alt="plus" />
               <a>
-              <strong>Làm mới</strong>
-            </a>
-          </li>
-          <li appBtnPer="delete" data-toggle="modal" (click)="warningModal.show()" title="Xóa" *ngIf="CheckLength > 0">
-            <img src="assets/img/brand/trash.png" class="img-plus-header" alt="plus"/>
-            <a>
-            <strong>Xóa</strong>
-          </a>
-        </li>
+                <strong>Làm mới</strong>
+              </a>
+            </li>
+            <li appBtnPer="delete" data-toggle="modal" (click)="warningModal.show()" title="Xóa"
+              *ngIf="CheckLength > 0">
+              <img src="assets/img/brand/trash.png" class="img-plus-header" alt="plus" />
+              <a>
+                <strong>Xóa</strong>
+              </a>
+            </li>
           </ul>
         </div>
         <div class="card-body">
           <table class="table table-bordered table-striped table-sm table-app">
             <thead>
               <tr>
-                <th class="th-checkbox" width=40><input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="checkall" id="inline-checkbox3" (click)="toggleAll(listDonViTinh_, checkall)"  value="option3"> </th>
-                
+                <th class="th-checkbox" width=40><input class="table-checkbox" type="checkbox" [checked]="false"
+                    [(ngModel)]="checkall" id="inline-checkbox3" (click)="toggleAll(listSanPhamDonHang_, checkall)"
+                    value="option3"> </th>
+
                 <th class="text-center" width="50">STT</th>
-                <th>Đơn vị tính</th>
+                <th width=150>Mã sản phẩm</th>
+                <th>Tên sản phẩm</th>
+                <th width=150 class="text-center">Giá cao nhất</th>
+                <th width=150 class="text-center">Giá thấp nhất</th>
+                <th width=150 class="text-center">mẫu in</th>
+                <th width=150 class="text-center">Tên loại in</th>
+                <th width=120 class="text-center">Ngày tạo</th>
                 <th appBtnPer="update" class="text-center" width=100>Chức năng</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let item of listDonViTinh_; let i = index">
-                <td class="td-checkbox"><input class="table-checkbox" type="checkbox" id="inline-checkbox3" value="option3" [checked]="item.checked" [(ngModel)]="item.checked" (click)="CheckedList(item.checked)"></td>
-                <td  class="text-center">{{i + 1}}</td>
-                <td>{{item.TenDonVi}}</td>
-                <td appBtnPer="update" class="text-center"  >
-                  <img title="Sửa" class="img-icon-edit img-left" (click)="SelectIDEditModel(item.DonViTinhID)" src="assets/img/brand/edit.png" alt="Sửa">
+              <tr *ngFor="let item of listSanPhamDonHang_; let i = index">
+                <td class="td-checkbox"><input class="table-checkbox" type="checkbox" id="inline-checkbox3"
+                    value="option3" [checked]="item.checked" [(ngModel)]="item.checked"
+                    (click)="CheckedList(item.checked)"></td>
+                <td class="text-center">{{i + 1}}</td>
+                <td>{{item.MaSanPham}}</td>
+                <td>{{item.TenSanPham}}</td>
+                <td class="text-right">{{item.TongGiaMax| number:'3.1-2'}}</td>
+                <td class="text-right">{{item.TongGiaMin| number:'3.1-2'}}</td>
+                <td class="text-center">{{item.TenLoaiHop}}</td>
+                <td class="text-center">{{item.TenLoaiIn}}</td>
+                <td class="text-center">{{item.CreateDate|date:'dd-MM-yyyy HH:mm'}}</td>
+                <td appBtnPer="update" class="text-center">
+                  <img title="Sửa" class="img-icon-edit img-left" (click)="SelectIDEditModel(item.SanPhamDonHangID)"
+                    src="assets/img/brand/edit.png" alt="Sửa">
                 </td>
             </tbody>
           </table>
           <nav *ngIf="options.totalpage > 1">
-              <ul class="pagination">
-                  <li class="page-item"><a class="page-link" (click)="PrevPage()">Prev</a></li>
-                  <li class="page-item">
-                      <a class="page-link"> {{(options.p-1)*options.pz+1}}</a>
-                  </li>
-                  <li class="page-item">
-                      <a class="page-link"> - </a>
-                  </li>
-                  <li class="page-item">
-                      <a class="page-link" *ngIf="options.pz*options.p > options.total"> {{options.total}}</a>
-                      <a class="page-link" *ngIf="options.pz*options.p <= options.total"> {{options.pz*options.p}}</a>
-                  </li>
-                  <li class="page-item">
-                      <a class="page-link">trong số</a>
-                    </li>
-                  <li class="page-item">
-                    <a class="page-link">{{options.total}}</a>
-                  </li>
-                  <li class="page-item" (click)="NextPage()"><a class="page-link">Next</a></li>
-                </ul>
+            <ul class="pagination">
+              <li class="page-item"><a class="page-link" (click)="PrevPage()">Prev</a></li>
+              <li class="page-item">
+                <a class="page-link"> {{(options.p-1)*options.pz+1}}</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link"> - </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" *ngIf="options.pz*options.p > options.total"> {{options.total}}</a>
+                <a class="page-link" *ngIf="options.pz*options.p <= options.total"> {{options.pz*options.p}}</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link">trong số</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link">{{options.total}}</a>
+              </li>
+              <li class="page-item" (click)="NextPage()"><a class="page-link">Next</a></li>
+            </ul>
           </nav>
-        </div>   
+        </div>
       </div>
     </div>
     <!--/.col-->
   </div>
   <!--/.row-->
 </div>
-  <!-- Thêm sửa-->
-  <div bsModal #largeModal="bs-modal" class="modal fade" id="modalUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" [config]="{'backdrop':'static', 'keyboard': false}" data-keyboard="false"> 
-      <div class="modal-dialog w1000" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">{{modeltitle}}</h4>
-            <button type="button" class="close" (click)="HideModal()" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-              <form action="" method="post" autocomplete="off" enctype="multipart/form-data" class="form-horizontal">
-                <div class="animated fadeIn">
-                    <div class="row">
-                      <div class="col-sm-12">
-                        <div class="card box-card-md">
-                          <div class="card-body box-cardbody-md">
-                            <div class="row borderrow">
-                                <span class="titlemodal">Sản phẩm</span>
-                                <div class="col-md-4" *ngFor="let item of listCotSP_">
-                                  <div class="form-group row">
-                                    <label class="title-text col-form-label" for="{{item.KHSoLieu}}">{{item.TenCot}} ({{item.KHSoLieu}}):
-                                      <span>*</span>
-                                    </label>
-                                    <div class="input-text">
-                                        <input type="text" class="form-control" id="{{item.KHSoLieu}}" placeholder="{{item.Title}}" >
-                                    </div>
-                                  </div>
-                                </div>
-                                
-                            </div><!--/.row-->
-                            <div class="row borderrow">
-                              <span class="titlemodal">Kích thước triển khai</span>
-                              <div class="col-md-4" *ngFor="let item of listCotTK_">
-                                <div class="form-group row">
-                                  <label class="title-text col-form-label" for="{{item.KHSoLieu}}">{{item.TenCot}} ({{item.KHSoLieu}}):
-                                    <span>*</span>
-                                  </label>
-                                  <div class="input-text">
-                                      <input type="text" class="form-control" id="{{item.KHSoLieu}}" placeholder="{{item.Title}}">
-                                  </div>
-                                </div>
-                              </div>
-                              
-                          </div><!--/.row-->
+<!-- Thêm sửa-->
+<div bsModal #largeModal="bs-modal" class="modal fade" id="modalUser" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true" [config]="{'backdrop':'static', 'keyboard': false}"
+  data-keyboard="false">
+  <div class="modal-dialog w1000" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{modeltitle}}</h4>
+        <ul class="ul-modal-bangtinhgia">
+          <li class="li-select">
+            <select id="select2" name="select2" class="form-control" [(ngModel)]="options.LoaiHopID"
+            (ngModelChange)="LoaiHopChanged()">
+              <option value="">----- Chọn loại hộp-----</option>
+              <option *ngFor="let c of listLoaiHop" [ngValue]="c.LoaiHopID">{{c.TenLoaiHop}}</option>
+            </select>
+          </li>
+          <li class="li-select">
+            <select id="select2" name="select2" class="form-control" [(ngModel)]="options.LoaiInID"
+            (ngModelChange)="LoaiInChanged()" >
+              <option value="">----- Chọn loại in-----</option>
+              <option *ngFor="let c of listLoaiIn" [ngValue]="c.LoaiInID">{{c.TenLoaiIn}}</option>
+            </select>
+          </li>
+        </ul>
+        <button type="button" class="close" (click)="HideModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="" method="post" autocomplete="off" enctype="multipart/form-data" class="form-horizontal">
+          <div class="animated fadeIn">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="card box-card-md">
+                  <div class="card-body box-cardbody-md">
+                    <div class="row borderrow">
+                      <span class="titlemodal">Sản phẩm</span>
+                      <div class="col-md-4">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="msp">Mã sản phẩm:
+                            <span>*</span>
+                          </label>
+                          <div class="input-text">
+                            <input type="text" class="form-control" id="msp" placeholder="APP-2019-abc"
+                              [(ngModel)]="options.MaSanPham" [ngModelOptions]="{standalone: true}">
                           </div>
                         </div>
-                      </div><!--/.col-->
-                    </div><!--/.row-->
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="tsp">Tên sản phẩm:
+                          </label>
+                          <div class="input-text">
+                            <input type="text" class="form-control" id="tsp" placeholder="Sản phẩm abc"
+                              [(ngModel)]="options.TenSanPham" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4" *ngFor="let item of listCotSP_">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="{{item.KHSoLieu}}">{{item.TenCot}}
+                            ({{item.KHSoLieu}}):
+                            <span>*</span>
+                          </label>
+                          <div class="input-text">
+                            <input type="text" class="form-control" id="{{item.KHSoLieu}}" placeholder="{{item.Title}}"
+                              [(ngModel)]="item.GiaTri" [ngModelOptions]="{standalone: true}">
+                            <span *ngIf="item.CongThuc !== ''" class="box-spanicon-input">
+                              <i class="fa fa-refresh" aria-hidden="true" (click)="tinhToanTheoCongThuc(item)"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--/.row-->
+                    <div class="row borderrow">
+                      <span class="titlemodal">Kích thước triển khai</span>
+                      <div class="col-md-4" *ngFor="let item of listCotTK_">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="{{item.KHSoLieu}}">{{item.TenCot}}
+                            ({{item.KHSoLieu}}):
+                            <span>*</span>
+                          </label>
+                          <div class="input-text">
+                            <input type="text" class="form-control" id="{{item.KHSoLieu}}" placeholder="{{item.Title}}"
+                              [(ngModel)]="item.GiaTri" [ngModelOptions]="{standalone: true}">
+                            <span *ngIf="item.CongThuc !== ''" class="box-spanicon-input">
+                              <i class="fa fa-refresh" aria-hidden="true" (click)="tinhToanTheoCongThuc(item)"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="row" [ngStyle]="{'margin-bottom': '15px'}">
+                      <div class="col-md-8">
+                          <h4>Danh sách tiêu chí được chọn</h4>
+                      </div>
+                      <div class="col-md-4">
+                          <button class="btn btn-block btn-primary widthbtn" type="button" (click)="chonTieuChi()"> <i class="fa fa-refresh" aria-hidden="true"></i>Làm mới</button>
+
+                        <button class="btn btn-block btn-primary widthbtn" type="button" (click)="showmodaltieuchi()">Thêm tiêu chí</button>
+                      </div>
+                    </div>
+                    <div class="row borderrow">
+                      <div class="col-md-12">
+                          <table class="table table-bordered table-striped table-sm table-app">
+                              <thead>
+                                <tr>
+                                 
+                                  <th class="text-center" width="50">STT</th>
+                                  <th>Tiêu chí</th>
+                                  <th width=90 class="text-center">Công Min</th>
+                                  <th width=90 class="text-center">Công Max</th>
+                                  <th width=90 class="text-center">Đơn vị</th>
+                                  <th width=150 class="text-center">Công thức</th>
+                                  <th width=150 class="text-center">Giá min</th>
+                                  <th width=150 class="text-center">Giá max</th>
+                                  <th appBtnPer="update" class="text-center" width=100>Chức năng</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let item of listTCTGDaChon_; let i = index">
+                                 
+                                  <td  class="text-center">{{i + 1}}</td>
+                                  <td>{{item.TenTieuChi}}</td>
+                                  <td class="text-center">{{item.CongMin}}</td>
+                                  <td class="text-center">{{item.CongMax}}</td>
+                                  <td class="text-center">{{item.TenDonVi}}</td>
+                                  <td class="text-center">{{item.CongThuc}}</td>
+                                  <td class="text-center">{{item.GiaMin | number:'3.1-2'}}</td>
+                                  <td class="text-center">{{item.GiaMax| number:'3.1-2'}}</td>
+                                  <td appBtnPer="update" class="text-center"  >
+                                    <img title="Xóa" class="img-icon-edit img-left" (click)="XoaTieuChiDaChon(item,i)" src="assets/img/brand/rubbish-bin.png" alt="Xóa">
+                                  </td>
+                              </tbody>
+                            </table>
+                      </div>
+                      <div class="col-md-12" *ngIf="options.TongGiaMin > 0 || options.TongGiaMax > 0">
+                          <table  class="table table-bordered table-striped table-sm table-app">
+                            <thead>
+                              <tr>
+                                <th>
+                                  Tống giá nhỏ nhất:
+                                </th>
+                                <th>
+                                  {{options.TongGiaMin | number:'3.1-2'}}
+                                </th>
+                                <th>
+                                  Tống giá lớn nhất:
+                                </th>
+                                <th>
+                                  {{options.TongGiaMax | number:'3.1-2'}}
+                                </th>
+                              </tr>
+                            </thead>
+                          </table>
+                      </div>
+                    </div>
+                    <!--/.row-->
                   </div>
-              </form>
-    
+                </div>
+              </div>
+              <!--/.col-->
+            </div>
+            <!--/.row-->
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" (click)="largeModal.hide()">Đóng</button>
-            <button type="button" class="btn btn-primary" (click)="tinhtoan()">Lưu lại</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+        </form>
+       
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="largeModal.hide()">Đóng</button>
+        <button type="button" class="btn btn-primary" (click)="R2AdDataBangTinhLuong()">Lưu lại</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- modal tieeu chi da chon -->
+<div bsModal #tieuchiModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Danh sách tiêu chí tính giá</h4>
+        <button type="button" class="close" (click)="tieuchiModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+         
+          <table class="table table-bordered table-striped table-sm table-app">
+              <thead>
+                <tr>
+                  <th class="th-checkbox" width=40><input class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="checkalltieuchi" id="inline-checkbox3" (click)="toggleAllTieuChi(listTCTGChuaChon_, checkalltieuchi)"  value="option3"> </th>
+                  
+                  <th class="text-center" width="50">STT</th>
+                  <th>Tiêu chí</th>
+                  <th width=90 class="text-center">Công Min</th>
+                  <th width=90 class="text-center">Công Max</th>
+                  <th width=90 class="text-center">Đơn vị</th>
+                  <th appBtnPer="update" class="text-center" width=100>Chức năng</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of listTCTGChuaChon_; let i = index">
+                  <td class="td-checkbox"><input class="table-checkbox" type="checkbox" id="inline-checkbox3" value="option3" [checked]="item.checked" [(ngModel)]="item.checked" (click)="CheckedListTieuchi(item.checked)"></td>
+                  <td  class="text-center">{{i + 1}}</td>
+                  <td>{{item.TenTieuChi}}</td>
+                  <td class="text-center">{{item.CongMin}}</td>
+                  <td class="text-center">{{item.CongMax}}</td>
+                  <td class="text-center">{{item.TenDonVi}}</td>
+                  <td appBtnPer="update" class="text-center"  >
+                    <img title="Sửa" class="img-icon-edit img-left" (click)="SelectIDEditModel(item.TieuChiID)" src="assets/img/brand/edit.png" alt="Sửa">
+                  </td>
+              </tbody>
+            </table>
+              <nav *ngIf="options.totalpage > 1">
+                <ul class="pagination">
+                  <li class="page-item"><a class="page-link" (click)="PrevPage()">Prev</a></li>
+                  <li class="page-item">
+                    <a class="page-link"> {{(options.p-1)*options.pz+1}}</a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link"> - </a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" *ngIf="options.pz*options.p > options.total"> {{options.total}}</a>
+                    <a class="page-link" *ngIf="options.pz*options.p <= options.total"> {{options.pz*options.p}}</a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link">trong số</a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link">{{options.total}}</a>
+                  </li>
+                  <li class="page-item" (click)="NextPage()"><a class="page-link">Next</a></li>
+                </ul>
+              </nav>
+      </div>
+   
+      <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="chonTieuChi()">Chọn</button>
+          <button type="button" class="btn btn-secondary" (click)="tieuchiModal.hide()">Thoát</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 
-<div bsModal #dangerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-danger" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Thông báo</h4>
-          <button type="button" class="close" (click)="dangerModal.hide()" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <p class="notifyerr">{{errormodal}}&hellip;</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="dangerModal.hide()">Thoát</button>
-        </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
-  <div bsModal #warningModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-warning" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">Xác nhận</h4>
-            <button type="button" class="close" (click)="warningModal.hide()" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>Bạn có chắc chắn muốn xóa các trường đã chọn không ?&hellip;</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" (click)="warningModal.hide()">Thoát</button>
-            <button type="button" class="btn btn-warning" (click)="xacnhanXoa(listDonViTinh_)">Xác nhận</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-    
+
+
+
+<div bsModal #warningModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-warning" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Xác nhận</h4>
+        <button type="button" class="close" (click)="warningModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có chắc chắn muốn xóa các trường đã chọn không ?&hellip;</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="warningModal.hide()">Thoát</button>
+        <button type="button" class="btn btn-warning" (click)="xacnhanXoa(listSanPhamDonHang_)">Xác nhận</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

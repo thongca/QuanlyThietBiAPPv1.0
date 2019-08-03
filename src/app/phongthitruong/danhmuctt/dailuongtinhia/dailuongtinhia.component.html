@@ -1,0 +1,281 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <ul class="ul-box-crud">
+            <li appBtnPer="create" data-toggle="modal" (click)="Showmodal('add')" title="Thêm mới">
+              <img src="assets/img/brand/plus.png" class="img-plus-header" alt="plus" />
+              <a>
+                <strong>Thêm mới</strong>
+              </a>
+            </li>
+            <li data-toggle="modal" (click)="refreshData()" title="Làm mới">
+              <img src="assets/img/brand/refresh-page-option.png" class="img-plus-header" alt="plus" />
+              <a>
+                <strong>Làm mới</strong>
+              </a>
+            </li>
+            <li appBtnPer="delete" data-toggle="modal" (click)="warningModal.show()" title="Xóa"
+              *ngIf="CheckLength > 0">
+              <img src="assets/img/brand/trash.png" class="img-plus-header" alt="plus" />
+              <a>
+                <strong>Xóa</strong>
+              </a>
+            </li>
+            <li class="li-select">
+              <select id="select2" name="select2" class="form-control" [(ngModel)]="options.LoaiHopID"
+                (ngModelChange)="LoaiHopChanged(options.LoaiHopID)">
+                <option value="">----- Chọn loại hộp-----</option>
+                <option *ngFor="let c of listLoaiHop" [ngValue]="c.LoaiHopID">{{c.TenLoaiHop}}</option>
+              </select>
+            </li>
+            <li class="li-select">
+              <select id="select2" name="select2" class="form-control" [(ngModel)]="options.LoaiInID"
+                (ngModelChange)="LoaiInChanged(options.LoaiHopID)">
+                <option value="">----- Chọn loại in-----</option>
+                <option *ngFor="let c of listLoaiIn" [ngValue]="c.LoaiInID">{{c.TenLoaiIn}}</option>
+              </select>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-striped table-sm table-app">
+            <thead>
+              <tr>
+                <th class="th-checkbox" width=40><input class="table-checkbox" type="checkbox" [checked]="false"
+                    [(ngModel)]="checkall" id="inline-checkbox3" (click)="toggleAll(listDaiLuong_, checkall)"
+                    value="option3"> </th>
+
+                <th class="text-center" width="50">STT</th>
+                <th>Tên đại lượng</th>
+                <th width=90 class="text-center">Kí hiệu</th>
+                <th width=150 class="text-center">Công thức</th>
+                <th width=150 class="text-center">hướng dẫn</th>
+                <th width=120 class="text-center">Loại hộp</th>
+                <th width=120 class="text-center">Loại in</th>
+                <th width=200 class="text-center">Loại số liệu</th>
+                <th appBtnPer="update" class="text-center" width=100>Chức năng</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of listDaiLuong_; let i = index">
+                <td class="td-checkbox"><input class="table-checkbox" type="checkbox" id="inline-checkbox3"
+                    value="option3" [checked]="item.checked" [(ngModel)]="item.checked"
+                    (click)="CheckedList(item.checked)"></td>
+                <td class="text-center">{{i + 1}}</td>
+                <td>{{item.TenCot}}</td>
+                <td class="text-center">{{item.KHSoLieu}}</td>
+                <td class="text-center">{{item.CongThuc}}</td>
+                <td class="text-center">{{item.Title}}</td>
+                <td class="text-center">{{item.TenLoaiHop}}</td>
+                <td class="text-center">{{item.TenLoaiIn}}</td>
+                <td class="text-center">{{item.LoaiSoLieu === 1 ? 'Sản phẩm' : 'Kích thước triển khai'}}</td>
+                <td appBtnPer="update" class="text-center">
+                  <img title="Sửa" class="img-icon-edit img-left" (click)="SelectIDEditModel(item.DaiLuongID)"
+                    src="assets/img/brand/edit.png" alt="Sửa">
+                </td>
+            </tbody>
+          </table>
+          <nav *ngIf="options.totalpage > 1">
+            <ul class="pagination">
+              <li class="page-item"><a class="page-link" (click)="PrevPage()">Prev</a></li>
+              <li class="page-item">
+                <a class="page-link"> {{(options.p-1)*options.pz+1}}</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link"> - </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" *ngIf="options.pz*options.p > options.total"> {{options.total}}</a>
+                <a class="page-link" *ngIf="options.pz*options.p <= options.total"> {{options.pz*options.p}}</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link">trong số</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link">{{options.total}}</a>
+              </li>
+              <li class="page-item" (click)="NextPage()"><a class="page-link">Next</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+</div>
+<!-- Thêm sửa-->
+<div bsModal #largeModal="bs-modal" class="modal fade" id="modalUser" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true" [config]="{'backdrop':'static', 'keyboard': false}"
+  data-keyboard="false">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{modeltitle}}</h4>
+        <button type="button" class="close" (click)="HideModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="" autocomplete="off" method="post" enctype="multipart/form-data" class="form-horizontal">
+          <div class="animated fadeIn">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="card box-card-md">
+                  <div class="card-body box-cardbody-md">
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="name">Tên đại lượng:
+                            <span>*</span>
+                          </label>
+                          <div class="input-text">
+                            <input type="text" class="form-control" id="name" placeholder="Tên đại lượng"
+                              [(ngModel)]="modelDaiLuong_.TenCot" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="name">Hướng dẫn:
+
+                          </label>
+                          <div class="input-text">
+                            <input type="text" class="form-control" id="name" placeholder="Hướng dẫn"
+                              [(ngModel)]="modelDaiLuong_.Title" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="name">Kiếu hiệu:
+                            <span>*</span>
+                          </label>
+                          <div class="input-text">
+                            <input type="text" class="form-control" id="name" placeholder="Ký hiệu"
+                              [(ngModel)]="modelDaiLuong_.KHSoLieu" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="name">Công thức:
+                          </label>
+                          <div class="input-text">
+                            <input type="text" class="form-control" id="name" placeholder="(nếu có)"
+                              [(ngModel)]="modelDaiLuong_.CongThuc" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-sm-6">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="name">Loại in
+                          </label>
+                          <div class="input-text">
+                            <select id="select2" name="select2" class="form-control"
+                              [(ngModel)]="modelDaiLuong_.LoaiInID">
+                              <option *ngFor="let c of listLoaiIn" [ngValue]="c.LoaiInID">{{c.TenLoaiIn}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="name">Loại số liệu
+                          </label>
+                          <div class="input-text">
+                            <select id="select2" name="select2" class="form-control"
+                              [(ngModel)]="modelDaiLuong_.LoaiSoLieu">
+                              <option value=0>----- Chọn loại -----</option>
+                              <option *ngFor="let c of listLoaiSL_" [ngValue]="c.LoaiSoLieu">{{c.TenLoai}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="name">Loại hộp
+                          </label>
+                          <div class="input-text">
+                            <select id="select2" name="select2" class="form-control"
+                              [(ngModel)]="modelDaiLuong_.LoaiHopID">
+                              <option value=0>----- Chọn loại hộp -----</option>
+                              <option *ngFor="let c of listLoaiHop" [ngValue]="c.LoaiHopID">{{c.TenLoaiHop}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group row">
+                          <label class="title-text col-form-label" for="name">Thứ tự
+                          </label>
+                          <div class="input-text">
+                            <input type="text" class="form-control" id="name" placeholder="Thứ tự"
+                              [(ngModel)]="modelDaiLuong_.STT" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <!--/.row-->
+                  </div>
+                </div>
+              </div>
+              <!--/.col-->
+            </div>
+            <!--/.row-->
+          </div>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="largeModal.hide()">Đóng</button>
+        <button type="button" class="btn btn-primary" (click)="R2AdDataDaiLuong()">Lưu lại</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div bsModal #dangerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-danger" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Thông báo</h4>
+        <button type="button" class="close" (click)="dangerModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="notifyerr">{{errormodal}}&hellip;</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="dangerModal.hide()">Thoát</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div bsModal #warningModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-warning" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Xác nhận</h4>
+        <button type="button" class="close" (click)="warningModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có chắc chắn muốn xóa các trường đã chọn không ?&hellip;</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="warningModal.hide()">Thoát</button>
+        <button type="button" class="btn btn-warning" (click)="xacnhanXoa(listDaiLuong_)">Xác nhận</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

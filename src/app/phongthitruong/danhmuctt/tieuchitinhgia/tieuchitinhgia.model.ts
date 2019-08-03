@@ -1,13 +1,16 @@
 export class Tieuchitinhgia {
-    TieuChiID: String;
-    TenTieuChi: String;
-    TenDonVi: String;
+    TieuChiID: string;
+    TenTieuChi: string;
+    TenDonVi: string;
     CongMin: number;
     CongMax: number;
-    DonViID: String;
+    DonViID: string;
     ThuTu: number;
     IsActive: boolean;
-    GhiChu: String;
+    GhiChu: string;
     NhaMayID: number;
     checked: boolean;
+    CongThuc: string;
+    GiaMin: number;
+    GiaMax: number;
 }

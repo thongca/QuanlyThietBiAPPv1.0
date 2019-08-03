@@ -8,10 +8,11 @@ import { FormsModule } from '@angular/forms';
 import {NgxPrintModule} from 'ngx-print';
 import { SharedModule } from '../../shared/shared.module';
 import { TieuchitinhgiaComponent } from './tieuchitinhgia/tieuchitinhgia.component';
+import { DailuongtinhiaComponent } from './dailuongtinhia/dailuongtinhia.component';
 
 
 @NgModule({
-  declarations: [CachtinhdongiaComponent, TieuchitinhgiaComponent],
+  declarations: [CachtinhdongiaComponent, TieuchitinhgiaComponent, DailuongtinhiaComponent],
   imports: [
     CommonModule,
     DanhmucttRoutingModule,
