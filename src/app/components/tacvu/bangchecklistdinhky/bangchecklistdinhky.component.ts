@@ -27,6 +27,8 @@ options = {
     s: '', p: 1, pz: 20, totalpage: 0, total: 0, paxpz: 0, mathP: 0, KhuVucID: '',
     _ThietbiID: '', IsTime: '', NhaMayID: null
   };
+  // isLoad = true
+  private _isLoad = true;
   // sub
 sub: Subscription;
 sub1: Subscription;
@@ -105,6 +107,7 @@ public Active: boolean;
     }
     this.nhaMayID$.subscribe(res => {
       if (res !== undefined) {
+        this._isLoad = false;
     this.R1GetListThietBi();
       }
     });
@@ -114,7 +117,9 @@ public Active: boolean;
               return false;
             }
             this.options.s = res;
-            this.R1GetListChiTietMay();
+            if (this._isLoad === false) {
+              this.R1GetListChiTietMay();
+            }
         });
   }
 
@@ -128,28 +133,32 @@ public Active: boolean;
   // danh sách khu vuc máy
   R1GetListChiTietMay() {
     this.spinnerService.show();
-    this.sub1 = this.bangcheckListdinhKyService_.r1ListChiTietMay(this.options).subscribe(res => {
-      this.spinnerService.hide();
-      if (res['error'] === 1) {
-        this.toastr.error(res['ms'], 'Thông báo lỗi');
-        return false;
-      }
-      let Permission = this._userInfo.r1GetobjPermission();
-      if (res['IsOld'] === true) {
-        if (Permission === undefined) {
-          Permission = 'NoAdmin';
+    if (this._isLoad === false) {
+      this._isLoad = true;
+      this.sub1 = this.bangcheckListdinhKyService_.r1ListChiTietMay(this.options).subscribe(res => {
+        this.spinnerService.hide();
+        if (res['error'] === 1) {
+          this.toastr.error(res['ms'], 'Thông báo lỗi');
+          return false;
         }
-        this.permissionsService.loadPermissions([`${Permission}`]);
-      } else {
-        this.permissionsService.loadPermissions([`${Permission}`]);
-      }
-      const ThietBi_ = res['ThietBi'];
-      this.objThietBi = ThietBi_[0];
-      if (this.objThietBi !== undefined) {
-        sessionStorage.setItem('MaThietBi', this.objThietBi.MaThietBi);
-      }
-      this.listchitietCheckList_ = res['data'];
-    });
+        let Permission = this._userInfo.r1GetobjPermission();
+        if (res['IsOld'] === true) {
+          if (Permission === undefined) {
+            Permission = 'NoAdmin';
+          }
+          this.permissionsService.loadPermissions([`${Permission}`]);
+        } else {
+          this.permissionsService.loadPermissions([`${Permission}`]);
+        }
+        const ThietBi_ = res['ThietBi'];
+        this.objThietBi = ThietBi_[0];
+        if (this.objThietBi !== undefined) {
+          sessionStorage.setItem('MaThietBi', this.objThietBi.MaThietBi);
+        }
+        this.listchitietCheckList_ = res['data'];
+        this._isLoad = false;
+      });
+    }
   }
   // danh sách thiet bi
  R1GetListThietBi() {
@@ -207,10 +216,10 @@ public Active: boolean;
     this.R1GetKhuVucMay();
   }
   //  bắt sự kiện thay đổi tình trạng chi tiết
-  ChangeListChiTiet(ChiTietID: string, KhuVucID: string, checked) {
-    this.listchitietCheckList_.filter(x => x.KhuVucID === KhuVucID)[0].children
-    .filter(v => v.ChiTietID === ChiTietID).forEach(function (item) {
-      if (item.ChiTietID === ChiTietID) {
+  ChangeListChiTiet(row , checked) {
+    this.listchitietCheckList_.filter(x => x.KhuVucID === row.KhuVucID)[0].children
+    .filter(v => v.ChiTietID === row.ChiTietID).forEach(function (item) {
+      if (item.ChiTietID === row.ChiTietID) {
         item.IsChange = true;
        if (checked !== '') {
         if (item.Good === false && item.NeedRepair === true && !checked === true) {

@@ -27,7 +27,7 @@ export class TinhgiaoffsetService {
   };
   return this.http.post(url_ , model, options_);
 }
-  r1ListCsl(MaSP, LoaiInID, LoaiHopID) {
+  r1ListCsl(MaSP, LoaiHopID, LoaiInID) {
     const model = { MaSanPham: MaSP, LoaiInID: LoaiInID , LoaiHopID: LoaiHopID};
     let url_ = this.BaseURL + '/api/TT_DM_DaiLuong/r1TT_DM_DaiLuong';
     url_ = url_.replace(/[?&]$/, '');
@@ -64,9 +64,16 @@ export class TinhgiaoffsetService {
     return this.http.post(url_, model, options_);
   }
     // add
-    R2AddBangTinhGia(modelone_, modeltwo, modelthree, sanPham, LuaChon, TongGia) {
+    R2AddBangTinhGia(modelone_, modeltwo, modelthree, sanPham, LuaChon, TongGia, ID, MaCode) {
       const modeldailuong = modelone_.concat(modeltwo);
-    const  model_ = {TieuChiSanPham : modelthree, DaiLuongSoLieu: modeldailuong, SanPham: sanPham, LuaChon: LuaChon, TongGia: TongGia};
+    const  model_ = {
+      SanPhamDonHangID : ID,
+      TieuChiSanPham : modelthree,
+      DaiLuongSoLieu: modeldailuong,
+      SanPham: sanPham,
+      LuaChon: LuaChon,
+      TongGia: TongGia,
+    MaCode: MaCode};
       let url_ = this.BaseURL + '/api/TT_DH_DonTinhGia';
       url_ = url_.replace(/[?&]$/, '');
       const options_: any = {

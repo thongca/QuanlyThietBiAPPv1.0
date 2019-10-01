@@ -36,6 +36,7 @@
                 <th width=90 class="text-center">Công Max</th>
                 <th width=90 class="text-center">Đơn vị</th>
                 <th width=150 class="text-center">Công thức</th>
+                <th width=150 class="text-center">Giá sàn</th>
                 <th appBtnPer="update" class="text-center" width=100>Chức năng</th>
               </tr>
             </thead>
@@ -48,6 +49,7 @@
                 <td class="text-center">{{item.CongMax}}</td>
                 <td class="text-center">{{item.TenDonVi}}</td>
                 <td class="text-center">{{item.CongThuc}}</td>
+                <td class="text-center">{{item.GiaSan | number:'3.0-2'}}</td>
                 <td appBtnPer="update" class="text-center"  >
                   <img title="Sửa" class="img-icon-edit img-left" (click)="SelectIDEditModel(item.TieuChiID)" src="assets/img/brand/edit.png" alt="Sửa">
                 </td>
@@ -152,7 +154,15 @@
                                     </div>
                                   </div>
                                 </div>
-                                
+                                <div class="col-sm-6">
+                                  <div class="form-group row">
+                                    <label class="title-text col-form-label" for="name">Giá sàn
+                                    </label>
+                                    <div class="input-text">
+                                        <input type="text" class="form-control" id="name" placeholder="Công thức" [(ngModel)]="modelTieuChiTinhGia_.GiaSan" [ngModelOptions]="{standalone: true}">
+                                    </div>
+                                  </div>
+                                </div>
                               <div class="col-sm-6">
                                 <div class="form-group row">
                                   <label class="title-text col-form-label" for="inline-radios">Kích hoạt</label>

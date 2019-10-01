@@ -23,6 +23,20 @@
                 <strong>Xóa</strong>
               </a>
             </li>
+            <li class="li-select">
+              <select id="select2" name="select2" class="form-control" [(ngModel)]="options.LoaiHopID"
+              (ngModelChange)="LoaiHopChanged()">
+                <option value="">----- Chọn loại hộp-----</option>
+                <option *ngFor="let c of listLoaiHop" [ngValue]="c.LoaiHopID">{{c.TenLoaiHop}}</option>
+              </select>
+            </li>
+            <li class="li-select">
+              <select id="select2" name="select2" class="form-control" [(ngModel)]="options.LoaiInID"
+              (ngModelChange)="LoaiInChanged()" >
+                <option value="">----- Chọn loại in-----</option>
+                <option *ngFor="let c of listLoaiIn" [ngValue]="c.LoaiInID">{{c.TenLoaiIn}}</option>
+              </select>
+            </li>
           </ul>
         </div>
         <div class="card-body">
@@ -32,13 +46,12 @@
                 <th class="th-checkbox" width=40><input class="table-checkbox" type="checkbox" [checked]="false"
                     [(ngModel)]="checkall" id="inline-checkbox3" (click)="toggleAll(listSanPhamDonHang_, checkall)"
                     value="option3"> </th>
-
                 <th class="text-center" width="50">STT</th>
                 <th width=150>Mã sản phẩm</th>
                 <th>Tên sản phẩm</th>
                 <th width=150 class="text-center">Giá cao nhất</th>
                 <th width=150 class="text-center">Giá thấp nhất</th>
-                <th width=150 class="text-center">mẫu in</th>
+                <th width=150 class="text-center">Mẫu in</th>
                 <th width=150 class="text-center">Tên loại in</th>
                 <th width=120 class="text-center">Ngày tạo</th>
                 <th appBtnPer="update" class="text-center" width=100>Chức năng</th>
@@ -191,7 +204,7 @@
                           <h4>Danh sách tiêu chí được chọn</h4>
                       </div>
                       <div class="col-md-4">
-                          <button class="btn btn-block btn-primary widthbtn" type="button" (click)="chonTieuChi()"> <i class="fa fa-refresh" aria-hidden="true"></i>Làm mới</button>
+                          <button class="btn btn-block btn-primary widthbtn" type="button" (click)="chonTieuChi(2)"> <i class="fa fa-refresh" aria-hidden="true"></i>Làm mới</button>
 
                         <button class="btn btn-block btn-primary widthbtn" type="button" (click)="showmodaltieuchi()">Thêm tiêu chí</button>
                       </div>
@@ -334,7 +347,7 @@
       </div>
    
       <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="chonTieuChi()">Chọn</button>
+          <button type="button" class="btn btn-secondary" (click)="chonTieuChi(1)">Chọn</button>
           <button type="button" class="btn btn-secondary" (click)="tieuchiModal.hide()">Thoát</button>
       </div>
     </div><!-- /.modal-content -->

@@ -29,6 +29,8 @@ export class ChitietvesinhcongnghiepComponent implements OnInit, OnDestroy {
   @ViewChild('ImportExModal') public ImportExModal: ModalDirective;
   private subscription: Subscription;
   private sub: Subscription;
+    // isLoad = true
+    private _isLoad = true;
   // file
   _files: File;
   // string
@@ -69,22 +71,28 @@ export class ChitietvesinhcongnghiepComponent implements OnInit, OnDestroy {
   nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
   ngOnInit() {
     this.rowdelete = [];
-    if (this.date.getMonth() < 10) {
+    const monthCurrent = this.date.getMonth();
+    if ((monthCurrent + 1) < 10) {
       this.options.IsTime = `${this.date.getFullYear()}-0${this.date.getMonth() + 1}`;
     } else {
       this.options.IsTime = `${this.date.getFullYear()}-${this.date.getMonth() + 1}`;
     }
     if (this.options.IsTime !== '') {
+      this._isLoad = false;
       this.R1GetListThietBi();
     }
     this.nhaMayID$.subscribe(res => {
       if (res !== undefined) {
-        this.R1GetListThietBi();
+        if (this._isLoad !== false) {
+          this.R1GetListThietBi();
+        }
       }
     });
   }
   // danh sách thiet bi
   R1GetListThietBi() {
+    if (this._isLoad === false) {
+      this._isLoad = true;
     this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
     const model_ = { NhaMayID: this.options.NhaMayID };
     this.spinnerService.show();
@@ -96,9 +104,11 @@ export class ChitietvesinhcongnghiepComponent implements OnInit, OnDestroy {
       }
       this.listThietBi_ = res['data'];
       this.options._ThietbiID = this.listThietBi_[0].ThietBiID;
+      this._isLoad = false;
       this.r1ListKhuVucVeSinhCongNghiep();
       this.r1ListVeSinhCongNghiep();
     });
+  }
   }
   r1ListKhuVucVeSinhCongNghiep() {
     this.danhgiavscongnghiepService_.r1ListKhucVucVeSinhCongNghiep(this.options).subscribe(res => {

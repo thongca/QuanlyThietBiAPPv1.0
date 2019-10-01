@@ -85,10 +85,10 @@
           <tr *ngFor="let c of item.children; let i = index" class="chitiet-box">
             <td class="text-center text-midle">{{i + 1}}</td>
             <td class="tenchitiet-box">{{c.TenChiTiet}}</td>
-            <td class="text-center text-midle"><input (click)="ChangeListChiTiet(c.ChiTietID, c.KhuVucID, c.Good)"
+            <td class="text-center text-midle"><input (click)="ChangeListChiTiet(c, c.Good)"
                 class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="c.Good" id="inline-checkbox1"
                 value="option1" [ngModelOptions]="{standalone: true}" ngDefaultControl></td>
-            <td class="text-center text-midle"><input (click)="ChangeListChiTiet(c.ChiTietID, item.KhuVucID, c.NeedRepair)"
+            <td class="text-center text-midle"><input (click)="ChangeListChiTiet(c, c.NeedRepair)"
                 bangchecklistdinhky class="table-checkbox" type="checkbox" [checked]="false" [(ngModel)]="c.NeedRepair"
                 id="inline-checkbox2" value="option2" [ngModelOptions]="{standalone: true}" ngDefaultControl></td>
             <td class="padding0">

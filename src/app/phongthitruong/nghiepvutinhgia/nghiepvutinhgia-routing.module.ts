@@ -6,9 +6,9 @@ import { TinhgiaoffsetComponent } from './tinhgiaoffset/tinhgiaoffset.component'
 const routes: Routes = [
   {
     canActivateChild: [AuthGuard],
-    path: 'tinhgiaoffset',
+    path: 'tinhgia',
     component: TinhgiaoffsetComponent,
-    data: {routeLink: '/tacvu/tinhgiaoffset'}
+    data: {routeLink: '/tacvu/tinhgia'}
   },
 ];
 

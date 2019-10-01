@@ -13,4 +13,6 @@ export class Tieuchitinhgia {
     CongThuc: string;
     GiaMin: number;
     GiaMax: number;
+    TieuChiSPID: string;
+    GiaSan: number;
 }

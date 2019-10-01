@@ -22,24 +22,26 @@ import { NhamayrootService } from '../../../shared/nhamayroot.service';
 })
 export class DanhgiavesinhcongnghiepComponent implements OnInit, OnDestroy {
   // int
-LaPhongK: number;
-TuanMay: number;
-// return import
-returnImport: {
-  error: number;
-};
-T5: boolean;
-Active: boolean;
+  LaPhongK: number;
+  TuanMay: number;
+  // return import
+  returnImport: {
+    error: number;
+  };
+  T5: boolean;
+  Active: boolean;
   date: Date = new Date();
-  options = {s: '', p: 1, pz: 2000, totalpage: 0, total: 0, paxpz: 0,
-  mathP: 0, _ThietbiID: '', KhuVucVSCNID: '', IsTime: '', T5: true, VeSinhCongNghiepMID: '',
-  NhaMayID: null
- };
+  options = {
+    s: '', p: 1, pz: 2000, totalpage: 0, total: 0, paxpz: 0,
+    mathP: 0, _ThietbiID: '', KhuVucVSCNID: '',
+    IsTime: '', T5: true, VeSinhCongNghiepMID: '',
+    NhaMayID: null
+  };
   @ViewChild('ImportExModal') public ImportExModal: ModalDirective;
   @ViewChild('xacnhanExModal') public xacnhanExModal: ModalDirective;
   private subscription: Subscription;
   private sub: Subscription;
-// file
+  // file
   _files: File;
   // string
   modaltitle: string;
@@ -64,16 +66,16 @@ Active: boolean;
   };
   modelPM: {
     VeSinhCongNghiepMID: string;
-        NguoiXacNhanT1ID: string
-        NguoiXacNhanT2ID: string
-        NguoiXacNhanT3ID: string
-        NguoiXacNhanT4ID: string
-        NguoiXacNhanT5ID: string
-        NguoiVanHanhIDT1: string
-        NguoiVanHanhIDT2: string
-        NguoiVanHanhIDT3: string
-        NguoiVanHanhIDT4: string
-        NguoiVanHanhIDT5: string
+    NguoiXacNhanT1ID: string
+    NguoiXacNhanT2ID: string
+    NguoiXacNhanT3ID: string
+    NguoiXacNhanT4ID: string
+    NguoiXacNhanT5ID: string
+    NguoiVanHanhIDT1: string
+    NguoiVanHanhIDT2: string
+    NguoiVanHanhIDT3: string
+    NguoiVanHanhIDT4: string
+    NguoiVanHanhIDT5: string
   };
 
   datacheck_: {
@@ -82,21 +84,21 @@ Active: boolean;
     IsCheckT3: number;
     IsCheckT4: number;
     IsCheckT5: number;
-};
-// list
-litsKhuVucVs_: {
-  TenKhuVucVSCN: string;
-  KhuVucVSCNID: string;
-}[];
-listVeSinhCongNghiep_: Danhgiavesinhcongnghiep[];
-// list
-listThietBi_: Thietbi[] = [];
+  };
+  // list
+  litsKhuVucVs_: {
+    TenKhuVucVSCN: string;
+    KhuVucVSCNID: string;
+  }[];
+  listVeSinhCongNghiep_: Danhgiavesinhcongnghiep[];
+  // list
+  listThietBi_: Thietbi[] = [];
   constructor(
     private s: SearchService,
     private _userInfo: UserInfoService,
     private toastr: ToastrService,
-    private  permissionsService: NgxPermissionsService,
-    private spinnerService: Ng4LoadingSpinnerService ,
+    private permissionsService: NgxPermissionsService,
+    private spinnerService: Ng4LoadingSpinnerService,
     private danhgiavscongnghiepService_: DanhgiavesinhcongnghiepService,
     private khuvucmayservice_: KhuvucmayService,
     private thietbirootService_: ThietbirootService,
@@ -105,10 +107,10 @@ listThietBi_: Thietbi[] = [];
     this.options.NhaMayID = this._userInfo.R1_GetNhaMayID();
     this.datacheck_ = {
       IsCheckT1: 0,
-    IsCheckT2: 0,
-    IsCheckT3: 0,
-    IsCheckT4: 0,
-    IsCheckT5: 0,
+      IsCheckT2: 0,
+      IsCheckT3: 0,
+      IsCheckT4: 0,
+      IsCheckT5: 0,
     };
     this.options._ThietbiID = sessionStorage.getItem('ThietBiID');
     this.modelUser_ = {
@@ -143,55 +145,65 @@ listThietBi_: Thietbi[] = [];
     this.MaThietBi = sessionStorage.getItem('MaThietBi');
     this.Active = false;
   }
- // nhà máy
- nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
+  // tìm kiếm
+  todos$ = this.s.$search;
+  // nhà máy
+  nhaMayID$ = this.nhaMaySevice_.$nhaMayID;
   ngOnInit() {
     let Permission = this._userInfo.r1GetobjPermission();
-      if (Permission === undefined) {
-        Permission = 'NoAdmin';
-      }
-      this.permissionsService.loadPermissions([`${Permission}`]);
-    if (this.date.getMonth() < 10) {
+    if (Permission === undefined) {
+      Permission = 'NoAdmin';
+    }
+    this.permissionsService.loadPermissions([`${Permission}`]);
+   const monthCurrent = this.date.getMonth();
+    if ((monthCurrent + 1) < 10) {
       this.options.IsTime = `${this.date.getFullYear()}-0${this.date.getMonth() + 1}`;
     } else {
       this.options.IsTime = `${this.date.getFullYear()}-${this.date.getMonth() + 1}`;
     }
     this.nhaMayID$.subscribe(res => {
       if (res !== undefined) {
-    this.R1GetListThietBi();
+        this.R1GetListThietBi();
       }
     });
-    this.r1ListVeSinhCongNghiep();
-  }
-  // ll
-    // danh sách thiet bi
-   R1GetListThietBi() {
-     let data = [];
-      this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
-      const model_ = {NhaMayID: this.options.NhaMayID};
-      this.spinnerService.show();
-      this.sub = this.khuvucmayservice_.r1Listthietbi(model_).subscribe(res => {
-        this.spinnerService.hide();
-        if (res['error'] === 1) {
-          this.toastr.error(res['ms'], 'Thông báo lỗi');
+      // tìm kiếm
+      this.todos$.subscribe(res => {
+        if (res === undefined) {
           return false;
         }
-         data = res['data'];
-        if (data !== undefined) {
-          this.listThietBi_ = data;
-          if (data.length === 0) {
-            this.options._ThietbiID = '';
-          } else if (this.options._ThietbiID === '') {
-            this.options._ThietbiID = this.listThietBi_[0].ThietBiID;
-          }
-          if (sessionStorage.getItem('ThietBiID') === null) {
-            this.options._ThietbiID = this.listThietBi_[0].ThietBiID;
-          }
+        this.options.s = res;
+          this.r1ListVeSinhCongNghiep();
+    });
+  }
+  // ll
+  // danh sách thiet bi
+  R1GetListThietBi() {
+    let data = [];
+    this.options.NhaMayID = Number(localStorage.getItem('NhaMayID'));
+    const model_ = { NhaMayID: this.options.NhaMayID };
+    this.spinnerService.show();
+    this.sub = this.khuvucmayservice_.r1Listthietbi(model_).subscribe(res => {
+      this.spinnerService.hide();
+      if (res['error'] === 1) {
+        this.toastr.error(res['ms'], 'Thông báo lỗi');
+        return false;
+      }
+      data = res['data'];
+      if (data !== undefined) {
+        this.listThietBi_ = data;
+        if (data.length === 0) {
+          this.options._ThietbiID = '';
+        } else if (this.options._ThietbiID === '') {
+          this.options._ThietbiID = this.listThietBi_[0].ThietBiID;
         }
-        this.r1ListKhuVucVeSinhCongNghiep();
-        this.r1ModelThietBi();
-      });
-    }
+        if (sessionStorage.getItem('ThietBiID') === null) {
+          this.options._ThietbiID = this.listThietBi_[0].ThietBiID;
+        }
+      }
+      this.r1ListKhuVucVeSinhCongNghiep();
+      this.r1ModelThietBi();
+    });
+  }
   r1ListKhuVucVeSinhCongNghiep() {
     this.danhgiavscongnghiepService_.r1ListKhucVucVeSinhCongNghiep(this.options).subscribe(res => {
       if (res !== undefined) {
@@ -216,7 +228,7 @@ listThietBi_: Thietbi[] = [];
       totalT4: 0,
       totalT5: 0,
     };
-  this.subscription =  this.danhgiavscongnghiepService_.r1ListVeSinhCNServe(this.options).subscribe(res => {
+    this.subscription = this.danhgiavscongnghiepService_.r1ListVeSinhCNServe(this.options).subscribe(res => {
       if (res !== undefined) {
         if (res['error'] === 1) {
           this.toastr.error('Lỗi khi lấy dữ liệu danh sách vệ sinh công nghiệp', 'Thông báo');
@@ -248,7 +260,7 @@ listThietBi_: Thietbi[] = [];
             totalT5: 0,
           };
           for (let index = 0; index < data.length; index++) {
-            data[index].children.forEach( function(item) {
+            data[index].children.forEach(function (item) {
               if (item.DanhGiaT1 === true || item.DanhGiaT1 === false) {
                 item.DanhGiaKDT1 = !cloneDeep(item.DanhGiaT1);
               }
@@ -271,28 +283,28 @@ listThietBi_: Thietbi[] = [];
               }
             });
             this.options.T5 = p;
-            this.objDiemDanhGia.TongDiemT1 +=  data[index].children.filter(x => x.DanhGiaT1 === true).length;
-            this.objDiemDanhGia.TongDiemT2 +=  data[index].children.filter(x => x.DanhGiaT2 === true).length;
-            this.objDiemDanhGia.TongDiemT3 +=  data[index].children.filter(x => x.DanhGiaT3 === true).length;
-            this.objDiemDanhGia.TongDiemT4 +=  data[index].children.filter(x => x.DanhGiaT4 === true).length;
-            this.objDiemDanhGia.TongDiemT5 +=  data[index].children.filter(x => x.DanhGiaT5 === true).length;
-            this.objDiemDanhGia.totalT1 +=  data[index].children.filter(x => x.ChiTietT1 !== '').length;
-            this.objDiemDanhGia.totalT2 +=  data[index].children.filter(x => x.ChiTietT2 !== '').length;
-            this.objDiemDanhGia.totalT3 +=  data[index].children.filter(x => x.ChiTietT3 !== '').length;
-            this.objDiemDanhGia.totalT4 +=  data[index].children.filter(x => x.ChiTietT4 !== '').length;
-            this.objDiemDanhGia.totalT5 +=  data[index].children.filter(x => x.ChiTietT5 !== '').length;
+            this.objDiemDanhGia.TongDiemT1 += data[index].children.filter(x => x.DanhGiaT1 === true).length;
+            this.objDiemDanhGia.TongDiemT2 += data[index].children.filter(x => x.DanhGiaT2 === true).length;
+            this.objDiemDanhGia.TongDiemT3 += data[index].children.filter(x => x.DanhGiaT3 === true).length;
+            this.objDiemDanhGia.TongDiemT4 += data[index].children.filter(x => x.DanhGiaT4 === true).length;
+            this.objDiemDanhGia.TongDiemT5 += data[index].children.filter(x => x.DanhGiaT5 === true).length;
+            this.objDiemDanhGia.totalT1 += data[index].children.filter(x => x.ChiTietT1 !== '').length;
+            this.objDiemDanhGia.totalT2 += data[index].children.filter(x => x.ChiTietT2 !== '').length;
+            this.objDiemDanhGia.totalT3 += data[index].children.filter(x => x.ChiTietT3 !== '').length;
+            this.objDiemDanhGia.totalT4 += data[index].children.filter(x => x.ChiTietT4 !== '').length;
+            this.objDiemDanhGia.totalT5 += data[index].children.filter(x => x.ChiTietT5 !== '').length;
           }
         }
 
         const VeSinhCongNghiepMID = res['VeSinhCongNghiepMID'];
-       this.options.VeSinhCongNghiepMID = VeSinhCongNghiepMID;
+        this.options.VeSinhCongNghiepMID = VeSinhCongNghiepMID;
         this.listVeSinhCongNghiep_ = data;
         this.r1ObjM();
       }
     });
   }
   r1ObjM() {
-   this.sub = this.danhgiavscongnghiepService_.r1ObjM(this.options).subscribe(res => {
+    this.sub = this.danhgiavscongnghiepService_.r1ObjM(this.options).subscribe(res => {
       if (res !== undefined) {
         console.log(res);
         if (res['error'] === 1) {
@@ -302,72 +314,72 @@ listThietBi_: Thietbi[] = [];
         this.datacheck_ = res['datacheck'];
       }
     },
-    err => {
-      if (err.status === 500) {
-        this.toastr.error('Mất kết nối đến máy chủ. Vui lòng kiểm tra lại đường dẫn', 'Thông báo');
-        return false;
-      }
-    });
+      err => {
+        if (err.status === 500) {
+          this.toastr.error('Mất kết nối đến máy chủ. Vui lòng kiểm tra lại đường dẫn', 'Thông báo');
+          return false;
+        }
+      });
   }
-R2LuuThayDoiVeSinhCongNghiep() {
-  this.spinnerService.show();
-  const arr = [];
-  for (let index = 0; index < this.listVeSinhCongNghiep_.length; index++) {
-    this.listVeSinhCongNghiep_[index].children.forEach( function(item) {
-      if (item.IsChange === true) {
-        arr.push(item);
-      }
-    });
-  }
-  this.danhgiavscongnghiepService_.r2LuuThayDoiVeSinhCongNghiep(arr).subscribe(res => {
-    if (res !== undefined) {
-      if (res['error'] === 1) {
-        this.toastr.error(res['ms'], 'Thông báo');
-        this.spinnerService.hide();
-        return false;
-      }
+  R2LuuThayDoiVeSinhCongNghiep() {
+    this.spinnerService.show();
+    const arr = [];
+    for (let index = 0; index < this.listVeSinhCongNghiep_.length; index++) {
+      this.listVeSinhCongNghiep_[index].children.forEach(function (item) {
+        if (item.IsChange === true) {
+          arr.push(item);
+        }
+      });
+    }
+    this.danhgiavscongnghiepService_.r2LuuThayDoiVeSinhCongNghiep(arr).subscribe(res => {
+      if (res !== undefined) {
+        if (res['error'] === 1) {
+          this.toastr.error(res['ms'], 'Thông báo');
+          this.spinnerService.hide();
+          return false;
+        }
         this.spinnerService.hide();
         this.toastr.success('Cập nhật bảng vệ sinh công nghiệp thành công!', 'Thông báo');
         this.r1ListVeSinhCongNghiep();
-    }
-  });
-}
-HideModal() {
-  this.ImportExModal.hide();
-}
-ChangeThietBi() {
-  this.options.KhuVucVSCNID = '';
-  sessionStorage.setItem('ThietBiID', this.options._ThietbiID);
-this.r1ListKhuVucVeSinhCongNghiep();
-this.r1ListVeSinhCongNghiep();
-}
-r1ModelThietBi() {
-  this.thietbirootService_.r1getThietBiByID(this.options._ThietbiID).subscribe(res => {
-    if (res !== undefined) {
-      if (res['error'] === 1) {
-        this.toastr.error(res['ms'], 'Thông báo');
-        return false;
       }
-      const objThietBi = res['data'];
-      sessionStorage.setItem('MaThietBi', objThietBi.MaThietBi);
-      this.MaThietBi = objThietBi.MaThietBi;
-    }
-  },
-  err => {
-    if (err.status === 404) {
-      this.toastr.error('Không có phàn hồi từ máy chủ', 'Thông báo');
-    }
-  });
-}
-changThang() {
-  this.r1ListVeSinhCongNghiep();
-}
-khuVucChanged() {
-  this.r1ListVeSinhCongNghiep();
-}
+    });
+  }
+  HideModal() {
+    this.ImportExModal.hide();
+  }
+  ChangeThietBi() {
+    this.options.KhuVucVSCNID = '';
+    sessionStorage.setItem('ThietBiID', this.options._ThietbiID);
+    this.r1ListKhuVucVeSinhCongNghiep();
+    this.r1ListVeSinhCongNghiep();
+  }
+  r1ModelThietBi() {
+    this.thietbirootService_.r1getThietBiByID(this.options._ThietbiID).subscribe(res => {
+      if (res !== undefined) {
+        if (res['error'] === 1) {
+          this.toastr.error(res['ms'], 'Thông báo');
+          return false;
+        }
+        const objThietBi = res['data'];
+        sessionStorage.setItem('MaThietBi', objThietBi.MaThietBi);
+        this.MaThietBi = objThietBi.MaThietBi;
+      }
+    },
+      err => {
+        if (err.status === 404) {
+          this.toastr.error('Không có phàn hồi từ máy chủ', 'Thông báo');
+        }
+      });
+  }
+  changThang() {
+    this.r1ListVeSinhCongNghiep();
+  }
+  khuVucChanged() {
+    this.r1ListVeSinhCongNghiep();
+  }
   // chọn một trong hai ở phần đánh giá
   SelectOneInTwoT1(row: Children, t) {
-    if (t ===  1) {
+    if (t === 1) {
       if (!row.DanhGiaT1 === true) {
         row.DanhGiaKDT1 = false;
         this.objDiemDanhGia.TongDiemT1 += 1;
@@ -386,7 +398,7 @@ khuVucChanged() {
     row.IsChange = true;
   }
   SelectOneInTwoT2(row: Children, t) {
-    if (t ===  1) {
+    if (t === 1) {
       if (!row.DanhGiaT2 === true) {
         row.DanhGiaKDT2 = false;
         this.objDiemDanhGia.TongDiemT2 += 1;
@@ -406,7 +418,7 @@ khuVucChanged() {
   }
 
   SelectOneInTwoT3(row: Children, t) {
-    if (t ===  1) {
+    if (t === 1) {
       if (!row.DanhGiaT3 === true) {
         row.DanhGiaKDT3 = false;
         this.objDiemDanhGia.TongDiemT3 += 1;
@@ -425,7 +437,7 @@ khuVucChanged() {
     row.IsChange = true;
   }
   SelectOneInTwoT4(row: Children, t) {
-    if (t ===  1) {
+    if (t === 1) {
       if (!row.DanhGiaT4 === true) {
         row.DanhGiaKDT4 = false;
         this.objDiemDanhGia.TongDiemT4 += 1;
@@ -444,7 +456,7 @@ khuVucChanged() {
     row.IsChange = true;
   }
   SelectOneInTwoT5(row: Children, t) {
-    if (t ===  1) {
+    if (t === 1) {
       if (!row.DanhGiaT5 === true) {
         row.DanhGiaKDT5 = false;
         this.objDiemDanhGia.TongDiemT5 += 1;
@@ -480,16 +492,16 @@ khuVucChanged() {
       this.TuanMay,
       this.modelUser_,
       this.options.VeSinhCongNghiepMID).subscribe(res => {
-      if (res !== undefined) {
-        if (res['error'] === 1) {
-          this.toastr.error(res['ms'], 'Thông báo');
-          return false;
+        if (res !== undefined) {
+          if (res['error'] === 1) {
+            this.toastr.error(res['ms'], 'Thông báo');
+            return false;
+          }
+          this.xacnhanExModal.hide();
+          this.toastr.success('Đã xác nhận thành công!', 'Thông báo');
+          this.r1ObjM();
         }
-        this.xacnhanExModal.hide();
-        this.toastr.success('Đã xác nhận thành công!', 'Thông báo');
-        this.r1ObjM();
-      }
-     });
+      });
   }
   ChonFile(files) {
     if (files.length === 0) {
@@ -503,46 +515,46 @@ khuVucChanged() {
     this.ImportExModal.show();
   }
 
-r2ImportFile() {
-  this.subscription = this.danhgiavscongnghiepService_.R2ImportExcel(this._files).subscribe(res => {
-    if (res !== undefined && res['body'] !== undefined) {
-      this.returnImport = res['body'];
-      if (this.returnImport.error === 1) {
-        this.toastr.error(res['ms'], 'Thông báo');
-        return false;
+  r2ImportFile() {
+    this.subscription = this.danhgiavscongnghiepService_.R2ImportExcel(this._files).subscribe(res => {
+      if (res !== undefined && res['body'] !== undefined) {
+        this.returnImport = res['body'];
+        if (this.returnImport.error === 1) {
+          this.toastr.error(res['ms'], 'Thông báo');
+          return false;
+        }
+        if (this.returnImport.error === 2) {
+          this.toastr.error(res['ms'], 'Thông báo');
+          return false;
+        }
+        if (this.returnImport.error === 0) {
+          this.ImportExModal.hide();
+          this.r1ListVeSinhCongNghiep();
+          this.r1ListKhuVucVeSinhCongNghiep();
+          this.toastr.success('Import File Excel bảng đánh giá vệ sinh công nghiệp thành công!', 'Thông báo');
+        }
       }
-      if (this.returnImport.error === 2) {
-        this.toastr.error(res['ms'], 'Thông báo');
-        return false;
-      }
-      if (this.returnImport.error === 0) {
-        this.ImportExModal.hide();
-        this.r1ListVeSinhCongNghiep();
-        this.r1ListKhuVucVeSinhCongNghiep();
-        this.toastr.success('Import File Excel bảng đánh giá vệ sinh công nghiệp thành công!', 'Thông báo');
-      }
+    });
+  }
+  ngOnDestroy(): void {
+    if (this.sub) {
+      this.sub.unsubscribe();
     }
-  });
-}
-ngOnDestroy(): void {
-  if (this.sub) {
-    this.sub.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
- if (this.subscription) {
-  this.subscription.unsubscribe();
- }
-}
-// làm mới trang
-refreshData() {
-  this.options.s = '';
-  this.s.SearchRoot(this.options.s);
-  this.options.p = 1;
-  this.toastr.success('Tải lại trang thành công', 'Thông báo');
-  this.ngOnInit();
-}
-Event(e) {
-  if (e.target.closest('.select-tieuchi') === null) {
-    this.Active = false;
+  // làm mới trang
+  refreshData() {
+    this.options.s = '';
+    this.s.SearchRoot(this.options.s);
+    this.options.p = 1;
+    this.toastr.success('Tải lại trang thành công', 'Thông báo');
+    this.ngOnInit();
   }
-}
+  Event(e) {
+    if (e.target.closest('.select-tieuchi') === null) {
+      this.Active = false;
+    }
+  }
 }

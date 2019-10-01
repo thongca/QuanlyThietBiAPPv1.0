@@ -68,7 +68,9 @@ export class TieuchitinhgiaComponent implements OnInit, OnDestroy {
       checked: false,
       CongThuc: '',
       GiaMax: 0,
-      GiaMin: 0
+      GiaMin: 0,
+      TieuChiSPID: '',
+      GiaSan: 0
     };
   }
   // tìm kiếm
@@ -167,7 +169,9 @@ export class TieuchitinhgiaComponent implements OnInit, OnDestroy {
         checked: false,
         CongThuc: '',
         GiaMax: 0,
-        GiaMin: 0
+        GiaMin: 0,
+        TieuChiSPID: '',
+        GiaSan: 0
       };
       this.largeModal.show();
     } else {

@@ -25,14 +25,14 @@
             </li>
             <li class="li-select">
               <select id="select2" name="select2" class="form-control" [(ngModel)]="options.LoaiHopID"
-                (ngModelChange)="LoaiHopChanged(options.LoaiHopID)">
+                (ngModelChange)="LoaiHopChanged()">
                 <option value="">----- Chọn loại hộp-----</option>
                 <option *ngFor="let c of listLoaiHop" [ngValue]="c.LoaiHopID">{{c.TenLoaiHop}}</option>
               </select>
             </li>
             <li class="li-select">
               <select id="select2" name="select2" class="form-control" [(ngModel)]="options.LoaiInID"
-                (ngModelChange)="LoaiInChanged(options.LoaiHopID)">
+                (ngModelChange)="LoaiInChanged()">
                 <option value="">----- Chọn loại in-----</option>
                 <option *ngFor="let c of listLoaiIn" [ngValue]="c.LoaiInID">{{c.TenLoaiIn}}</option>
               </select>
